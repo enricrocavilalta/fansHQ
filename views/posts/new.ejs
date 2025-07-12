@@ -1,0 +1,18 @@
+<h1>Create New Post</h1>
+<form action="/posts" method="POST">
+  <input name="title" placeholder="Title" required><br>
+  <textarea name="content" placeholder="Content"></textarea><br>
+  <input name="media_url" placeholder="Media URL"><br>
+  <select name="media_type">
+    <option value="image">Image</option>
+    <option value="video">Video</option>
+    <option value="audio">Audio</option>
+    <option value="text">Text</option>
+    <option value="link">Link</option>
+    <option value="download">Download</option>
+    <option value="poll">Poll</option>
+    <option value="product">Product</option>
+  </select><br>
+  <input name="price" type="number" step="0.01" value="0.00"><br>
+  <button type="submit">Create</button>
+</form>

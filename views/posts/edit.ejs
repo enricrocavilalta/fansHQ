@@ -1,0 +1,13 @@
+<h1>Edit Post</h1>
+<form action="/posts/<%= post.id %>" method="POST">
+  <input name="title" value="<%= post.title %>" required><br>
+  <textarea name="content"><%= post.content %></textarea><br>
+  <input name="media_url" value="<%= post.media_url %>"><br>
+  <select name="media_type">
+    <% ['image','video','audio','text','link','download','poll','product'].forEach(type => { %>
+      <option value="<%= type %>" <%= post.media_type === type ? 'selected' : '' %>><%= type %></option>
+    <% }) %>
+  </select><br>
+  <input name="price" type="number" step="0.01" value="<%= post.price %>"><br>
+  <button type="submit">Save</button>
+</form>

@@ -1,0 +1,16 @@
+<h1>All Posts</h1>
+<a href="/posts/new">Create New Post</a>
+<ul>
+  <% posts.forEach(post => { %>
+    <li>
+      <strong><%= post.title %></strong> - <%= post.media_type %> - €<%= post.price %>
+      <p><%= post.content %></p>
+
+      <a href="/posts/<%= post.id %>/edit">Edit</a>
+
+      <form action="/posts/<%= post.id %>/delete" method="POST" style="display:inline;">
+        <button type="submit" onclick="return confirm('Delete this post?')">Delete</button>
+      </form>
+    </li>
+  <% }) %>
+</ul>
