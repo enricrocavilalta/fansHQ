@@ -60,3 +60,13 @@ router.post('/:id/delete', (req, res) => {
     res.redirect('/posts');
   });
 });
+
+// Show form for each content type
+router.get('/new/:type', (req, res) => {
+  const type = req.params.type;
+  const validTypes = ['text', 'image', 'video', 'audio', 'link', 'download', 'poll', 'product'];
+
+  if (!validTypes.includes(type)) return res.status(404).send('Invalid content type');
+  
+  res.render(`posts/new_${type}`, { type });
+});
