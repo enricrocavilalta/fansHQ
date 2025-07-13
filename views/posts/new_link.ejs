@@ -1,7 +1,53 @@
-<h1>Create link</h1>
-<form action="/posts" method="POST">
+<form action="/posts" method="POST" enctype="multipart/form-data">
   <input type="hidden" name="media_type" value="link">
-  <input name="title" placeholder="Title"><br>
-  <textarea name="content" placeholder="Write your post..." required></textarea><br>
-  <button type="submit">Post</button>
+
+  <label for="media_url">URL del enlace:</label>
+  <input type="url" name="media_url" id="media_url" placeholder="https://ejemplo.com" required>
+
+  <p>¿Cómo quieres que se vea el enlace?</p>
+  <label>
+    <input type="radio" name="display_mode" value="text" checked>
+    Texto
+  </label>
+  <label>
+    <input type="radio" name="display_mode" value="image">
+    Imagen
+  </label>
+
+  <div id="textContainer">
+    <label for="display_text">Texto a mostrar:</label>
+    <input type="text" name="display_text" id="display_text" placeholder="sitio web...">
+  </div>
+
+  <div id="imageContainer" style="opacity: 0.5;">
+    <label for="thumbnail">Subir imagen:</label>
+    <input type="file" name="thumbnail" id="thumbnail" accept="image/*" disabled>
+  </div>
+
+  <button type="submit">Crear enlace</button>
 </form>
+
+<script>
+  const textRadio = document.querySelector('input[value="text"]');
+  const imageRadio = document.querySelector('input[value="image"]');
+  const textContainer = document.getElementById('textContainer');
+  const imageContainer = document.getElementById('imageContainer');
+  const thumbnailInput = document.getElementById('thumbnail');
+
+  function updateMode() {
+    if (textRadio.checked) {
+      textContainer.style.opacity = 1;
+      imageContainer.style.opacity = 0.5;
+      thumbnailInput.disabled = true;
+      thumbnailInput.value = '';
+    } else {
+      textContainer.style.opacity = 0.5;
+      imageContainer.style.opacity = 1;
+      thumbnailInput.disabled = false;
+    }
+  }
+
+  textRadio.addEventListener('change', updateMode);
+  imageRadio.addEventListener('change', updateMode);
+  updateMode(); // inicializar
+</script>

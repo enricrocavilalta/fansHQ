@@ -35,28 +35,46 @@ router.get('/new', (req, res) => {
 
 // Create a new post
 router.post('/', upload.single('media_file'), async (req, res) => {
-  const { title, content, media_type, price } = req.body;
-  const media_url = req.file ? `/uploads/${req.file.filename}` : req.body.media_url;
+  const { title, content, media_type, display_text, display_mode, price } = req.body;
+
+  const file = req.file;
+  let media_url = null;
+  let final_display_text = null;
+  let final_thumbnail_url = null;
+
+  if (media_type === 'image' && file) {
+    media_url = `/uploads/${file.filename}`;
+  } else if (media_type === 'link') {
+    media_url = req.body.media_url || null;
+    if (display_mode === 'text') {
+      final_display_text = display_text || null;
+    } else if (display_mode === 'image' && file) {
+      final_thumbnail_url = `/uploads/${file.filename}`;
+    }
+  }
 
   try {
     await db.execute(
-  'INSERT INTO posts (title, content, media_type, media_url, price) VALUES (?, ?, ?, ?, ?)',
-  [
-    title ?? null,
-    content ?? null,
-    media_type ?? null,
-    media_url ?? null,
-    price !== undefined && price !== '' ? parseFloat(price) : 0
-  ]
-);
-
+      'INSERT INTO posts (title, content, media_type, media_url, display_text, thumbnail_url, display_mode, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      [
+        title || null,
+        content || null,
+        media_type || null,
+        media_url || null,
+        final_display_text,
+        final_thumbnail_url,
+        display_mode || null,
+        price || 0
+      ]
+    );
     res.redirect('/posts');
   } catch (err) {
     console.error('INSERT ERROR:', err.message);
-    console.error(err); // 🔍 Esto mostrará todo el error con más detalles
+    console.error(err);
     res.send('Error saving post');
   }
 });
+
 
 
 module.exports = router;
@@ -106,23 +124,6 @@ router.get('/new/:type', (req, res) => {
   res.render(`posts/new_${type}`, { type });
 });
 
-
-
-router.post('/', upload.single('media_file'), async (req, res) => {
-  const { title, content, media_type, price } = req.body;
-  const media_url = req.file ? `/uploads/${req.file.filename}` : req.body.media_url;
-
-  try {
-    await db.execute(
-      'INSERT INTO posts (title, content, media_type, media_url, price) VALUES (?, ?, ?, ?, ?)',
-      [title, content || null, media_type, media_url || null, price || 0]
-    );
-    res.redirect('/posts');
-  } catch (err) {
-    console.error(err);
-    res.send('Error saving post');
-  }
-});
 
 
 

@@ -1,7 +1,8 @@
-<h1>Create image</h1>
-<form action="/posts" method="POST">
+<form action="/posts" method="POST" enctype="multipart/form-data">
   <input type="hidden" name="media_type" value="image">
-  <input name="title" placeholder="Title"><br>
-  <textarea name="content" placeholder="Write your post..." required></textarea><br>
-  <button type="submit">Post</button>
+  <input type="file" name="media_file" accept="image/*" required>
+  <input type="text" name="title">
+  <textarea name="content"></textarea>
+  <input type="number" name="price" step="0.01">
+  <button type="submit">Upload</button>
 </form>

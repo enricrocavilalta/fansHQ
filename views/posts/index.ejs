@@ -11,18 +11,68 @@
 </ul>
 <h1>All posts</h1>
 <ul>
-  <% posts.forEach(post => { %>
-    <li>
-      <strong><%= post.title %></strong> - <%= post.media_type %> - €<%= post.price %>
+<% posts.forEach(post => { %>
+  <div class="post-card">
+    <% if (post.media_type === 'text') { %>
+      <h3><%= post.title %></h3>
       <p><%= post.content %></p>
 
-      <a href="/posts/<%= post.id %>/edit">Edit</a>
+    <% } else if (post.media_type === 'image') { %>
+      <img src="<%= post.media_url %>" alt="Imagen subida" class="thumbnail">
+      <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+      <% if (post.content) { %><p><%= post.content %></p><% } %>
 
-      <form action="/posts/<%= post.id %>/delete" method="POST" style="display:inline;">
-        <button type="submit" onclick="return confirm('Delete this post?')">Delete</button>
+    <% } else if (post.media_type === 'video') { %>
+      <video controls src="<%= post.media_url %>" class="thumbnail"></video>
+      <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+
+    <% } else if (post.media_type === 'audio') { %>
+      <audio controls src="<%= post.media_url %>"></audio>
+      <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+
+    <% } else if (post.media_type === 'link') { %>
+      <% if (post.display_mode === 'image' && post.thumbnail_url) { %>
+        <a href="<%= post.media_url %>" target="_blank">
+          <img src="<%= post.thumbnail_url %>" alt="Thumbnail" class="thumbnail">
+        </a>
+      <% } else if (post.display_mode === 'text' && post.display_text) { %>
+        <a href="<%= post.media_url %>" target="_blank"><%= post.display_text %></a>
+      <% } else { %>
+        <a href="<%= post.media_url %>" target="_blank"><%= post.media_url %></a>
+      <% } %>
+
+    <% } else if (post.media_type === 'download') { %>
+      <a href="<%= post.media_url %>" download><%= post.title || "Descargar archivo" %></a>
+      <% if (post.content) { %><p><%= post.content %></p><% } %>
+
+    <% } else if (post.media_type === 'poll') { %>
+      <h3><%= post.title || "Encuesta" %></h3>
+      <p><%= post.content %></p>
+
+    <% } else if (post.media_type === 'product') { %>
+      <h3><%= post.title || "Producto" %></h3>
+      <% if (post.media_url) { %>
+        <img src="<%= post.media_url %>" alt="Producto" class="thumbnail">
+      <% } %>
+      <% if (post.content) { %><p><%= post.content %></p><% } %>
+      <% if (post.price) { %><p><strong>Precio:</strong> €<%= post.price %></p><% } %>
+    <% } %>
+
+    <!-- Botones de editar y eliminar -->
+    <div class="post-actions">
+      <form action="/posts/<%= post.id %>/edit" method="get" style="display:inline;">
+        <button type="submit">✏️ Editar</button>
       </form>
-    </li>
-  <% }) %>
+      <form action="/posts/<%= post.id %>/delete" method="post" style="display:inline;" onsubmit="return confirm('¿Eliminar este post?');">
+        <button type="submit">🗑️ Eliminar</button>
+      </form>
+    </div>
+  </div>
+<% }) %>
+
+
+
+
 </ul>
 
 

@@ -1,7 +1,7 @@
-<h1>Create audio</h1>
+<h1>Audio upload</h1>
 <form action="/posts" method="POST">
   <input type="hidden" name="media_type" value="audio">
   <input name="title" placeholder="Title"><br>
-  <textarea name="content" placeholder="Write your post..." required></textarea><br>
+  <input type="file" name="media_file" accept="audio/*" required><br><br>
   <button type="submit">Post</button>
 </form>
