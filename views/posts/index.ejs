@@ -22,9 +22,22 @@
       <% if (post.title) { %><h3><%= post.title %></h3><% } %>
       <% if (post.content) { %><p><%= post.content %></p><% } %>
 
-    <% } else if (post.media_type === 'video') { %>
-      <video controls src="<%= post.media_url %>" class="thumbnail"></video>
-      <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+
+ <% } else if (post.media_type === 'video') { %>
+  <video
+    controls
+    src="<%= post.media_url %>"
+    <% if (post.thumbnail_url) { %>
+      poster="<%= post.thumbnail_url %>"
+    <% } %>
+    class="video-player">
+  </video>
+
+  <% if (post.title) { %>
+    <h3><%= post.title %></h3>
+  <% } %>
+
+
 
     <% } else if (post.media_type === 'audio') { %>
       <audio controls src="<%= post.media_url %>"></audio>

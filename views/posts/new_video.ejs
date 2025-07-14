@@ -1,7 +1,16 @@
-<h1>Video upload</h1>
-<form action="/posts" method="POST">
+<form action="/posts" method="POST" enctype="multipart/form-data">
   <input type="hidden" name="media_type" value="video">
-  <input name="title" placeholder="Title"><br>
-  <input type="file" name="media_file" accept="video/*" required><br><br>
-  <button type="submit">Post</button>
+  <label>Title:</label><br>
+  <input type="text" name="title"><br><br>
+
+  <label>Video file:</label><br>
+  <input type="file" name="media_file" accept="video/*" required><br>
+
+  <label>Thumbnail file:</label><br>
+  <input type="file" name="thumbnail" accept="image/*"><br>
+
+  <label>Price (optional):</label><br>
+  <input type="number" name="price" step="0.01"><br>
+
+  <button type="submit">Upload Video</button>
 </form>

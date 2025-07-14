@@ -34,24 +34,50 @@ router.get('/new', (req, res) => {
 });
 
 // Create a new post
-router.post('/', upload.single('media_file'), async (req, res) => {
-  const { title, content, media_type, display_text, display_mode, price } = req.body;
+router.post('/', upload.fields([
+  { name: 'media_file', maxCount: 1 },
+  { name: 'thumbnail', maxCount: 1 }
+]), async (req, res) => {
+  const {
+    title,
+    content,
+    media_type,
+    media_url: fallback_url,
+    display_text,
+    display_mode,
+    price
+  } = req.body;
 
-  const file = req.file;
-  let media_url = null;
-  let final_display_text = null;
-  let final_thumbnail_url = null;
+  
+  // Obtener los archivos subidos
+const mediaFile = req.files?.['media_file']?.[0];
+const thumbnailFile = req.files?.['thumbnail']?.[0];
 
-  if (media_type === 'image' && file) {
-    media_url = `/uploads/${file.filename}`;
-  } else if (media_type === 'link') {
-    media_url = req.body.media_url || null;
-    if (display_mode === 'text') {
-      final_display_text = display_text || null;
-    } else if (display_mode === 'image' && file) {
-      final_thumbnail_url = `/uploads/${file.filename}`;
-    }
-  }
+// Construir URLs según qué archivo se subió
+let media_url = null;
+let final_thumbnail_url = null;
+let final_display_text = null;
+
+if (media_type === 'link') {
+  media_url = fallback_url || null;
+} else {
+  media_url = mediaFile ? `/uploads/${mediaFile.filename}` : null;
+}
+
+if (thumbnailFile) {
+    final_thumbnail_url = `/uploads/${thumbnailFile.filename}`;
+} else if (display_mode === 'text') {
+    final_display_text = display_text || null;
+}
+
+
+
+  // Debug para comprobar qué llega
+  console.log('🧠 media_type:', media_type);
+  console.log('🧠 display_mode:', display_mode);
+  //console.log('🧠 media_url:', media_url);
+  console.log('🧠 thumbnail_url:', final_thumbnail_url);
+  console.log('🧠 req.files:', req.files);
 
   try {
     await db.execute(
@@ -60,20 +86,22 @@ router.post('/', upload.single('media_file'), async (req, res) => {
         title || null,
         content || null,
         media_type || null,
-        media_url || null,
+        media_url,
         final_display_text,
         final_thumbnail_url,
         display_mode || null,
         price || 0
+        
       ]
     );
     res.redirect('/posts');
   } catch (err) {
     console.error('INSERT ERROR:', err.message);
-    console.error(err);
     res.send('Error saving post');
   }
 });
+
+
 
 
 
@@ -104,9 +132,6 @@ router.post('/:id', (req, res) => {
 
 // Handle delete
 router.post('/:id/delete', (req, res) => {
-    console.log('BODY:', req.body);
-    console.log('FILE:', req.file);
-    
   const id = req.params.id;
   req.db.query('DELETE FROM posts WHERE id = ?', [id], (err) => {
     if (err) return res.send('Delete failed');

@@ -1,5 +1,5 @@
 <h1>Audio upload</h1>
-<form action="/posts" method="POST">
+<form action="/posts" method="POST" enctype="multipart/form-data">
   <input type="hidden" name="media_type" value="audio">
   <input name="title" placeholder="Title"><br>
   <input type="file" name="media_file" accept="audio/*" required><br><br>
