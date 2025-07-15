@@ -1,5 +1,5 @@
 <h1>Text upload</h1>
-<form action="/posts" method="POST">
+<form action="/posts" method="POST" enctype="multipart/form-data">
   <input type="hidden" name="media_type" value="text">
   <input name="title" placeholder="Title"><br>
   <textarea name="content" placeholder="Write your post..." required></textarea><br>

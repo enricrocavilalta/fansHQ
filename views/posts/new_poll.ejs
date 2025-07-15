@@ -1,15 +1,23 @@
-<form action="/posts/new" method="POST">
+<form action="/posts" method="POST" enctype="multipart/form-data">
   <input type="hidden" name="media_type" value="poll">
   <label>Title:</label>
   <input type="text" name="title"><br>
 
   <label>Question:</label>
-  <textarea name="content"></textarea><br>
-
+  <textarea name="content" required></textarea><br>
+  
   <label>Options:</label><br>
-  <% for (let i = 1; i <= 10; i++) { %>
-    Option <%= i %>: <input type="text" name="option_<%= i %>" placeholder="Option <%= i %>"><br>
-  <% } %>
+   
+<% for (let i = 1; i <= 10; i++) { %>
+  Option <%= i %>: 
+  <input 
+    type="text" 
+    name="option_<%= i %>" 
+    placeholder="Option <%= i %>"
+    <%= i <= 2 ? 'required' : '' %>
+  ><br>
+<% } %>
 
+  
   <button type="submit">Create Poll</button>
 </form>

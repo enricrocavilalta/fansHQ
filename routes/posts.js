@@ -33,20 +33,35 @@ router.get('/new', (req, res) => {
   res.render('posts/new');
 });
 
+
+
+
 // Create a new post
 router.post('/', upload.fields([
   { name: 'media_file', maxCount: 1 },
   { name: 'thumbnail', maxCount: 1 }
 ]), async (req, res) => {
-  const {
-    title,
-    content,
-    media_type,
-    media_url: fallback_url,
-    display_text,
-    display_mode,
-    price
-  } = req.body;
+  console.log('📨 req.body:', req.body);
+ const {
+  title,
+  content,
+  media_type,
+  media_url: fallback_url,
+  display_text,
+  display_mode,
+  price,
+  option_1,
+  option_2,
+  option_3,
+  option_4,
+  option_5,
+  option_6,
+  option_7,
+  option_8,
+  option_9,
+  option_10
+} = req.body;
+
 
   
   // Obtener los archivos subidos
@@ -81,19 +96,33 @@ if (thumbnailFile) {
 
   try {
     await db.execute(
-      'INSERT INTO posts (title, content, media_type, media_url, display_text, thumbnail_url, display_mode, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      [
-        title || null,
-        content || null,
-        media_type || null,
-        media_url,
-        final_display_text,
-        final_thumbnail_url,
-        display_mode || null,
-        price || 0
-        
-      ]
-    );
+  `INSERT INTO posts (
+    title, content, media_type, media_url, display_text,
+    thumbnail_url, display_mode, price,
+    option_1, option_2, option_3, option_4, option_5,
+    option_6, option_7, option_8, option_9, option_10,
+    votes_1, votes_2, votes_3, votes_4, votes_5,
+    votes_6, votes_7, votes_8, votes_9, votes_10
+  ) VALUES (
+    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+  )`,
+  [
+    title || null,
+    content || null,
+    media_type || null,
+    media_url,
+    final_display_text,
+    final_thumbnail_url,
+    display_mode || null,
+    price || 0,
+    req.body.option_1 || null, req.body.option_2 || null, req.body.option_3 || null,
+    req.body.option_4 || null, req.body.option_5 || null, req.body.option_6 || null,
+    req.body.option_7 || null, req.body.option_8 || null, req.body.option_9 || null,
+    req.body.option_10 || null,
+    ...Array(10).fill(0)
+  ]
+);
+
     res.redirect('/posts');
   } catch (err) {
     console.error('INSERT ERROR:', err.message);
