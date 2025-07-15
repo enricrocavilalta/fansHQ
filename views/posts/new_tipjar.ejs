@@ -1,0 +1,18 @@
+<h1>Create a Tip Jar</h1>
+<form action="/posts" method="POST" enctype="multipart/form-data">
+  <input type="hidden" name="media_type" value="tipjar">
+
+  <label>Title (optional):</label>
+  <input type="text" name="title"><br>
+
+  <label>Description:</label>
+  <textarea name="content" required></textarea><br>
+
+  <label>Suggested Tip (optional):</label>
+  <input type="number" name="price" step="0.01" min="0"><br>
+
+   <label>Optional Image:</label>
+  <input type="file" name="media_file" accept="image/*"><br>
+  
+  <button type="submit">Create Tip Jar</button>
+</form>

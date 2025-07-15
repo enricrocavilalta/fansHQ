@@ -171,7 +171,7 @@ router.post('/:id/delete', (req, res) => {
 // Show form for each content type
 router.get('/new/:type', (req, res) => {
   const type = req.params.type;
-  const validTypes = ['text', 'image', 'video', 'audio', 'link', 'download', 'poll', 'product'];
+  const validTypes = ['text', 'image', 'video', 'audio', 'link', 'download', 'poll', 'product', 'tipjar', 'ama'];
 
   if (!validTypes.includes(type)) return res.status(404).send('Invalid content type');
   

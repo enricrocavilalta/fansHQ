@@ -1,0 +1,14 @@
+<h1>Create an AMA (Ask Me Anything)</h1>
+<form action="/posts" method="POST" enctype="multipart/form-data">
+  <input type="hidden" name="media_type" value="ama">
+
+  <label>Title (optional):</label>
+  <input type="text" name="title"><br>
+
+  <label>Prompt:</label>
+  <textarea name="content" required></textarea><br>
+
+ 
+
+  <button type="submit">Create AMA</button>
+</form>
