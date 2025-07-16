@@ -1,6 +1,33 @@
-<h1>Create Video Post</h1>
+<style>
+  .mode-container {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
 
-<form action="/posts" method="POST" enctype="multipart/form-data">
+  .mode-box {
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    padding: 15px;
+    flex: 1;
+    transition: opacity 0.3s ease, border-color 0.3s ease;
+  }
+
+  .mode-box.faded {
+    opacity: 0.5;
+  }
+
+  .mode-box.active {
+    border-color: #007bff;
+    opacity: 1;
+  }
+
+  .mode-box input[type="radio"] {
+    margin-right: 8px;
+  }
+</style>
+
+<form action="/posts/new" method="POST" enctype="multipart/form-data">
   <input type="hidden" name="media_type" value="video">
 
   <label>Title:</label>
@@ -9,21 +36,28 @@
   <label>Description:</label>
   <textarea name="content"></textarea><br>
 
-  <label>Choose how to add video:</label><br>
-  <input type="radio" name="display_mode" value="upload" id="uploadRadio" checked>
-  <label for="uploadRadio">Upload</label><br>
+  <div class="mode-container">
+    <div id="uploadBox" class="mode-box">
+      <label>
+        <input type="radio" name="display_mode" value="upload" id="uploadRadio" checked>
+        Upload video
+      </label>
+      <div id="uploadSection">
+        <label>Upload Video:</label>
+        <input type="file" name="media_file" accept="video/*"><br>
+      </div>
+    </div>
 
-  <input type="radio" name="display_mode" value="embed" id="embedRadio">
-  <label for="embedRadio">Embed</label><br><br>
-
-  <div id="uploadSection">
-    <label>Upload Video:</label>
-    <input type="file" name="media_file" accept="video/*"><br>
-  </div>
-
-  <div id="embedSection" style="display:none;">
-    <label>Embed code or URL:</label>
-    <textarea name="media_url" placeholder="iframe or YouTube URL"></textarea><br>
+    <div id="embedBox" class="mode-box faded">
+      <label>
+        <input type="radio" name="display_mode" value="embed" id="embedRadio">
+        Embed video
+      </label>
+      <div id="embedSection">
+        <label>Embed URL or iframe code:</label>
+        <textarea name="media_url" placeholder="YouTube URL or iframe code"></textarea><br>
+      </div>
+    </div>
   </div>
 
   <label>Thumbnail (optional):</label>
@@ -35,14 +69,26 @@
 <script>
   const uploadRadio = document.getElementById('uploadRadio');
   const embedRadio = document.getElementById('embedRadio');
-  const uploadSection = document.getElementById('uploadSection');
-  const embedSection = document.getElementById('embedSection');
+  const uploadBox = document.getElementById('uploadBox');
+  const embedBox = document.getElementById('embedBox');
 
-  function toggleSections() {
-    uploadSection.style.display = uploadRadio.checked ? 'block' : 'none';
-    embedSection.style.display = embedRadio.checked ? 'block' : 'none';
+  function toggleModeBoxes() {
+    if (uploadRadio.checked) {
+      uploadBox.classList.add('active');
+      uploadBox.classList.remove('faded');
+      embedBox.classList.remove('active');
+      embedBox.classList.add('faded');
+    } else {
+      embedBox.classList.add('active');
+      embedBox.classList.remove('faded');
+      uploadBox.classList.remove('active');
+      uploadBox.classList.add('faded');
+    }
   }
 
-  uploadRadio.addEventListener('change', toggleSections);
-  embedRadio.addEventListener('change', toggleSections);
+  uploadRadio.addEventListener('change', toggleModeBoxes);
+  embedRadio.addEventListener('change', toggleModeBoxes);
+
+  // Run on page load
+  toggleModeBoxes();
 </script>
