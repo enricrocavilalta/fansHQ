@@ -73,11 +73,14 @@ let media_url = null;
 let final_thumbnail_url = null;
 let final_display_text = null;
 
-if (media_type === 'link') {
-  media_url = fallback_url || null;
+if (req.body.media_url && req.body.media_url.trim() !== '') {
+  media_url = req.body.media_url.trim();
+} else if (mediaFile) {
+  media_url = `/uploads/${mediaFile.filename}`;
 } else {
-  media_url = mediaFile ? `/uploads/${mediaFile.filename}` : null;
+  media_url = null;
 }
+
 
 if (thumbnailFile) {
     final_thumbnail_url = `/uploads/${thumbnailFile.filename}`;

@@ -1,16 +1,48 @@
+<h1>Create Video Post</h1>
+
 <form action="/posts" method="POST" enctype="multipart/form-data">
   <input type="hidden" name="media_type" value="video">
-  <label>Title:</label><br>
-  <input type="text" name="title"><br><br>
 
-  <label>Video file:</label><br>
-  <input type="file" name="media_file" accept="video/*" required><br>
+  <label>Title:</label>
+  <input type="text" name="title"><br>
 
-  <label>Thumbnail file:</label><br>
+  <label>Description:</label>
+  <textarea name="content"></textarea><br>
+
+  <label>Choose how to add video:</label><br>
+  <input type="radio" name="display_mode" value="upload" id="uploadRadio" checked>
+  <label for="uploadRadio">Upload</label><br>
+
+  <input type="radio" name="display_mode" value="embed" id="embedRadio">
+  <label for="embedRadio">Embed</label><br><br>
+
+  <div id="uploadSection">
+    <label>Upload Video:</label>
+    <input type="file" name="media_file" accept="video/*"><br>
+  </div>
+
+  <div id="embedSection" style="display:none;">
+    <label>Embed code or URL:</label>
+    <textarea name="media_url" placeholder="iframe or YouTube URL"></textarea><br>
+  </div>
+
+  <label>Thumbnail (optional):</label>
   <input type="file" name="thumbnail" accept="image/*"><br>
 
-  <label>Price (optional):</label><br>
-  <input type="number" name="price" step="0.01"><br>
-
-  <button type="submit">Upload Video</button>
+  <button type="submit">Create Video Post</button>
 </form>
+
+<script>
+  const uploadRadio = document.getElementById('uploadRadio');
+  const embedRadio = document.getElementById('embedRadio');
+  const uploadSection = document.getElementById('uploadSection');
+  const embedSection = document.getElementById('embedSection');
+
+  function toggleSections() {
+    uploadSection.style.display = uploadRadio.checked ? 'block' : 'none';
+    embedSection.style.display = embedRadio.checked ? 'block' : 'none';
+  }
+
+  uploadRadio.addEventListener('change', toggleSections);
+  embedRadio.addEventListener('change', toggleSections);
+</script>
