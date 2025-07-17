@@ -1,33 +1,4 @@
-<style>
-  .mode-container {
-    display: flex;
-    gap: 20px;
-    margin-bottom: 20px;
-  }
-
-  .mode-box {
-    border: 2px solid #ccc;
-    border-radius: 10px;
-    padding: 15px;
-    flex: 1;
-    transition: opacity 0.3s ease, border-color 0.3s ease;
-  }
-
-  .mode-box.faded {
-    opacity: 0.5;
-  }
-
-  .mode-box.active {
-    border-color: #007bff;
-    opacity: 1;
-  }
-
-  .mode-box input[type="radio"] {
-    margin-right: 8px;
-  }
-</style>
-
-<form action="/posts/new" method="POST" enctype="multipart/form-data">
+<form action="/posts" method="POST" enctype="multipart/form-data">
   <input type="hidden" name="media_type" value="video">
 
   <label>Title:</label>
@@ -36,59 +7,82 @@
   <label>Description:</label>
   <textarea name="content"></textarea><br>
 
-  <div class="mode-container">
-    <div id="uploadBox" class="mode-box">
-      <label>
-        <input type="radio" name="display_mode" value="upload" id="uploadRadio" checked>
-        Upload video
-      </label>
-      <div id="uploadSection">
-        <label>Upload Video:</label>
-        <input type="file" name="media_file" accept="video/*"><br>
-      </div>
-    </div>
-
-    <div id="embedBox" class="mode-box faded">
-      <label>
-        <input type="radio" name="display_mode" value="embed" id="embedRadio">
-        Embed video
-      </label>
-      <div id="embedSection">
-        <label>Embed URL or iframe code:</label>
-        <textarea name="media_url" placeholder="YouTube URL or iframe code"></textarea><br>
-      </div>
-    </div>
+  <label>Choose how to add video:</label>
+  <div class="mode-box-container">
+    <label class="mode-box active">
+      <input type="radio" name="display_mode" value="upload" checked onchange="toggleSections()">
+      <strong>📤 Upload</strong><br>
+      <label>Upload Video:</label>
+      <input type="file" name="media_file" accept="video/*"><br>
+    </label>
+    <label class="mode-box">
+      <input type="radio" name="display_mode" value="embed" onchange="toggleSections()">
+      <strong>🌐 Embed</strong><br>
+      URL or embed code
+      <input name="media_url">
+    </label>
   </div>
 
-  <label>Thumbnail (optional):</label>
+  <div id="uploadSection">
+ 
+  </div>
+
+  <div id="embedSection" style="display:none;">
+    <label>Embed URL or iframe code:</label>
+    <br>
+  </div>
+
+  <label>Thumbnail:</label>
   <input type="file" name="thumbnail" accept="image/*"><br>
 
   <button type="submit">Create Video Post</button>
 </form>
 
-<script>
-  const uploadRadio = document.getElementById('uploadRadio');
-  const embedRadio = document.getElementById('embedRadio');
-  const uploadBox = document.getElementById('uploadBox');
-  const embedBox = document.getElementById('embedBox');
-
-  function toggleModeBoxes() {
-    if (uploadRadio.checked) {
-      uploadBox.classList.add('active');
-      uploadBox.classList.remove('faded');
-      embedBox.classList.remove('active');
-      embedBox.classList.add('faded');
-    } else {
-      embedBox.classList.add('active');
-      embedBox.classList.remove('faded');
-      uploadBox.classList.remove('active');
-      uploadBox.classList.add('faded');
-    }
+<style>
+  .mode-box-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
   }
 
-  uploadRadio.addEventListener('change', toggleModeBoxes);
-  embedRadio.addEventListener('change', toggleModeBoxes);
+  .mode-box {
+    flex: 1;
+    border: 2px solid #aaa;
+    border-radius: 10px;
+    padding: 10px;
+    cursor: pointer;
+    opacity: 0.5;
+    text-align: center;
+    transition: all 0.2s ease;
+    background-color: #f9f9f9;
+  }
 
-  // Run on page load
-  toggleModeBoxes();
+  .mode-box input[type="radio"] {
+    display: none;
+  }
+
+  .mode-box.active {
+    opacity: 1;
+    border-color: #333;
+    background-color: #e0e0e0;
+  }
+</style>
+
+<script>
+  const modeBoxes = document.querySelectorAll('.mode-box');
+
+  function toggleSections() {
+    const selected = document.querySelector('input[name="display_mode"]:checked').value;
+
+    document.getElementById('uploadSection').style.display = (selected === 'upload') ? 'block' : 'none';
+    document.getElementById('embedSection').style.display = (selected === 'embed') ? 'block' : 'none';
+
+    modeBoxes.forEach(box => {
+      const input = box.querySelector('input[type="radio"]');
+      box.classList.toggle('active', input.checked);
+    });
+  }
+
+  // Init on page load
+  window.addEventListener('DOMContentLoaded', toggleSections);
 </script>

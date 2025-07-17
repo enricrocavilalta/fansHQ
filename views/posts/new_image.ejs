@@ -2,8 +2,8 @@
 <form action="/posts" method="POST" enctype="multipart/form-data">
   <input type="hidden" name="media_type" value="image">
   <label for="title">Title:</label><input type="text" name="title"><br>
-  <input type="file" name="media_file" accept="image/*" required><br>
   <label for="title">Description:</label><textarea name="content"></textarea><br>
+  <input type="file" name="media_file" accept="image/*" required><br>
   <label for="title">Price:</label><input type="number" name="price" step="0.01"><br>
   <button type="submit">Upload</button>
 </form>
