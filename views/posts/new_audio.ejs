@@ -1,7 +1,73 @@
-<h1>Audio upload</h1>
-<form action="/posts" method="POST" enctype="multipart/form-data">
+<h1>Create Audio Post</h1>
+
+<form action="/posts/new/audio" method="POST" enctype="multipart/form-data">
   <input type="hidden" name="media_type" value="audio">
-  <input name="title" placeholder="Title"><br>
-  <input type="file" name="media_file" accept="audio/*" required><br><br>
-  <button type="submit">Post</button>
+  <input type="hidden" name="display_mode" id="display_mode" value="upload">
+
+  <label>Title:</label>
+  <input type="text" name="title"><br>
+
+  <label>Description:</label>
+  <textarea name="content"></textarea><br>
+
+  <label>Choose how to add audio:</label>
+  <div class="mode-selector">
+    <div class="mode-box selected" data-mode="upload">
+      <strong>📤 Upload</strong><br>
+      <input type="file" name="media_file" accept="audio/*">
+    </div>
+    <div class="mode-box" data-mode="embed">
+      <strong>🔗 Embed</strong><br>
+      URL or iframe code: <input name="media_url" >
+    </div>
+  </div>
+
+  <label>Thumbnail:</label>
+  <input type="file" name="thumbnail" accept="image/*"><br>
+
+  <button type="submit">Create Audio Post</button>
 </form>
+
+<style>
+  .mode-selector {
+    display: flex;
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+
+  .mode-box {
+    flex: 1;
+    padding: 1rem;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: all 0.2s ease;
+    background-color: #f9f9f9;
+  }
+
+  .mode-box.selected {
+    border-color: #888;
+    opacity: 1;
+    background-color: #eee;
+  }
+
+  .mode-box input[type="file"],
+  .mode-box textarea {
+    margin-top: 0.5rem;
+    width: 100%;
+  }
+</style>
+
+<script>
+  const modeBoxes = document.querySelectorAll('.mode-box');
+  const displayModeInput = document.getElementById('display_mode');
+
+  modeBoxes.forEach(box => {
+    box.addEventListener('click', () => {
+      modeBoxes.forEach(b => b.classList.remove('selected'));
+      box.classList.add('selected');
+      displayModeInput.value = box.dataset.mode;
+    });
+  });
+</script>
