@@ -6,6 +6,11 @@ const path = require('path');
 
 const db = require('../db');
 
+const isLoggedIn = require('../middleware/auth');
+
+const session = require('express-session');
+
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, 'public/uploads/'); // make sure this folder exists
@@ -24,12 +29,12 @@ const upload = multer({ storage });
 router.get('/', (req, res) => {
   req.db.query('SELECT * FROM posts ORDER BY created_at DESC', (err, results) => {
     if (err) return res.send('Database error');
-    res.render('posts/index', { posts: results });
+    res.render('index', { posts: results });
   });
 });
 
 // Show new post form
-router.get('/new', (req, res) => {
+router.get('/new', isLoggedIn, (req, res) => {
   res.render('posts/new');
 });
 
@@ -37,7 +42,7 @@ router.get('/new', (req, res) => {
 
 
 // Create a new post
-router.post('/', upload.fields([
+router.post('/', isLoggedIn, upload.fields([
   { name: 'media_file', maxCount: 1 },
   { name: 'thumbnail', maxCount: 1 }
 ]), async (req, res) => {
@@ -140,7 +145,7 @@ if (thumbnailFile) {
 module.exports = router;
 
 // Show edit form
-router.get('/:id/edit', (req, res) => {
+router.get('/:id/edit', isLoggedIn,(req, res) => {
   const id = req.params.id;
   req.db.query('SELECT * FROM posts WHERE id = ?', [id], (err, results) => {
     if (err || results.length === 0) return res.send('Post not found');
@@ -149,7 +154,7 @@ router.get('/:id/edit', (req, res) => {
 });
 
 // Handle edit submit
-router.post('/:id', (req, res) => {
+router.post('/:id',isLoggedIn, (req, res) => {
   const id = req.params.id;
   const { title, content, media_url, media_type, price } = req.body;
   req.db.query(
@@ -163,7 +168,7 @@ router.post('/:id', (req, res) => {
 });
 
 // Handle delete
-router.post('/:id/delete', (req, res) => {
+router.post('/:id/delete', isLoggedIn,(req, res) => {
   const id = req.params.id;
   req.db.query('DELETE FROM posts WHERE id = ?', [id], (err) => {
     if (err) return res.send('Delete failed');
@@ -172,7 +177,7 @@ router.post('/:id/delete', (req, res) => {
 });
 
 // Show form for each content type
-router.get('/new/:type', (req, res) => {
+router.get('/new/:type', isLoggedIn,(req, res) => {
   const type = req.params.type;
   const validTypes = ['text', 'image', 'video', 'audio', 'link', 'download', 'poll', 'product', 'tipjar', 'ama'];
 
