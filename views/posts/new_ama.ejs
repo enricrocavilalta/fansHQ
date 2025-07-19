@@ -1,4 +1,4 @@
-<%- include('partials/header') %>
+<%- include('../partials/header') %>
 
 <h1>Create an AMA (Ask Me Anything)</h1>
 <form action="/posts" method="POST" enctype="multipart/form-data">
@@ -9,8 +9,6 @@
 
   <label>Prompt:</label>
   <textarea name="content" required></textarea><br>
-
- 
 
   <button type="submit">Create AMA</button>
 </form>

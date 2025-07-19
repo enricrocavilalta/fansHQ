@@ -27,9 +27,9 @@ const upload = multer({ storage });
 
 // Show all posts
 router.get('/', (req, res) => {
-  req.db.query('SELECT * FROM posts ORDER BY created_at DESC', (err, results) => {
+  db.query("SELECT posts.*, SUBSTRING_INDEX(users.email, '@', 1) AS email_short FROM posts JOIN users ON users.id = posts.user_id ORDER BY posts.created_at DESC;", (err, results) => {
     if (err) return res.send('Database error');
-    res.render('index', { posts: results });
+    res.render('posts/index', { posts: results });
   });
 });
 
@@ -37,6 +37,41 @@ router.get('/', (req, res) => {
 router.get('/new', isLoggedIn, (req, res) => {
   res.render('posts/new');
 });
+
+router.get('/user/:userId', async (req, res) => {
+  const userId = parseInt(req.params.userId);
+  console.log('✅ Route triggered for userId:', userId);
+
+  try {
+    const [results] = await db.query(`
+      SELECT posts.*, users.email
+      FROM posts
+      JOIN users ON users.id = posts.user_id
+      WHERE posts.user_id = ?
+      ORDER BY posts.created_at DESC
+    `, [userId]);
+
+    console.log('📦 Posts retrieved:', results.length);
+    console.log('🧾 Sample post:', results[0]);
+
+    if (results.length === 0) {
+      return res.send('🕳️ This user has no posts.');
+    }
+
+    res.render('posts/index', { posts: results });
+
+  } catch (err) {
+    console.error('❌ SQL Error:', err.message);
+    res.status(500).send('Database error: ' + err.message);
+  }
+});
+
+
+
+
+
+
+
 
 
 
@@ -48,6 +83,7 @@ router.post('/', isLoggedIn, upload.fields([
 ]), async (req, res) => {
   console.log('📨 req.body:', req.body);
  const {
+  user_id,
   title,
   content,
   media_type,
@@ -102,19 +138,24 @@ if (thumbnailFile) {
   console.log('🧠 thumbnail_url:', final_thumbnail_url);
   console.log('🧠 req.files:', req.files);
 
+  const userId = req.session.userId;
+
+  console.log('Session userId:', req.session.userId);
+
   try {
+    
+
     await db.execute(
   `INSERT INTO posts (
-    title, content, media_type, media_url, display_text,
+    user_id, title, content, media_type, media_url, display_text,
     thumbnail_url, display_mode, price,
     option_1, option_2, option_3, option_4, option_5,
     option_6, option_7, option_8, option_9, option_10,
     votes_1, votes_2, votes_3, votes_4, votes_5,
     votes_6, votes_7, votes_8, votes_9, votes_10
-  ) VALUES (
-    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
-  )`,
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   [
+    userId,
     title || null,
     content || null,
     media_type || null,
@@ -147,7 +188,7 @@ module.exports = router;
 // Show edit form
 router.get('/:id/edit', isLoggedIn,(req, res) => {
   const id = req.params.id;
-  req.db.query('SELECT * FROM posts WHERE id = ?', [id], (err, results) => {
+  db.query('SELECT * FROM posts WHERE id = ?', [id], (err, results) => {
     if (err || results.length === 0) return res.send('Post not found');
     res.render('posts/edit', { post: results[0] });
   });
@@ -157,7 +198,7 @@ router.get('/:id/edit', isLoggedIn,(req, res) => {
 router.post('/:id',isLoggedIn, (req, res) => {
   const id = req.params.id;
   const { title, content, media_url, media_type, price } = req.body;
-  req.db.query(
+  db.query(
     'UPDATE posts SET title = ?, content = ?, media_url = ?, media_type = ?, price = ? WHERE id = ?',
     [title, content, media_url, media_type, price, id],
     (err) => {
@@ -170,7 +211,7 @@ router.post('/:id',isLoggedIn, (req, res) => {
 // Handle delete
 router.post('/:id/delete', isLoggedIn,(req, res) => {
   const id = req.params.id;
-  req.db.query('DELETE FROM posts WHERE id = ?', [id], (err) => {
+  db.query('DELETE FROM posts WHERE id = ?', [id], (err) => {
     if (err) return res.send('Delete failed');
     res.redirect('/posts');
   });

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FansHQ Feed</title>
+  <link rel="stylesheet" href="/css/output.css" />
+</head>
+<body class="bg-gray-950 text-white font-sans">
+
+  <header class="bg-gray-900 p-4 shadow">
+    <div class="max-w-4xl mx-auto flex justify-between items-center">
+      <h1 class="text-xl font-bold">🔥 FansHQ</h1>
+      <nav>
+        <a href="/account" class="text-gray-300 hover:text-white">Account</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-2xl mx-auto p-4 space-y-6">
+
+    <!-- 📝 Post creation menu -->
+    <section class="bg-gray-900 p-4 rounded-xl shadow space-y-2">
+      <h2 class="text-lg font-semibold mb-2">Create a post</h2>
+      <ul class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-sm">
+        <li><a href="/posts/new/text" class="block bg-gray-800 hover:bg-gray-700 p-2 rounded text-white">📝 Text</a></li>
+        <li><a href="/posts/new/image" class="block bg-gray-800 hover:bg-gray-700 p-2 rounded text-white">🖼️ Image</a></li>
+        <li><a href="/posts/new/video" class="block bg-gray-800 hover:bg-gray-700 p-2 rounded text-white">🎥 Video</a></li>
+        <li><a href="/posts/new/audio" class="block bg-gray-800 hover:bg-gray-700 p-2 rounded text-white">🎧 Audio</a></li>
+        <li><a href="/posts/new/link" class="block bg-gray-800 hover:bg-gray-700 p-2 rounded text-white">🔗 Link</a></li>
+        <li><a href="/posts/new/download" class="block bg-gray-800 hover:bg-gray-700 p-2 rounded text-white">📥 Download</a></li>
+        <li><a href="/posts/new/poll" class="block bg-gray-800 hover:bg-gray-700 p-2 rounded text-white">📊 Poll</a></li>
+        <li><a href="/posts/new/product" class="block bg-gray-800 hover:bg-gray-700 p-2 rounded text-white">🛒 Product</a></li>
+        <li><a href="/posts/new/tipjar" class="block bg-gray-800 hover:bg-gray-700 p-2 rounded text-white">🪙 Tip Jar</a></li>
+        <li><a href="/posts/new/ama" class="block bg-gray-800 hover:bg-gray-700 p-2 rounded text-white">🙋 AMA</a></li>
+      </ul>
+    </section>
+
+    <!-- 📦 Feed posts -->
+    <% posts.forEach(post => { %>
+      <div class="bg-gray-900 rounded-2xl p-5 shadow-md hover:shadow-lg transition duration-200">
+
+        <div class="text-sm text-gray-400 mb-1">
+          By <a href="/posts/user/<%= post.user_id %>" class="text-blue-400 hover:underline">
+            <%= post.email.split('@')[0] %>
+          </a>
+          <span class="text-xs">• <%= new Date(post.created_at).toLocaleDateString() %></span>
+        </div>
+
+        <% if (post.title) { %>
+          <h3 class="text-xl font-semibold mb-2"><%= post.title %></h3>
+        <% } %>
+
+        <% if (post.media_type === 'text') { %>
+          <p class="text-gray-300 whitespace-pre-line"><%= post.content %></p>
+        <% } %>
+
+        <% if (post.media_type === 'image') { %>
+          <img src="<%= post.media_url %>" alt="Post image" class="rounded-lg mt-2">
+        <% } %>
+
+        <% if (post.media_type === 'video') { %>
+          <video controls class="w-full mt-2 rounded">
+            <source src="<%= post.media_url %>" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        <% } %>
+
+        <% if (post.price > 0) { %>
+          <div class="mt-4">
+            <span class="inline-block bg-yellow-500 text-black text-xs font-bold px-3 py-1 rounded-full">
+              Paywalled — €<%= post.price %>
+            </span>
+          </div>
+        <% } %>
+      </div>
+    <% }) %>
+  </main>
+
+</body>
+</html>

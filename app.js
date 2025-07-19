@@ -102,10 +102,13 @@ app.get('/', (req, res) => {
       return res.status(500).send('Database error');
     }
 
-    res.render('index', { posts: results });
+    res.render('posts/index', { posts: results });
   });
 });
 
+app.get('/test', (req, res) => {
+  res.render('test');
+});
 
 
 // Start server
