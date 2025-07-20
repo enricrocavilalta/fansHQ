@@ -26,12 +26,11 @@ const upload = multer({ storage });
 
 
 // Show all posts
-router.get('/', (req, res) => {
-  db.query("SELECT posts.*, SUBSTRING_INDEX(users.email, '@', 1) AS email_short FROM posts JOIN users ON users.id = posts.user_id ORDER BY posts.created_at DESC;", (err, results) => {
-    if (err) return res.send('Database error');
+router.get('/', async(req, res) => {
+  const [results] = await db.query("SELECT posts.*, users.email FROM posts JOIN users ON users.id = posts.user_id ORDER BY posts.created_at DESC;"); 
     res.render('posts/index', { posts: results });
   });
-});
+
 
 // Show new post form
 router.get('/new', isLoggedIn, (req, res) => {
@@ -186,36 +185,66 @@ if (thumbnailFile) {
 module.exports = router;
 
 // Show edit form
-router.get('/:id/edit', isLoggedIn,(req, res) => {
+router.get('/:id/edit', isLoggedIn, async (req, res) => {
   const id = req.params.id;
-  db.query('SELECT * FROM posts WHERE id = ?', [id], (err, results) => {
-    if (err || results.length === 0) return res.send('Post not found');
+
+  try {
+    const [results] = await db.query('SELECT * FROM posts WHERE id = ?', [id]);
+
+    if (results.length === 0) {
+      return res.send('Post not found');
+    }
+
     res.render('posts/edit', { post: results[0] });
-  });
+  } catch (err) {
+    console.error('❌ Error loading post:', err.message);
+    res.status(500).send('Database error');
+  }
 });
+
+
 
 // Handle edit submit
-router.post('/:id',isLoggedIn, (req, res) => {
+router.post('/:id', isLoggedIn, async (req, res) => {
   const id = req.params.id;
   const { title, content, media_url, media_type, price } = req.body;
-  db.query(
-    'UPDATE posts SET title = ?, content = ?, media_url = ?, media_type = ?, price = ? WHERE id = ?',
-    [title, content, media_url, media_type, price, id],
-    (err) => {
-      if (err) return res.send('Update failed');
-      res.redirect('/posts');
+
+  try {
+    const [result] = await db.query(
+      'UPDATE posts SET title = ?, content = ?, media_url = ?, media_type = ?, price = ? WHERE id = ?',
+      [title, content, media_url, media_type, price, id]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).send('Post not found or not updated');
     }
-  );
+
+    res.redirect('/posts');
+  } catch (err) {
+    console.error('❌ Update error:', err.message);
+    res.status(500).send('Update failed');
+  }
 });
 
+
 // Handle delete
-router.post('/:id/delete', isLoggedIn,(req, res) => {
+router.post('/:id/delete', isLoggedIn, async (req, res) => {
   const id = req.params.id;
-  db.query('DELETE FROM posts WHERE id = ?', [id], (err) => {
-    if (err) return res.send('Delete failed');
+
+  try {
+    const [result] = await db.query('DELETE FROM posts WHERE id = ?', [id]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).send('Post not found or already deleted');
+    }
+
     res.redirect('/posts');
-  });
+  } catch (err) {
+    console.error('❌ Delete error:', err.message);
+    res.status(500).send('Delete failed');
+  }
 });
+
 
 // Show form for each content type
 router.get('/new/:type', isLoggedIn,(req, res) => {

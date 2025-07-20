@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
@@ -12,7 +13,7 @@
     <div class="max-w-4xl mx-auto flex justify-between items-center">
       <h1 class="text-xl font-bold">🔥 FansHQ</h1>
       <nav>
-        <a href="/account" class="text-gray-300 hover:text-white">Account</a>
+      <!--  <a href="/account" class="text-gray-300 hover:text-white">Account</a>-->
       </nav>
     </div>
   </header>
@@ -40,9 +41,14 @@
     <% posts.forEach(post => { %>
       <div class="bg-gray-900 rounded-2xl p-5 shadow-md hover:shadow-lg transition duration-200">
 
-        <div class="text-sm text-gray-400 mb-1">
-          By <a href="/posts/user/<%= post.user_id %>" class="text-blue-400 hover:underline">
-            <%= post.email.split('@')[0] %>
+
+       By <a href="/posts/user/<%= post.user_id %>">
+            <%= post.username || (post.email ? post.email.split('@')[0] : 'Unknown') %>
+          </a>
+
+
+
+
           </a>
           <span class="text-xs">• <%= new Date(post.created_at).toLocaleDateString() %></span>
         </div>
