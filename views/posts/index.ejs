@@ -9,9 +9,10 @@
 }
 
 .post-grid-container {
-  padding: 1rem;
-  max-width: 1200px;
   margin: 0 auto;
+  width: 100%;
+  max-width: 100%;
+  padding: 1rem;
 }
 
 .post-grid-container h2 {
@@ -20,7 +21,7 @@
 
 .post-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(var(--columns, 1), minmax(0, 1fr)); /* 1 column default */
   gap: 1rem;
 }
 
@@ -30,6 +31,10 @@
   padding: 1rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   transition: background-color 0.2s ease;
+  overflow: visible; /* or remove if not needed */
+  min-width: 0;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .post-card:hover {
@@ -95,7 +100,7 @@
   background-color: hsl(30, 50%, 10%);
 }
 .post-card[data-media="ama"] {
-  border-top: 4px solid hsl(0, 0%, 100%);
+  border-top: 4px solid hsl(0, 0%, 90%);
   background-color: hsl(0, 0%, 10%);
 }
 .post-card[data-media="tipjar"] {
@@ -106,15 +111,37 @@
 
 <!-- Posts Grid -->
 <section class="post-grid-container">
-  <h2>Latest Posts</h2>
+  <h2 style="text-align:center;color:#f0f0f0;">Latest posts</h2>
 
   <div class="post-grid">
     <% posts.forEach(post => { %>
+      
       <div class="post-card" data-media="<%= post.media_type %>">
-        <h3><%= post.title || 'Untitled' %></h3>
-        <p><%= post.content ? post.content.slice(0, 100) : 'No content' %>...</p>
+
+        <% if (post.media_url) { %>
+          <% if (post.media_type === 'image') { %>
+            <img src="<%= post.media_url %>" alt="Image" class="w-full rounded mt-2" />
+          <% } else if (post.media_type === 'video') { %>
+            <video controls class="w-full rounded mt-2">
+              <source src="<%= post.media_url %>" type="video/mp4">
+            </video>
+          <% } else if (post.media_type === 'audio') { %>
+            <audio controls class="w-full mt-2">
+              <source src="<%= post.media_url %>" type="audio/mpeg">
+            </audio>
+          <% } %>
+        <% } %>
+
+        <% if (post.title) { %>
+          <h3><%= post.title %></h3>
+        <% } %>
+
+        <% if (post.content) { %>
+          <p><%= post.content.slice(0, 100) %>...</p>
+        <% } %>
+
         <div class="author-info">
-          By <a href="/author/<%= post.user_id %>">
+          By <a href="/by/<%= post.user_id %>">
             <%= post.email ? post.email.split('@')[0] : 'unknown' %>
           </a>
           · <%= new Date(post.created_at).toLocaleDateString() %>
@@ -123,3 +150,12 @@
     <% }); %>
   </div>
 </section>
+
+<script>
+  const selector = document.getElementById('columnSelector');
+  const grid = document.querySelector('.post-grid');
+
+  selector.addEventListener('change', (e) => {
+    grid.style.setProperty('--columns', e.target.value);
+  });
+</script>

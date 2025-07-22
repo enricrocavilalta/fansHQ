@@ -37,7 +37,7 @@ router.get('/new', isLoggedIn, (req, res) => {
   res.render('posts/new');
 });
 
-router.get('/user/:userId', async (req, res) => {
+router.get('/by/:userId', async (req, res) => {
   const userId = parseInt(req.params.userId);
   console.log('✅ Route triggered for userId:', userId);
 
