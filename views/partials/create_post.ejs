@@ -1,0 +1,36 @@
+<style>
+  .create-a-post {
+    display: flex;
+    justify-content: space-between; /* even spacing */
+    gap: 0.5rem;
+    min-width: 5%; /* optional: prevents cramming */
+    overflow-x: auto;
+    background-color: #111; /* black background */
+    padding: 1rem;
+  }
+
+  .create-a-post a {
+   flex: 1;
+   text-align: center;
+   padding: 0.5rem;
+   background-color: #2d2d2d;
+   color: white;
+   border-radius: 8px;
+   text-decoration: none;
+   transition: background-color 0.2s ease;
+  }
+
+</style>
+
+<div class="create-a-post">
+  <a href="/posts/new/text" style="background-color:#000020; color:white !important;">Text</a>
+  <a href="/posts/new/image" style="background-color:#202000;">Image</a>
+  <a href="/posts/new/video" style="background-color:#200000;"> Video</a>
+  <a href="/posts/new/audio" style="background-color:#002000;">Audio</a>
+  <a href="/posts/new/link" style="background-color:#002020;">Link</a>
+  <a href="/posts/new/download" style="background-color:#200020;">Download</a>
+  <a href="/posts/new/poll" style="background-color:#100020;">Poll</a>
+  <a href="/posts/new/product" style="background-color:#201000;">Product</a>
+  <a href="/posts/new/tipjar" style="background-color:#181818;">Tip Jar</a>
+  <a href="/posts/new/ama" style="background-color:#202020;">AMA</a>
+</div>
