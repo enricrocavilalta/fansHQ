@@ -1,25 +1,73 @@
 <%- include('../partials/header') %>
 
-<form action="/posts" method="POST" enctype="multipart/form-data">
-  <input type="hidden" name="media_type" value="poll">
-  <label>Title:</label>
-  <input type="text" name="title"><br>
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/styles_typed_colors.css">
 
-  <label>Question:</label>
-  <textarea name="content" required></textarea><br>
+<form action="/posts" method="POST" enctype="multipart/form-data" class="content-form" data-media="poll">
+  <input type="hidden" name="media_type" value="poll">
   
-  <label>Options:</label><br>
+   <h1>Poll upload</h1>
+
+  <label>Title:</label><br>
+  <input type="text" name="title"><br><br>
+
+  <label>Question:</label><br>
+  <textarea name="content" required></textarea><br><br>
+  
    
 <% for (let i = 1; i <= 10; i++) { %>
-  Option <%= i %>: 
+  Option <%= i %>: <br>
   <input 
     type="text" 
     name="option_<%= i %>" 
-    placeholder="Option <%= i %>"
     <%= i <= 2 ? 'required' : '' %>
-  ><br>
+  ><br><br>
 <% } %>
 
-  
+  <br>
   <button type="submit">Create Poll</button>
 </form>
+
+<style>
+
+  .content-form[data-media="poll"] {
+  background-color: hsl(270, 50%, 10%);
+  border-top: 4px solid hsl(270, 90%, 50%);
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 0 8px hsl(270, 50%, 10%);
+  margin: 1rem 0;
+}
+
+.content-form[data-media="poll"] h1 {
+  color: hsl(270, 90%, 50%);
+}
+
+.content-form[data-media] input,
+.content-form[data-media] textarea {
+  width: 100%;
+  background-color: #222;
+  border: 1px solid #555;
+  color: #fff;
+  padding: 0.5rem;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.content-form[data-media] label {
+  display: block;
+  margin: 0.5rem 0 0.2rem;
+  color: #eee;
+  font-weight: bold;
+}
+
+.content-form[data-media] button {
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+</style>

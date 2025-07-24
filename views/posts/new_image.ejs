@@ -1,11 +1,93 @@
 <%- include('../partials/header') %>
 
-<h1>Image upload</h1>
-<form action="/posts" method="POST" enctype="multipart/form-data">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/styles_typed_colors.css">
+
+<form action="/posts" method="POST" enctype="multipart/form-data" class="content-form" data-media="image">
+  <h1>Image upload</h1>
   <input type="hidden" name="media_type" value="image">
   <label for="title">Title:</label><input type="text" name="title"><br>
   <label for="title">Description:</label><textarea name="content"></textarea><br>
+  Image:
   <input type="file" name="media_file" accept="image/*" required><br>
-  <label for="title">Price:</label><input type="number" name="price" step="0.01"><br>
-  <button type="submit">Upload</button>
+  <label for="title">Price:</label><input type="number" name="price" step="0.01" value="0"><br><br>
+  <button type="submit">Post image</button>
 </form>
+
+<style>
+
+body{
+  background-color: #000;
+  color: #f0f0f0;
+}
+
+.content-form[data-media="image"] {
+  background-color: hsl(60, 50%, 10%);
+  border-top: 4px solid hsl(60, 90%, 50%);
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 0 8px rgba(255, 255, 0, 0.1);
+  margin: 1rem 0;
+}
+
+.content-form[data-media="image"] label {
+  display: block;
+  margin: 0.5rem 0 0.2rem;
+  color: #eee;
+  font-weight: bold;
+}
+
+.content-form[data-media="image"] input,
+.content-form[data-media="image"] textarea {
+  width: 100%;
+  background-color: #222;
+  border: 1px solid #555;
+  color: #fff;
+  padding: 0.5rem;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.content-form[data-media="image"] button {
+  background-color: hsl(60, 90%, 40%);
+  color: #000;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.content-form[data-media="image"] button:hover {
+  background-color: hsl(60, 90%, 50%);
+}
+
+.content-form[data-media] input,
+.content-form[data-media] textarea {
+  width: 100%;
+  background-color: #222;
+  border: 1px solid #555;
+  color: #fff;
+  padding: 0.5rem;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.content-form[data-media] label {
+  display: block;
+  margin: 0.5rem 0 0.2rem;
+  color: #eee;
+  font-weight: bold;
+}
+
+.content-form[data-media] button {
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+</style>

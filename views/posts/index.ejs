@@ -1,4 +1,5 @@
 <link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/styles_typed_colors.css">
 <%- include('../partials/header') %>
 <%- include('../partials/create_post') %>
 <style>
@@ -12,7 +13,6 @@
   margin: 0 auto;
   width: 100%;
   max-width: 100%;
-  padding: 1rem;
 }
 
 .post-grid-container h2 {
@@ -67,46 +67,26 @@
   text-decoration: underline;
 }
 
-.post-card[data-media="text"] {
-  border-top: 4px solid hsl(240, 90%, 50%);
-  background-color: hsl(240, 50%, 10%);
+.post-card img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 8px;
 }
-.post-card[data-media="image"] {
-  border-top: 4px solid hsl(60, 90%, 50%);
-  background-color: hsl(60, 50%, 10%);
+
+.post-card video {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 8px;
 }
-.post-card[data-media="video"] {
-  border-top: 4px solid hsl(0, 90%, 50%);
-  background-color: hsl(0, 50%, 10%);
+
+.post-card audio {
+  width: 100%;
+  display: block;
+  margin-top: 0.5rem;
 }
-.post-card[data-media="audio"] {
-  border-top: 4px solid hsl(120, 90%, 50%);
-  background-color: hsl(120, 50%, 10%);
-}
-.post-card[data-media="link"] {
-  border-top: 4px solid hsl(180, 90%, 50%);
-  background-color: hsl(180, 50%, 10%);
-}
-.post-card[data-media="download"] {
-  border-top: 4px solid hsl(300, 90%, 50%);
-  background-color: hsl(300, 50%, 10%);
-}
-.post-card[data-media="poll"] {
-  border-top: 4px solid hsl(270, 90%, 50%);
-  background-color: hsl(270, 50%, 10%);
-}
-.post-card[data-media="product"] {
-  border-top: 4px solid hsl(30, 90%, 50%);
-  background-color: hsl(30, 50%, 10%);
-}
-.post-card[data-media="ama"] {
-  border-top: 4px solid hsl(0, 0%, 90%);
-  background-color: hsl(0, 0%, 10%);
-}
-.post-card[data-media="tipjar"] {
-  border-top: 4px solid hsl(0, 0%, 50%);
-  background-color: hsl(0, 0%, 5%);
-}
+
 </style>
 
 <!-- Posts Grid -->
@@ -115,22 +95,41 @@
 
   <div class="post-grid">
     <% posts.forEach(post => { %>
-      
+
       <div class="post-card" data-media="<%= post.media_type %>">
 
-        <% if (post.media_url) { %>
-          <% if (post.media_type === 'image') { %>
-            <img src="<%= post.media_url %>" alt="Image" class="w-full rounded mt-2" />
-          <% } else if (post.media_type === 'video') { %>
-            <video controls class="w-full rounded mt-2">
-              <source src="<%= post.media_url %>" type="video/mp4">
-            </video>
-          <% } else if (post.media_type === 'audio') { %>
-            <audio controls class="w-full mt-2">
-              <source src="<%= post.media_url %>" type="audio/mpeg">
-            </audio>
-          <% } %>
-        <% } %>
+     <% if (post.media_url) { %>
+  <% if (post.media_type === 'image') { %>
+    <img src="<%= post.media_url %>" alt="Image" class="w-full rounded mt-2" />
+  
+  <% } else if (post.media_type === 'video') { 
+    const isYoutube = post.media_url.includes('youtube.com/watch');
+    if (isYoutube) {
+      const videoId = post.media_url.split('v=')[1].split('&')[0]; %>
+      <div class="video-wrapper">
+        <iframe 
+          width="100%" 
+          height="315" 
+          src="https://www.youtube.com/embed/<%= videoId %>" 
+          frameborder="0" 
+          allowfullscreen 
+          class="w-full rounded mt-2">
+        </iframe>
+      </div>
+    <% } else { %>
+      <video controls class="w-full rounded mt-2">
+        <source src="<%= post.media_url %>" type="video/mp4">
+        Tu navegador no soporta este formato de vídeo.
+      </video>
+    <% } %>
+
+  <% } else if (post.media_type === 'audio') { %>
+    <audio controls class="w-full mt-2">
+      <source src="<%= post.media_url %>" type="audio/mpeg">
+    </audio>
+  <% } %>
+<% } %>
+
 
         <% if (post.title) { %>
           <h3><%= post.title %></h3>
@@ -140,12 +139,18 @@
           <p><%= post.content.slice(0, 100) %>...</p>
         <% } %>
 
-        <div class="author-info">
-          By <a href="/by/<%= post.user_id %>">
-            <%= post.email ? post.email.split('@')[0] : 'unknown' %>
-          </a>
-          · <%= new Date(post.created_at).toLocaleDateString() %>
-        </div>
+      <div class="author-info">
+        By
+        <% if (post.email) { %>
+        <a href="/posts/by/<%= post.user_id %>">
+          <%= post.email.split('@')[0] %>
+        </a>
+        <% } else { %>
+          unknown
+        <% } %>
+        · <%= new Date(post.created_at).toLocaleDateString() %>
+      </div>
+
       </div>
     <% }); %>
   </div>

@@ -1,10 +1,94 @@
 <%- include('../partials/header') %>
 
-<h2>Upload a Downloadable File</h2>
-<form action="/posts" method="POST" enctype="multipart/form-data">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/styles_typed_colors.css">
+
+<form action="/posts" method="POST" enctype="multipart/form-data" class="content-form" data-media="download">
+  <h1>Upload a Downloadable File</h1>
   <input type="hidden" name="media_type" value="download"><br>
-  <input type="text" name="title" placeholder="Title"><br>
+  Title:<br>
+  <input type="text" name="title"><br>
+  File:<br>
   <input type="file" name="media_file" required><br>
-  <input type="number" name="price" step="0.01" placeholder="Price (€)"><br>
-  <button type="submit">Upload</button>
+  price:<br>
+  <input type="number" name="price" step="0.01" value="0"><br><br>
+  <button type="submit">Post Download</button>
 </form>
+
+<style>
+
+.content-form[data-media="download"] {
+  background-color: hsl(300, 50%, 10%);
+  border-top: 4px solid hsl(300, 90%, 50%);
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 0 8px hsl(300, 50%, 10%);
+  margin: 1rem 0;
+}
+
+.content-form[data-media="download"] h1 {
+  color: hsl(300, 90%, 50%);
+}
+
+.content-form[data-media="download"] label {
+  display: block;
+  margin: 0.5rem 0 0.2rem;
+  color: #eee;
+  font-weight: bold;
+}
+
+.content-form[data-media="download"] input,
+.content-form[data-media="download"] textarea {
+  width: 100%;
+  background-color: #222;
+  border: 1px solid #555;
+  color: #fff;
+  padding: 0.5rem;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.content-form[data-media="download"] button {
+  background-color: hsl(300, 90%, 40%);
+  color: #000;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.content-form[data-media="download"] button:hover {
+  background-color: hsl(300, 90%, 50%);
+}
+
+.content-form[data-media] input,
+.content-form[data-media] textarea {
+  width: 100%;
+  background-color: #222;
+  border: 1px solid #555;
+  color: #fff;
+  padding: 0.5rem;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.content-form[data-media] label {
+  display: block;
+  margin: 0.5rem 0 0.2rem;
+  color: #eee;
+  font-weight: bold;
+}
+
+.content-form[data-media] button {
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+
+</style>

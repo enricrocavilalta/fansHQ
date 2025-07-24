@@ -1,0 +1,71 @@
+[data-media="text"] {
+  border-top: 4px solid hsl(240, 90%, 50%);
+  background-color: hsl(240, 50%, 10%);
+}
+[data-media="image"] {
+  border-top: 4px solid hsl(60, 90%, 50%);
+  background-color: hsl(60, 50%, 10%);
+}
+[data-media="video"] {
+  border-top: 4px solid hsl(0, 90%, 50%);
+  background-color: hsl(0, 50%, 10%);
+}
+[data-media="audio"] {
+  border-top: 4px solid hsl(120, 90%, 50%);
+  background-color: hsl(120, 50%, 10%);
+}
+[data-media="link"] {
+  border-top: 4px solid hsl(180, 90%, 50%);
+  background-color: hsl(180, 50%, 10%);
+}
+[data-media="download"] {
+  border-top: 4px solid hsl(300, 90%, 50%);
+  background-color: hsl(300, 50%, 10%);
+}
+[data-media="poll"] {
+  border-top: 4px solid hsl(270, 90%, 50%);
+  background-color: hsl(270, 50%, 10%);
+}
+[data-media="product"] {
+  border-top: 4px solid hsl(30, 90%, 50%);
+  background-color: hsl(30, 50%, 10%);
+}
+[data-media="ama"] {
+  border-top: 4px solid hsl(0, 0%, 90%);
+  background-color: hsl(0, 0%, 10%);
+}
+[data-media="tipjar"] {
+  border-top: 4px solid hsl(0, 0%, 50%);
+  background-color: hsl(0, 0%, 5%);
+}
+
+[data-media="text"] h1{
+  color:hsl(240, 90%, 50%);
+}
+[data-media="image"] h1{
+  color:hsl(60, 90%, 50%);
+}
+[data-media="video"] h1{
+  color:hsl(0, 90%, 50%);
+}
+[data-media="audio"] h1{
+  color:hsl(120, 90%, 50%);
+}
+[data-media="link"] h1{
+  color:hsl(180, 90%, 50%);
+}
+[data-media="download"] h1{
+  color:hsl(300, 90%, 50%);
+}
+[data-media="poll"] h1{
+  color:hsl(270, 90%, 50%);
+}
+[data-media="product"] h1{
+  color:hsl(30, 90%, 50%);
+}
+[data-media="ama"] h1{
+  color:hsl(0, 0%, 90%);
+}
+[data-media="tipjar"] h1{
+  color:hsl(0, 0%, 50%);
+}

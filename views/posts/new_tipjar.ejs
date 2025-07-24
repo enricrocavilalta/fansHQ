@@ -1,9 +1,14 @@
 <%- include('../partials/header') %>
 
-<h1>Create a Tip Jar</h1>
-<form action="/posts" method="POST" enctype="multipart/form-data">
-  <input type="hidden" name="media_type" value="tipjar">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/styles_typed_colors.css">
 
+
+<form action="/posts" method="POST" enctype="multipart/form-data" class="content-form" data-media="tipjar">
+  <input type="hidden" name="media_type" value="tipjar">
+  
+  <h1>Create a Tip Jar</h1>
+  
   <label>Title (optional):</label>
   <input type="text" name="title"><br>
 
@@ -18,3 +23,54 @@
   
   <button type="submit">Create Tip Jar</button>
 </form>
+
+<style>
+  .content-form[data-media] input,
+  .content-form[data-media] textarea {
+    width: 100%;
+    background-color: #222;
+    border: 1px solid #555;
+    color: #fff;
+    padding: 0.5rem;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+  }
+
+  .content-form[data-media] label {
+    display: block;
+    margin: 0.5rem 0 0.2rem;
+    color: #eee;
+    font-weight: bold;
+  }
+
+  .content-form[data-media] button {
+    font-weight: bold;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .content-form[data-media="tipjar"] {
+    background-color: hsl(0, 0%, 5%);
+    border-top: 4px solid hsl(0, 0%, 50%);
+    box-shadow: 0 0 8px hsl(0, 0%, 20%);
+    margin: 1rem 0;
+    padding: 1rem;
+    border-radius: 12px;
+  }
+
+  .content-form[data-media="tipjar"] h1 {
+    color: hsl(0, 0%, 70%);
+  }
+
+  .content-form[data-media="tipjar"] button {
+    background-color: hsl(0, 0%, 40%);
+    color: #fff;
+  }
+
+  .content-form[data-media="tipjar"] button:hover {
+    background-color: hsl(0, 0%, 50%);
+  }
+</style>

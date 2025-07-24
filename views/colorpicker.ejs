@@ -1,0 +1,117 @@
+<%- include('partials/header') %>
+<style>
+   body {
+    margin: 0;
+    background: #111;
+    color: #fff;
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+  }
+
+  #colorCanvas {
+    cursor: crosshair;
+    border: 2px solid #444;
+    border-radius: 8px;
+  }
+
+  .sliders {
+    margin-top: 1rem;
+    width: 300px;
+  }
+
+  .sliders label {
+    display: block;
+    margin-top: 0.5rem;
+  }
+
+  .preview {
+    margin-top: 1rem;
+    width: 300px;
+    height: 50px;
+    border-radius: 6px;
+    border: 2px solid #555;
+  }
+</style>
+
+<div id="colorpicker">
+ <!-- views/tools/colorpicker.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom HSL Color Picker</title>
+  
+</head>
+<body>
+
+ <canvas id="colorCanvas" width="300" height="300"></canvas>
+
+<div class="sliders">
+  <label>Saturation: <input type="range" id="saturationSlider" min="0" max="100" value="100"></label>
+  <label>Alpha: <input type="range" id="alphaSlider" min="0" max="100" value="100"></label>
+</div>
+
+<div class="preview" id="colorPreview"></div>
+
+
+  
+</body>
+</html>
+</div>
+
+<script>
+   const canvas = document.getElementById('colorCanvas');
+  const ctx = canvas.getContext('2d');
+  const satSlider = document.getElementById('saturationSlider');
+  const alphaSlider = document.getElementById('alphaSlider');
+  const preview = document.getElementById('colorPreview');
+
+  let saturation = 100;
+  let alpha = 1;
+
+  function drawHueLightnessPlane() {
+    const width = canvas.width;
+    const height = canvas.height;
+
+    for (let x = 0; x < width; x++) {
+      for (let y = 0; y < height; y++) {
+        const hue = x / width * 360;
+        const lightness = 100 - (y / height * 100);
+        ctx.fillStyle = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+        ctx.fillRect(x, y, 1, 1);
+      }
+    }
+  }
+
+  function updatePreviewColor(hue, lightness) {
+    const color = `hsla(${hue}, ${saturation}%, ${lightness}%, ${alpha})`;
+    preview.style.backgroundColor = color;
+    console.log('🎨 Picked color:', color);
+  }
+
+  canvas.addEventListener('click', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const hue = x / canvas.width * 360;
+    const lightness = 100 - (y / canvas.height * 100);
+
+    updatePreviewColor(hue, lightness);
+  });
+
+  satSlider.addEventListener('input', () => {
+    saturation = satSlider.value;
+    drawHueLightnessPlane();
+  });
+
+  alphaSlider.addEventListener('input', () => {
+    alpha = alphaSlider.value / 100;
+  });
+
+  drawHueLightnessPlane();
+</script>

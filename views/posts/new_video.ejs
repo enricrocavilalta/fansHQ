@@ -1,6 +1,9 @@
 <%- include('../partials/header') %>
 
-<form action="/posts" method="POST" enctype="multipart/form-data">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/styles_typed_colors.css">
+
+<form action="/posts" method="POST" enctype="multipart/form-data" class="content-form" data-media="video">
   <input type="hidden" name="media_type" value="video">
 
   <label>Title:</label>
@@ -42,32 +45,36 @@
 
 <style>
   .mode-box-container {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
 
-  .mode-box {
-    flex: 1;
-    border: 2px solid #aaa;
-    border-radius: 10px;
-    padding: 10px;
-    cursor: pointer;
-    opacity: 0.5;
-    text-align: center;
-    transition: all 0.2s ease;
-    background-color: #f9f9f9;
-  }
+.mode-box {
+  flex: 1;
+  border: 2px solid #aaa;
+  border-radius: 10px;
+  padding: 10px;
+  cursor: pointer;
+  opacity: 0.6;
+  text-align: center;
+  transition: all 0.2s ease;
+  background-color: #222; /* Gray background for unselected */
+  color: #eee;
+}
 
-  .mode-box input[type="radio"] {
-    display: none;
-  }
+.mode-box input[type="radio"] {
+  display: none;
+}
 
-  .mode-box.active {
-    opacity: 1;
-    border-color: #333;
-    background-color: #e0e0e0;
-  }
+.mode-box.active {
+  opacity: 1;
+  border-color: hsl(0, 90%, 50%);
+  background-color: hsl(0, 50%, 10%);
+  color: white;
+}
+
+
 </style>
 
 <script>

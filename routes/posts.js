@@ -27,7 +27,7 @@ const upload = multer({ storage });
 
 // Show all posts
 router.get('/', async(req, res) => {
-  const [results] = await db.query("SELECT posts.*, users.email FROM posts LEFT JOIN users ON users.id = posts.user_id ORDER BY posts.created_at DESC;"); 
+  const [results] = await db.query("SELECT posts.id AS post_id, posts.user_id, posts.title, posts.content, posts.media_type, posts.media_url, posts.created_at, users.email FROM posts LEFT JOIN users ON users.id = posts.user_id ORDER BY posts.created_at DESC;"); 
     res.render('posts/index', { posts: results });
   });
 

@@ -1,14 +1,78 @@
 <%- include('../partials/header') %>
 
-<h1>Create an AMA (Ask Me Anything)</h1>
-<form action="/posts" method="POST" enctype="multipart/form-data">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/styles_typed_colors.css">
+
+
+<form action="/posts" method="POST" enctype="multipart/form-data" class="content-form" data-media="ama">
+  <h1>Create an AMA (Ask Me Anything)</h1>
   <input type="hidden" name="media_type" value="ama">
 
-  <label>Title (optional):</label>
-  <input type="text" name="title"><br>
+  <label>Title:</label><br>
+  <input type="text" name="title"><br><br>
 
-  <label>Prompt:</label>
-  <textarea name="content" required></textarea><br>
+  <label>Prompt:</label><br>
+  <textarea name="content" required></textarea><br><br>
 
   <button type="submit">Create AMA</button>
 </form>
+
+<style>
+
+.post-card[data-media="ama"] {
+  border-top: 4px solid hsl(0, 0%, 90%);
+  background-color: hsl(0, 0%, 10%);
+}
+
+.content-form[data-media="ama"] {
+  background-color: hsl(0, 0%, 10%);
+  border-top: 4px solid hsl(0, 0%, 90%);
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
+  margin: 1rem 0;
+}
+
+.content-form[data-media="ama"] h1 {
+  color: hsl(0, 0%, 90%);
+}
+
+.content-form input,
+.content-form textarea {
+  width: 100%;
+  background-color: #222;
+  border: 1px solid #555;
+  color: #fff;
+  padding: 0.5rem;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.content-form[data-media] input,
+.content-form[data-media] textarea {
+  width: 100%;
+  background-color: #222;
+  border: 1px solid #555;
+  color: #fff;
+  padding: 0.5rem;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.content-form[data-media] label {
+  display: block;
+  margin: 0.5rem 0 0.2rem;
+  color: #eee;
+  font-weight: bold;
+}
+
+.content-form[data-media] button {
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+</style>

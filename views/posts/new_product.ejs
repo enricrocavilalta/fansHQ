@@ -1,11 +1,62 @@
 <%- include('../partials/header') %>
 
-<h2>Post a Product or Service</h2>
-<form action="/posts" method="POST" enctype="multipart/form-data">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/styles_typed_colors.css">
+
+<form action="/posts" method="POST" enctype="multipart/form-data" class="content-form" data-media="product">
+ <h1>Product/Service upload</h1>
   <input type="hidden" name="media_type" value="product">
-  <input type="text" name="title" placeholder="Product name"><br>
-  <textarea name="content" placeholder="Description"></textarea><br>
-  <input type="file" name="media_file" accept="image/*"><br>
-  <input type="number" name="price" step="0.01" placeholder="Price (€)" required><br>
+  Product: <br>
+  <input type="text" name="title"><br><br>
+  Description: <br>
+  <textarea name="content"></textarea><br><br>
+  Image: <br>
+  <input type="file" name="media_file" accept="image/*"><br><br>
+  Price: <br>
+  <input type="number" name="price" step="0.01" value="0" required><br><br>
   <button type="submit">Post</button>
 </form>
+
+<style>
+  
+.content-form[data-media="product"] {
+  background-color: hsl(30, 50%, 10%);
+  border-top: 4px solid hsl(30, 90%, 50%);
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 0 8px hsl(30, 50%, 10%);
+  margin: 1rem 0;
+}
+
+.content-form[data-media="product"] h1 {
+  color: hsl(30, 90%, 50%);
+}
+
+.content-form[data-media] input,
+.content-form[data-media] textarea {
+  width: 100%;
+  background-color: #222;
+  border: 1px solid #555;
+  color: #fff;
+  padding: 0.5rem;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.content-form[data-media] label {
+  display: block;
+  margin: 0.5rem 0 0.2rem;
+  color: #eee;
+  font-weight: bold;
+}
+
+.content-form[data-media] button {
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+</style>

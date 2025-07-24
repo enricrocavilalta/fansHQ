@@ -1,54 +1,64 @@
 <%- include('../partials/header') %>
-<h1>Create a Link Post</h1>
-<form action="/posts" method="POST" enctype="multipart/form-data">
+
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/styles_typed_colors.css">
+
+
+<form action="/posts" method="POST" enctype="multipart/form-data" class="content-form" data-media="link">
+  <h1>Create a Link</h1>
+  
   <input type="hidden" name="media_type" value="link">
 
   <label>Title:</label><br>
-  <input type="text" name="title"><br>
+  <input type="text" name="title"><br><br>
 
   <label>Description:</label><br>
-  <textarea name="content"></textarea><br>
+  <textarea name="content"></textarea><br><br>
 
-  <label>Link URL:</label><br>
-  <input type="url" name="media_url" required><br>
+  <label>URL:</label><br>
+  <input type="url" name="media_url" required><br><br>
 
-  <label>Price (optional):</label><br>
-  <input type="number" name="price" step="0.01" min="0"><br><br>
+  <label>Price:</label><br>
+  <input type="number" name="price" step="0.01" value="0"><br><br>
 
   <label>Choose link display mode:</label><br>
 
-  <label class="mode-box" id="boxText">
-    <input type="radio" name="display_mode" value="text" id="textRadio" checked>
-    <strong>📝 Text</strong><br>
-    <label>Display Text:</label><br>
-    <input type="text" name="display_text" placeholder="e.g. Read more">
-  </label>
-
-  <label class="mode-box" id="boxImage">
-    <input type="radio" name="display_mode" value="image" id="imageRadio">
-    <strong>🖼️ Image</strong><br>
-    <label>Thumbnail Image:</label><br>
-    <input type="file" name="thumbnail" accept="image/*">
-  </label>
-
+  <div class="mode-box-container">
+    <div style="flex:1;">
+      <label class="mode-box" id="boxText">
+        <input type="radio" name="display_mode" value="text" id="textRadio" checked>
+        <strong>Text📝</strong><br>
+        <label>Display Text:</label><br>
+        <input type="text" name="display_text" placeholder="e.g. Read more">
+      </label>
+    </div>
+    <div style="flex:1;">
+      <label class="mode-box" id="boxImage">
+        <input type="radio" name="display_mode" value="image" id="imageRadio">
+        <strong>Image🖼️</strong><br>
+        <label>Thumbnail Image:</label><br>
+        <input type="file" name="thumbnail" accept="image/*">
+      </label>
+    </div>
+  </div>
   <br><br>
   <button type="submit">Create Link Post</button>
 </form>
 
 <!-- Styling and Script -->
 <style>
-  .mode-box {
-    display: inline-block;
-    width: 45%;
-    vertical-align: top;
-    border: 2px solid #ccc;
-    border-radius: 10px;
-    padding: 15px;
-    margin: 10px;
-    opacity: 0.5;
-    cursor: pointer;
-    transition: opacity 0.3s, border-color 0.3s;
-  }
+.mode-box {
+  flex: 1 1 50%;
+  background-color: #222; /* Gray background for unselected */
+  border: 2px solid #aaa;
+  border-radius: 10px;
+  padding: 1rem;
+  cursor: pointer;
+  opacity: 0.6;
+  text-align: center;
+  transition: all 0.2s ease;
+  color: #eee;
+}
 
   .mode-box input[type="radio"] {
     display: none;
@@ -56,9 +66,57 @@
 
   .mode-box.selected {
     opacity: 1;
-    border-color: #333;
-    background-color: #f0f0f0;
+    border-color: hsl(180, 90%, 50%);;
+    background-color: hsl(180, 50%, 10%);
   }
+
+  .content-form[data-media="link"] {
+  background-color: hsl(180, 50%, 10%);
+  border-top: 4px solid hsl(180, 90%, 50%);
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 0 8px hsl(180, 50%, 10%);
+  margin: 1rem 0;
+}
+
+.content-form[data-media="link"] h1 {
+  color: hsl(180, 90%, 50%);
+}
+
+.content-form[data-media] input,
+.content-form[data-media] textarea {
+  width: 100%;
+  background-color: #222;
+  border: 1px solid #555;
+  color: #fff;
+  padding: 0.5rem;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.content-form[data-media] label {
+  display: block;
+  margin: 0.5rem 0 0.2rem;
+  color: #eee;
+  font-weight: bold;
+}
+
+.content-form[data-media] button {
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.mode-box-container {
+  display: flex;
+  gap: 1rem;
+  margin: 1rem 0;
+  flex-wrap: wrap; /* Optional, helps on small screens */
+}
+
 </style>
 
 <script>
