@@ -18,7 +18,7 @@
   border-top: 4px solid hsl(180, 90%, 50%);
   background-color: hsl(180, 50%, 10%);
 }
-[data-media="download"] {
+[data-media="file"] {
   border-top: 4px solid hsl(300, 90%, 50%);
   background-color: hsl(300, 50%, 10%);
 }
@@ -54,7 +54,7 @@
 [data-media="link"] h1{
   color:hsl(180, 90%, 50%);
 }
-[data-media="download"] h1{
+[data-media="file"] h1{
   color:hsl(300, 90%, 50%);
 }
 [data-media="poll"] h1{
@@ -69,3 +69,35 @@
 [data-media="tipjar"] h1{
   color:hsl(0, 0%, 50%);
 }
+
+a[data-media="text"]{
+  color:hsl(240, 90%, 50%);
+}
+a[data-media="image"]{
+  color:hsl(60, 90%, 50%);
+}
+a[data-media="video"]{
+  color:hsl(0, 90%, 50%);
+}
+a[data-media="audio"]{
+  color:hsl(120, 90%, 50%);
+}
+a[data-media="link"]{
+  color:hsl(180, 90%, 50%);
+}
+a[data-media="file"]{
+  color:hsl(300, 90%, 50%);
+}
+a[data-media="poll"]{
+  color:hsl(270, 90%, 50%);
+}
+a[data-media="product"]{
+  color:hsl(30, 90%, 50%);
+}
+a[data-media="ama"]{
+  color:hsl(0, 0%, 90%);
+}
+a[data-media="tipjar"]{
+  color:hsl(0, 0%, 50%);
+}
+

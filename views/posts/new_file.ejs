@@ -3,9 +3,9 @@
 <link rel="stylesheet" href="/styles.css">
 <link rel="stylesheet" href="/styles_typed_colors.css">
 
-<form action="/posts" method="POST" enctype="multipart/form-data" class="content-form" data-media="download">
+<form action="/posts" method="POST" enctype="multipart/form-data" class="content-form" data-media="file">
   <h1>Upload a Downloadable File</h1>
-  <input type="hidden" name="media_type" value="download"><br>
+  <input type="hidden" name="media_type" value="file"><br>
   Title:<br>
   <input type="text" name="title"><br>
   File:<br>
@@ -81,7 +81,9 @@
   font-weight: bold;
 }
 
-.content-form[data-media] button {
+.content-form[data-media="text"] button {
+  background-color: hsl(300, 90%, 50%);
+  color: #fff;
   font-weight: bold;
   padding: 0.5rem 1rem;
   border: none;
@@ -89,6 +91,11 @@
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
+
+.content-form[data-media="text"] button:hover {
+  background-color: hsl(300, 90%, 60%);
+}
+
 
 
 </style>
