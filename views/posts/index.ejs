@@ -87,6 +87,33 @@
   margin-top: 0.5rem;
 }
 
+.latest-posts-header {
+  display: flex;
+  justify-content: center;  /* centers horizontally */
+  align-items: center;      /* centers vertically */
+}
+
+.latest-posts-title {
+  display: inline-flex;
+  align-items: center; /* keeps text & dropdown aligned */
+  gap: 8px;
+  margin: 0;
+}
+
+.latest-posts-title select {
+  background-color: #1e1e1e; /* dark background */
+  color: #fff;              /* white text */
+  border: 1px solid #444;   /* subtle border */
+  border-radius: 4px;
+  padding: 4px 6px;
+}
+
+.latest-posts-title select:focus {
+  outline: none;
+  border-color: #888; /* lighter on focus */
+}
+
+
 </style>
 
 <head>
@@ -97,7 +124,20 @@
 
 <!-- Posts Grid -->
 <section class="post-grid-container">
-  <h2 style="text-align:center;color:#f0f0f0;">Latest posts</h2>
+
+
+<div class="latest-posts-header">
+  <h2 class="latest-posts-title">
+    Latest Posts
+    <select id="columnSelector">
+      <option value="1">1 Column</option>
+      <option value="2">2 Columns</option>
+      <option value="3">3 Columns</option>
+      <option value="4">4 Columns</option>
+    </select>
+  </h2>
+</div>
+
 
   <div class="post-grid">
 <% posts.forEach(post => { %>
