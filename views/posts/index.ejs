@@ -113,6 +113,13 @@
   border-color: #888; /* lighter on focus */
 }
 
+.post-grid {
+  background-color: #101010;  /* slightly lighter than background */
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  margin-top: 16px;
+}
 
 </style>
 
@@ -125,6 +132,7 @@
 <!-- Posts Grid -->
 <section class="post-grid-container">
 
+<div class="post-grid">
 
 <div class="latest-posts-header">
   <h2 class="latest-posts-title">
@@ -139,7 +147,7 @@
 </div>
 
 
-  <div class="post-grid">
+  
 <% posts.forEach(post => { %>
   <div class="post-card" data-media="<%= post.media_type %>">
 
