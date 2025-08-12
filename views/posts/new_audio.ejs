@@ -8,11 +8,7 @@
   <input type="hidden" name="display_mode" id="display_mode" value="upload">
 
  <h1>Audio upload</h1>
-  <label>Title:</label><br>
-  <input type="text" name="title"><br><br>
 
-  <label>Description:</label><br>
-  <textarea name="content"></textarea><br><br>
 
   <label>Choose how to add audio:</label>
   <div class="mode-selector">
@@ -28,6 +24,12 @@
 
   <label>Thumbnail:</label><br>
   <input type="file" name="thumbnail" accept="image/*"><br><br>
+
+  <label>Title:</label><br>
+  <input type="text" name="title"><br><br>
+
+  <label>Description:</label><br>
+  <textarea name="content"></textarea><br><br>
 
   <button type="submit">Create Audio Post</button>
 
@@ -72,7 +74,7 @@
   border-radius: 12px;
   box-shadow: 0 0 8px rgba(0, 255, 0, 0.1);
   margin: 1rem 0;
-  
+
 }
 
 .content-form[data-media="audio"] h1 {
@@ -98,6 +100,7 @@
 }
 
 .content-form[data-media] button {
+  background-color: hsl(120, 90%, 50%);
   font-weight: bold;
   padding: 0.5rem 1rem;
   border: none;
