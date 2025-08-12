@@ -94,66 +94,113 @@
   <h2 style="text-align:center;color:#f0f0f0;">Latest posts</h2>
 
   <div class="post-grid">
-    <% posts.forEach(post => { %>
+<% posts.forEach(post => { %>
+  <div class="post-card" data-media="<%= post.media_type %>">
 
-      <div class="post-card" data-media="<%= post.media_type %>">
+    <% if (post.media_type === 'text') { %>
+      <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+      <% if (post.content) { %><p><%= post.content %></p><% } %>
 
-     <% if (post.media_url) { %>
-  <% if (post.media_type === 'image') { %>
-    <img src="<%= post.media_url %>" alt="Image" class="w-full rounded mt-2" />
-  
-  <% } else if (post.media_type === 'video') { 
-    const isYoutube = post.media_url.includes('youtube.com/watch');
-    if (isYoutube) {
-      const videoId = post.media_url.split('v=')[1].split('&')[0]; %>
-      <div class="video-wrapper">
-        <iframe 
-          width="100%" 
-          height="315" 
-          src="https://www.youtube.com/embed/<%= videoId %>" 
-          frameborder="0" 
-          allowfullscreen 
-          class="w-full rounded mt-2">
-        </iframe>
-      </div>
+    <% } else if (post.media_type === 'image') { %>
+      <% if (post.media_url) { %>
+        <img src="<%= post.media_url %>" alt="" class="w-full rounded mt-2" />
+      <% } %>
+      <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+      <% if (post.content) { %><p><%= post.content %></p><% } %>
+
+    <% } else if (post.media_type === 'video') { %>
+      <% if (post.media_url) { %>
+        <video controls class="w-full rounded mt-2">
+          <source src="<%= post.media_url %>">
+        </video>
+      <% } %>
+      <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+      <% if (post.content) { %><p><%= post.content %></p><% } %>
+
+    <% } else if (post.media_type === 'audio') { %>
+      <% if (post.media_url) { %>
+        <audio controls class="w-full mt-2">
+          <source src="<%= post.media_url %>">
+        </audio>
+      <% } %>
+      <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+      <% if (post.content) { %><p><%= post.content %></p><% } %>
+
+    <% } else if (post.media_type === 'pdf') { %>
+      <% if (post.media_url) { %>
+        <object data="<%= post.media_url %>" type="application/pdf" class="w-full mt-2 rounded" style="height:70vh;">
+          <p>PDF preview unavailable. <a href="<%= post.media_url %>" download>Download PDF</a></p>
+        </object>
+        <div class="mt-2"><a href="<%= post.media_url %>" download class="underline">Download PDF</a></div>
+      <% } %>
+      <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+      <% if (post.content) { %><p><%= post.content %></p><% } %>
+
+    <% } else if (post.media_type === 'download') { %>
+      <% if (post.media_url) { %>
+        <a href="<%= post.media_url %>" download="<%= post.title || 'download' %>" class="underline mt-2 inline-block">
+          ⬇ Download <%= post.title || 'file' %>
+        </a>
+      <% } %>
+      <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+      <% if (post.content) { %><p><%= post.content %></p><% } %>
+
+    <% } else if (post.media_type === 'link') { %>
+      <% if (post.media_url) { %>
+        <a href="<%= post.media_url %>" target="_blank" rel="noopener" class="underline mt-2 inline-block">
+          🔗 <%= post.title || 'View link' %>
+        </a>
+      <% } %>
+      <% if (!post.media_url && post.title) { %><h3><%= post.title %></h3><% } %>
+      <% if (post.content) { %><p><%= post.content %></p><% } %>
+
+    <% } else if (post.media_type === 'embed') { %>
+      <% if (post.media_url) { %>
+        <div class="video-wrapper mt-2">
+          <iframe src="<%= post.media_url %>" class="w-full rounded" frameborder="0" allowfullscreen></iframe>
+        </div>
+      <% } %>
+      <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+      <% if (post.content) { %><p><%= post.content %></p><% } %>
+
+    <% } else if (post.media_type === 'poll') { %>
+      <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+      <% if (post.content) { %><p><%= post.content %></p><% } %>
+      <!-- Render simple poll placeholder; replace with real options -->
+      <div class="mt-2">[Poll options here]</div>
+
+    <% } else if (post.media_type === 'product') { %>
+      <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+      <% if (post.content) { %><p><%= post.content %></p><% } %>
+      <% if (post.media_url) { %>
+        <a href="<%= post.media_url %>" target="_blank" rel="noopener" class="underline mt-2 inline-block">
+          View product
+        </a>
+      <% } %>
+
     <% } else { %>
-      <video controls class="w-full rounded mt-2">
-        <source src="<%= post.media_url %>" type="video/mp4">
-        Tu navegador no soporta este formato de vídeo.
-      </video>
+      <!-- Fallback for unknown type -->
+      <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+      <% if (post.content) { %><p><%= post.content %></p><% } %>
+      <% if (post.media_url) { %>
+        <a href="<%= post.media_url %>" target="_blank" rel="noopener" class="underline mt-2 inline-block">
+          Open link
+        </a>
+      <% } %>
     <% } %>
 
-  <% } else if (post.media_type === 'audio') { %>
-    <audio controls class="w-full mt-2">
-      <source src="<%= post.media_url %>" type="audio/mpeg">
-    </audio>
-  <% } %>
-<% } %>
-
-
-        <% if (post.title) { %>
-          <h3><%= post.title %></h3>
-        <% } %>
-
-        <% if (post.content) { %>
-          <p><%= post.content %></p>
-        <% } %>
-
-      <div class="author-info">
-        By
-        <% if (post.email) { %>
-        <a href="/posts/by/<%= post.user_id %>">
-          <%= post.email.split('@')[0] %>
-        </a>
-        <% } else { %>
-          unknown
-        <% } %>
-        · <%= new Date(post.created_at).toLocaleDateString() %>
-      </div>
-
-      </div>
-    <% }); %>
+    <!-- Optional: simple author/date (kept outside to avoid repetition of the same block 10x) -->
+    <div class="author-info mt-3 text-sm opacity-80">
+      By
+      <% if (post.email) { %>
+        <a href="/posts/by/<%= post.user_id %>"><%= post.email.split('@')[0] %></a>
+      <% } else { %>unknown<% } %>
+      · <%= new Date(post.created_at).toLocaleDateString() %>
+    </div>
   </div>
+<% }); %>
+
+
 </section>
 
 <script>

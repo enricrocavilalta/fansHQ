@@ -4,12 +4,19 @@
 <link rel="stylesheet" href="/styles_typed_colors.css">
 
 <form action="/posts" method="POST" enctype="multipart/form-data" class="content-form" data-media="file">
-  <h1>Upload a Downloadable File</h1>
+  <h1>Upload a File</h1>
+  
   <input type="hidden" name="media_type" value="file"><br>
-  Title:<br>
-  <input type="text" name="title"><br>
+  
   File:<br>
   <input type="file" name="media_file" required><br>
+  
+  Title:<br>
+  <input type="text" name="title"><br>
+  
+  Description:<br>
+  <textarea name="content"></textarea><br><br>
+  
   price:<br>
   <input type="number" name="price" step="0.01" value="0"><br><br>
   <button type="submit">Post Download</button>

@@ -4,13 +4,19 @@
 <link rel="stylesheet" href="/styles_typed_colors.css">
 
 <form action="/posts" method="POST" enctype="multipart/form-data" class="content-form" data-media="image">
-  <h1>Image upload</h1>
   <input type="hidden" name="media_type" value="image">
-  <label for="title">Title:</label><input type="text" name="title"><br>
-  <label for="title">Description:</label><textarea name="content"></textarea><br>
+  
+  <h1>Image upload</h1>
+  
   Image:
   <input type="file" name="media_file" accept="image/*" required><br>
+
+  <label for="title">Title:</label><input type="text" name="title"><br>
+  
+  <label for="title">Description:</label><textarea name="content"></textarea><br>
+  
   <label for="title">Price:</label><input type="number" name="price" step="0.01" value="0"><br><br>
+  
   <button type="submit">Post image</button>
 </form>
 

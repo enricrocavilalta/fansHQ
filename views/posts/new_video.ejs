@@ -4,15 +4,11 @@
 <link rel="stylesheet" href="/styles_typed_colors.css">
 
 <form action="/posts" method="POST" enctype="multipart/form-data" class="content-form" data-media="video">
+  
   <input type="hidden" name="media_type" value="video">
 
-  <label>Title:</label>
-  <input type="text" name="title"><br>
+  <h1>Video upload</h1>
 
-  <label>Description:</label>
-  <textarea name="content"></textarea><br>
-
-  <label>Choose how to add video:</label>
   <div class="mode-box-container">
     <label class="mode-box active">
       <input type="radio" name="display_mode" value="upload" checked onchange="toggleSections()">
@@ -27,24 +23,30 @@
       <input name="media_url">
     </label>
   </div>
+  <br>
+  <label>Title:</label>  <br>
+  <input type="text" name="title"><br><br>
+
+  <label>Description:</label><br>
+  <textarea name="content"></textarea><br><br>
 
   <div id="uploadSection">
  
   </div>
 
   <div id="embedSection" style="display:none;">
-    <label>Embed URL or iframe code:</label>
     <br>
   </div>
 
-  <label>Thumbnail:</label>
-  <input type="file" name="thumbnail" accept="image/*"><br>
+  <label>Thumbnail:</label><br>
+  <input type="file" name="thumbnail" accept="image/*"><br><br>
 
   <button type="submit">Create Video Post</button>
 </form>
 
 <style>
-  .mode-box-container {
+
+.mode-box-container {
   display: flex;
   gap: 10px;
   margin-bottom: 10px;
@@ -73,6 +75,62 @@
   background-color: hsl(0, 50%, 10%);
   color: white;
 }
+
+ .content-form[data-media="video"] {
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 0 8px rgba(255, 0, 0, 0.1);
+  margin: 1rem 0;
+ }
+
+ 
+
+
+   .content-form[data-media="video"] {
+  background-color: hsl(0, 50%, 10%);
+  border-top: 4px solid hsl(0, 90%, 50%);
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 0 8px hsl(0, 90%, 20%);
+  margin: 1rem 0;
+}
+
+
+
+.content-form[data-media="video"] label {
+  display: block;
+  margin: 0.5rem 0 0.2rem;
+  color: #eee;
+  font-weight: bold;
+}
+
+.content-form[data-media="video"] input,
+.content-form[data-media="video"] textarea {
+  width: 100%;
+  background-color: #222;
+  border: 1px solid #555;
+  color: #fff;
+  padding: 0.5rem;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.content-form[data-media="video"] button {
+  background-color: hsl(0, 90%, 50%);
+  color: #fff;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.content-form[data-media="video"] button:hover {
+  background-color: hsl(0, 90%, 50%);
+}
+
+
 
 
 </style>
