@@ -6,3 +6,71 @@
   <input type="password" name="password" placeholder="Password" required /><br>
   <button type="submit">Log in</button>
 </form>
+
+<style>
+  html{
+    background-color: #000;
+  }
+  form {
+    width: 50%;
+    margin: 1rem auto; 
+    background-color: #101010;
+    margin: 1rem auto;  
+    padding: 1rem;
+    border-radius: 12px;
+  }
+
+form label {
+  display: block;
+  margin: 0.5rem 0 0.2rem;
+  color: #eee;
+  font-weight: bold;
+}
+
+form input:hover,
+form textarea:hover {
+  width: 100%;
+  background-color: #303030;
+  border: 1px solid ;
+  color: #fff;
+  padding: 0.5rem;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+form input,
+form textarea {
+  width: 100%;
+  background-color: #202020;
+  border: 1px solid ;
+  color: #fff;
+  padding: 0.5rem;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+form button {
+  background-color: #202020;
+  color: #fff;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+form button:hover {
+  background-color: #303030;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus {
+  box-shadow: 0 0 0px 1000px #222 inset;
+  -webkit-text-fill-color: #fff;
+  transition: background-color 5000s ease-in-out 0s; /* removes flicker */
+}
+
+
+</style>
