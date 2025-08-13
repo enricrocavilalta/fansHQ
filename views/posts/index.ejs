@@ -44,12 +44,10 @@
 .post-card h3 {
   margin: 0 0 0.5rem;
   font-size: 1.1rem;
-  color: #fff;
 }
 
 .post-card p {
   font-size: 0.9rem;
-  color: #ccc;
   margin-bottom: 0.5rem;
 }
 
@@ -121,13 +119,25 @@
   margin-top: 16px;
 }
 
+.file-link:link {
+  color: hsl(180, 90%, 50%);
+}
+
+.file-link:visited {
+  color: hsl(300, 90%, 50%);
+}
+
+.file-link:hover {
+  color: hsl(60, 90%, 50%);
+}
+
+
 </style>
 
 <head>
-  <%- include('../partials/title', { pageTitle: 'Home · FansHQ' }) %>
+  <%- include('../partials/title', { pageTitle: 'Home · fansHQ' }) %>
   <link rel="icon" type="image/png" href="/HQgold.png">
 </head>
-
 
 <!-- Posts Grid -->
 <section class="post-grid-container">
@@ -146,8 +156,6 @@
   </h2>
 </div>
 
-
-  
 <% posts.forEach(post => { %>
   <div class="post-card" data-media="<%= post.media_type %>">
 
@@ -180,33 +188,25 @@
       <% if (post.title) { %><h3><%= post.title %></h3><% } %>
       <% if (post.content) { %><p><%= post.content %></p><% } %>
 
-    <% } else if (post.media_type === 'pdf') { %>
+    <% } else if (post.media_type === 'file') { %>
       <% if (post.media_url) { %>
-        <object data="<%= post.media_url %>" type="application/pdf" class="w-full mt-2 rounded" style="height:70vh;">
-          <p>PDF preview unavailable. <a href="<%= post.media_url %>" download>Download PDF</a></p>
-        </object>
-        <div class="mt-2"><a href="<%= post.media_url %>" download class="underline">Download PDF</a></div>
-      <% } %>
-      <% if (post.title) { %><h3><%= post.title %></h3><% } %>
-      <% if (post.content) { %><p><%= post.content %></p><% } %>
-
-    <% } else if (post.media_type === 'download') { %>
-      <% if (post.media_url) { %>
-        <a href="<%= post.media_url %>" download="<%= post.title || 'download' %>" class="underline mt-2 inline-block">
-          ⬇ Download <%= post.title || 'file' %>
+        <a href="<%= post.media_url %>" download="<%= post.title || 'download' %>" class="file-link" class="mt-2 inline-block">
+          <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+          <% if (post.content) { %><p><%= post.content %></p><% } %>
         </a>
       <% } %>
-      <% if (post.title) { %><h3><%= post.title %></h3><% } %>
-      <% if (post.content) { %><p><%= post.content %></p><% } %>
+     
 
     <% } else if (post.media_type === 'link') { %>
       <% if (post.media_url) { %>
         <a href="<%= post.media_url %>" target="_blank" rel="noopener" class="underline mt-2 inline-block">
-          🔗 <%= post.title || 'View link' %>
+          
+          <% if (!post.media_url && post.title) { %><h3><%= post.title %></h3><% } %>
+          <% if (post.content) { %><p><%= post.content %></p><% } %>
+
         </a>
       <% } %>
-      <% if (!post.media_url && post.title) { %><h3><%= post.title %></h3><% } %>
-      <% if (post.content) { %><p><%= post.content %></p><% } %>
+     
 
     <% } else if (post.media_type === 'embed') { %>
       <% if (post.media_url) { %>
