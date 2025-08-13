@@ -157,90 +157,103 @@
 </div>
 
 <% posts.forEach(post => { %>
-  <div class="post-card" data-media="<%= post.media_type %>">
+  
 
     <% if (post.media_type === 'text') { %>
-      <% if (post.title) { %><h3><%= post.title %></h3><% } %>
-      <% if (post.content) { %><p><%= post.content %></p><% } %>
+      <div class="post-card" data-media="<%= post.media_type %>">
+        <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+        <% if (post.content) { %><p><%= post.content %></p><% } %>
+      </div>
 
     <% } else if (post.media_type === 'image') { %>
-      <% if (post.media_url) { %>
-        <img src="<%= post.media_url %>" alt="" class="w-full rounded mt-2" />
-      <% } %>
-      <% if (post.title) { %><h3><%= post.title %></h3><% } %>
-      <% if (post.content) { %><p><%= post.content %></p><% } %>
+      <div class="post-card" data-media="<%= post.media_type %>">
+        <% if (post.media_url) { %>
+          <img src="<%= post.media_url %>" alt="" class="w-full rounded mt-2" />
+        <% } %>
+        <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+        <% if (post.content) { %><p><%= post.content %></p><% } %>
+      </div>
 
     <% } else if (post.media_type === 'video') { %>
-      <% if (post.media_url) { %>
-        <video controls class="w-full rounded mt-2">
-          <source src="<%= post.media_url %>">
-        </video>
-      <% } %>
-      <% if (post.title) { %><h3><%= post.title %></h3><% } %>
-      <% if (post.content) { %><p><%= post.content %></p><% } %>
+      <div class="post-card" data-media="<%= post.media_type %>">
+        <% if (post.media_url) { %>
+          <video controls class="w-full rounded mt-2">
+            <source src="<%= post.media_url %>">
+          </video>
+        <% } %>
+        <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+        <% if (post.content) { %><p><%= post.content %></p><% } %>
+      </div>
 
     <% } else if (post.media_type === 'audio') { %>
-      <% if (post.media_url) { %>
-        <audio controls class="w-full mt-2">
-          <source src="<%= post.media_url %>">
-        </audio>
-      <% } %>
-      <% if (post.title) { %><h3><%= post.title %></h3><% } %>
-      <% if (post.content) { %><p><%= post.content %></p><% } %>
+      <div class="post-card" data-media="<%= post.media_type %>">
+        <% if (post.media_url) { %>
+          <audio controls class="w-full mt-2">
+            <source src="<%= post.media_url %>">
+          </audio>
+        <% } %>
+        <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+        <% if (post.content) { %><p><%= post.content %></p><% } %>
+      </div>
 
     <% } else if (post.media_type === 'file') { %>
-      <% if (post.media_url) { %>
-        <a href="<%= post.media_url %>" download="<%= post.title || 'download' %>" class="file-link" class="mt-2 inline-block">
-          <% if (post.title) { %><h3><%= post.title %></h3><% } %>
-          <% if (post.content) { %><p><%= post.content %></p><% } %>
-        </a>
-      <% } %>
-     
-
+      <a href="<%= post.media_url %>" download="<%= post.title || 'download' %>" class="file-link" class="mt-2 inline-block">
+        <div class="post-card" data-media="<%= post.media_type %>">
+          <% if (post.media_url) { %>
+            <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+            <% if (post.content) { %><p><%= post.content %></p><% } %>
+          <% } %>
+        </div>
+      </a>
     <% } else if (post.media_type === 'link') { %>
       <% if (post.media_url) { %>
-        <a href="<%= post.media_url %>" target="_blank" rel="noopener" class="underline mt-2 inline-block">
-          
-          <% if (!post.media_url && post.title) { %><h3><%= post.title %></h3><% } %>
-          <% if (post.content) { %><p><%= post.content %></p><% } %>
-
+        <a href="<%= post.media_url %>" target="_blank" rel="noopener" class="file-link" class="underline mt-2 inline-block">
+          <div class="post-card" data-media="<%= post.media_type %>">
+            <% if (!post.media_url && post.title) { %><h3><%= post.title %></h3><% } %>
+            <% if (post.content) { %><p><%= post.content %></p><% } %>
+          </div>
         </a>
       <% } %>
-     
-
     <% } else if (post.media_type === 'embed') { %>
-      <% if (post.media_url) { %>
-        <div class="video-wrapper mt-2">
-          <iframe src="<%= post.media_url %>" class="w-full rounded" frameborder="0" allowfullscreen></iframe>
-        </div>
-      <% } %>
-      <% if (post.title) { %><h3><%= post.title %></h3><% } %>
-      <% if (post.content) { %><p><%= post.content %></p><% } %>
-
+      <div class="post-card" data-media="<%= post.media_type %>">
+        <% if (post.media_url) { %>
+          <div class="video-wrapper mt-2">
+            <iframe src="<%= post.media_url %>" class="w-full rounded" frameborder="0" allowfullscreen></iframe>
+          </div>
+        <% } %>
+        <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+        <% if (post.content) { %><p><%= post.content %></p><% } %>
+      </div>
     <% } else if (post.media_type === 'poll') { %>
-      <% if (post.title) { %><h3><%= post.title %></h3><% } %>
-      <% if (post.content) { %><p><%= post.content %></p><% } %>
-      <!-- Render simple poll placeholder; replace with real options -->
-      <div class="mt-2">[Poll options here]</div>
+      <div class="post-card" data-media="<%= post.media_type %>">
+        <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+        <% if (post.content) { %><p><%= post.content %></p><% } %>
+        <!-- Render simple poll placeholder; replace with real options -->
+        <div class="mt-2">[Poll options here]</div>
+      </div>
 
     <% } else if (post.media_type === 'product') { %>
-      <% if (post.title) { %><h3><%= post.title %></h3><% } %>
-      <% if (post.content) { %><p><%= post.content %></p><% } %>
-      <% if (post.media_url) { %>
-        <a href="<%= post.media_url %>" target="_blank" rel="noopener" class="underline mt-2 inline-block">
-          View product
-        </a>
-      <% } %>
+      <div class="post-card" data-media="<%= post.media_type %>">
+        <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+        <% if (post.content) { %><p><%= post.content %></p><% } %>
+        <% if (post.media_url) { %>
+          <a href="<%= post.media_url %>" target="_blank" rel="noopener" class="underline mt-2 inline-block">
+            View product
+          </a>
+        <% } %>
+      </div>
 
     <% } else { %>
-      <!-- Fallback for unknown type -->
-      <% if (post.title) { %><h3><%= post.title %></h3><% } %>
-      <% if (post.content) { %><p><%= post.content %></p><% } %>
-      <% if (post.media_url) { %>
-        <a href="<%= post.media_url %>" target="_blank" rel="noopener" class="underline mt-2 inline-block">
-          Open link
-        </a>
-      <% } %>
+      <div class="post-card" data-media="<%= post.media_type %>">
+        <!-- Fallback for unknown type -->
+        <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+        <% if (post.content) { %><p><%= post.content %></p><% } %>
+        <% if (post.media_url) { %>
+          <a href="<%= post.media_url %>" target="_blank" rel="noopener" class="underline mt-2 inline-block">
+            Open link
+          </a>
+        <% } %>
+      </div>
     <% } %>
 
     <!-- Optional: simple author/date (kept outside to avoid repetition of the same block 10x) -->
@@ -251,7 +264,6 @@
       <% } else { %>unknown<% } %>
       · <%= new Date(post.created_at).toLocaleDateString() %>
     </div>
-  </div>
 <% }); %>
 
 
