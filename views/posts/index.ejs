@@ -240,13 +240,23 @@
 
     <% } else if (post.media_type === 'product') { %>
       <div class="post-card" data-media="<%= post.media_type %>">
-        <% if (post.title) { %><h3><%= post.title %></h3><% } %>
-        <% if (post.content) { %><p><%= post.content %></p><% } %>
-        <% if (post.media_url) { %>
-          <a href="<%= post.media_url %>" target="_blank" rel="noopener" class="underline mt-2 inline-block">
-            View product
-          </a>
+
+        <% // price can be "1.00" (string) or null; cast safely %>
+        <% const p = (post.price == null) ? null : Number(parseFloat(String(post.price))); %>
+        <% if (p !== null && Number.isFinite(p)) { %>
+        <h3>€<%= p.toFixed(2) %></h3>
         <% } %>
+
+        <img 
+          src="<%= post.media_url %>" 
+          alt="<%= post.title || 'Product image' %>" 
+          class="max-w-full h-auto rounded-lg"
+        />
+
+        <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+        
+        <% if (post.content) { %><p><%= post.content %></p><% } %>
+      
       </div>
 
     <% } else { %>

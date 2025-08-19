@@ -26,10 +26,26 @@ const upload = multer({ storage });
 
 
 // Show all posts
-router.get('/', async(req, res) => {
-  const [results] = await db.query("SELECT posts.id AS post_id, posts.user_id, posts.title, posts.content, posts.media_type, posts.media_url, posts.created_at, users.email FROM posts LEFT JOIN users ON users.id = posts.user_id ORDER BY posts.created_at DESC;"); 
-    res.render('posts/index', { posts: results });
-  });
+// Show all posts (feed)
+router.get('/', async (req, res) => {
+  const [rows] = await db.query(`
+    SELECT posts.*, users.email, posts.id AS post_id
+    FROM posts
+    LEFT JOIN users ON users.id = posts.user_id
+    ORDER BY posts.created_at DESC
+  `);
+
+  // Optional: cast DECIMAL -> number so formatting is easy
+  const posts = rows.map(r => ({
+    ...r,
+    price: r.price == null ? null : parseFloat(String(r.price)),
+  }));
+
+  console.log('Feed sample price:', posts[0]?.price); // should be number or null
+  res.render('posts/index', { posts });
+});
+
+
 
 
 // Show new post form
