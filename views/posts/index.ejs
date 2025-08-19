@@ -206,7 +206,7 @@
       <a href="<%= post.media_url %>" download="<%= post.title || 'download' %>" class="file-link" class="mt-2 inline-block">
         <div class="post-card" data-media="<%= post.media_type %>">
           <% if (post.media_url) { %>
-            <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+            <h3><%= post.title || 'download' %></h3>
             <% if (post.content) { %><p><%= post.content %></p><% } %>
           <% } %>
         </div>
@@ -215,7 +215,7 @@
       <% if (post.media_url) { %>
         <a href="<%= post.media_url %>" target="_blank" rel="noopener" class="file-link" class="underline mt-2 inline-block">
           <div class="post-card" data-media="<%= post.media_type %>">
-            <% if (!post.media_url && post.title) { %><h3><%= post.title %></h3><% } %>
+            <h3><%= post.title || 'link' %></h3>
             <% if (post.content) { %><p><%= post.content %></p><% } %>
           </div>
         </a>
