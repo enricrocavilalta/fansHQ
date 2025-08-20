@@ -234,8 +234,16 @@
       <div class="post-card" data-media="<%= post.media_type %>">
         <% if (post.title) { %><h3><%= post.title %></h3><% } %>
         <% if (post.content) { %><p><%= post.content %></p><% } %>
-        <!-- Render simple poll placeholder; replace with real options -->
-        <div class="mt-2">[Poll options here]</div>
+        <% if (post.option_1) { %><p><%= post.vote_1 + " " + post.option_1 %></p><% } %>
+        <% if (post.option_1) { %><p><%= post.vote_2 + " " + post.option_2 %></p><% } %>
+        <% if (post.option_1) { %><p><%= post.vote_3 + " " + post.option_3 %></p><% } %>
+        <% if (post.option_1) { %><p><%= post.vote_4 + " " + post.option_4 %></p><% } %>
+        <% if (post.option_1) { %><p><%= post.vote_5 + " " + post.option_5 %></p><% } %>
+        <% if (post.option_1) { %><p><%= post.vote_6 + " " + post.option_6 %></p><% } %>
+        <% if (post.option_1) { %><p><%= post.vote_7 + " " + post.option_7 %></p><% } %>
+        <% if (post.option_1) { %><p><%= post.vote_8 + " " + post.option_8 %></p><% } %>
+        <% if (post.option_1) { %><p><%= post.vote_9 + " " + post.option_9 %></p><% } %>
+        <% if (post.option_1) { %><p><%= post.vote_10 + " " + post.option_10 %></p><% } %>
       </div>
 
     <% } else if (post.media_type === 'product') { %>
@@ -243,8 +251,8 @@
 
         <% // price can be "1.00" (string) or null; cast safely %>
         <% const p = (post.price == null) ? null : Number(parseFloat(String(post.price))); %>
-        <% if (p !== null && Number.isFinite(p)) { %>
-        <h3>€<%= p.toFixed(2) %></h3>
+        <% if (p !== null && Number.isFinite(p) && p != 0) { %>
+        <h2>€<%= p.toFixed(2) %></h2>
         <% } %>
 
         <img 
