@@ -234,16 +234,16 @@
       <div class="post-card" data-media="<%= post.media_type %>">
         <% if (post.title) { %><h3><%= post.title %></h3><% } %>
         <% if (post.content) { %><p><%= post.content %></p><% } %>
-        <% if (post.option_1) { %><p><%= post.vote_1 + " " + post.option_1 %></p><% } %>
-        <% if (post.option_1) { %><p><%= post.vote_2 + " " + post.option_2 %></p><% } %>
-        <% if (post.option_1) { %><p><%= post.vote_3 + " " + post.option_3 %></p><% } %>
-        <% if (post.option_1) { %><p><%= post.vote_4 + " " + post.option_4 %></p><% } %>
-        <% if (post.option_1) { %><p><%= post.vote_5 + " " + post.option_5 %></p><% } %>
-        <% if (post.option_1) { %><p><%= post.vote_6 + " " + post.option_6 %></p><% } %>
-        <% if (post.option_1) { %><p><%= post.vote_7 + " " + post.option_7 %></p><% } %>
-        <% if (post.option_1) { %><p><%= post.vote_8 + " " + post.option_8 %></p><% } %>
-        <% if (post.option_1) { %><p><%= post.vote_9 + " " + post.option_9 %></p><% } %>
-        <% if (post.option_1) { %><p><%= post.vote_10 + " " + post.option_10 %></p><% } %>
+        <% if (post.option_1) { %><p><%= post.votes_1 + " " + post.option_1 %></p><% } %>
+        <% if (post.option_2) { %><p><%= post.votes_2 + " " + post.option_2 %></p><% } %>
+        <% if (post.option_3) { %><p><%= post.votes_3 + " " + post.option_3 %></p><% } %>
+        <% if (post.option_4) { %><p><%= post.votes_4 + " " + post.option_4 %></p><% } %>
+        <% if (post.option_5) { %><p><%= post.votes_5 + " " + post.option_5 %></p><% } %>
+        <% if (post.option_6) { %><p><%= post.votes_6 + " " + post.option_6 %></p><% } %>
+        <% if (post.option_7) { %><p><%= post.votes_7 + " " + post.option_7 %></p><% } %>
+        <% if (post.option_8) { %><p><%= post.votes_8 + " " + post.option_8 %></p><% } %>
+        <% if (post.option_9) { %><p><%= post.votes_9 + " " + post.option_9 %></p><% } %>
+        <% if (post.option_10) { %><p><%= post.votes_10 + " " + post.option_10 %></p><% } %>
       </div>
 
     <% } else if (post.media_type === 'product') { %>
