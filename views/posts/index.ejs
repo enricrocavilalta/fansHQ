@@ -271,12 +271,7 @@
 
     <% } else if (post.media_type === 'tipjar') { %>
       <div class="post-card" data-media="<%= post.media_type %>">
-        <form action="/tip/<%= post.id %>">
-          <button type="submit" method="POST" style="background-color: #303030;color:#f0f0f0; border: none; border-radius: 6px;">DONATE</button>
-          <input type="number" name="tip" id="tip" value="<%= post.price %>" step="1" min="1" size="3" style="text-align:right; background-color: #303030;color:#f0f0f0; border: none; border-radius: 6px;"; required>$
-
-          
-        </form>
+        
 
         <% if (post.media_url) { %>
           <img 
@@ -290,6 +285,25 @@
         
         <% if (post.content) { %><p><%= post.content %></p><% } %>
 
+        <form action="/tip/<%= post.id %>">
+          <button type="submit" method="POST" style="background-color: #303030;color:#f0f0f0; border: none; border-radius: 6px;">DONATE</button>
+          <input type="number" name="tip" id="tip" value="<%= post.price %>" step="1" min="1" size="3" style="text-align:right; background-color: #303030;color:#f0f0f0; border: none; border-radius: 6px;"; required>$
+        </form>
+
+      </div>
+
+    <% } else if (post.media_type === 'ama') { %>
+      <div class="post-card" data-media="<%= post.media_type %>">
+
+        <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+        
+        <% if (post.content) { %><p><%= post.content %></p><% } %>
+
+        <form action="/tip/<%= post.id %>">
+          <textarea type="text" name="question" id="question" value="?" style="background-color: #303030;color:#f0f0f0; border: none; border-radius: 6px;"; size="100" data-autogrow required></textarea>
+          <br>
+          <button type="submit" method="POST" style="background-color: #303030;color:#f0f0f0; border: none; border-radius: 6px;">ASK</button>
+           </form>
       </div>
       
     <% } else { %>
