@@ -36,7 +36,7 @@
 }
 [data-media="tipjar"] {
   border-top: 4px solid hsl(0, 0%, 50%);
-  background-color: hsl(0, 0%, 5%);
+  background-color: hsl(0, 0%, 10%);
 }
 
 [data-media="text"] h1{
