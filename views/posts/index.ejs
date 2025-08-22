@@ -272,8 +272,8 @@
     <% } else if (post.media_type === 'tipjar') { %>
       <div class="post-card" data-media="<%= post.media_type %>">
         <form action="/tip/<%= post.id %>">
-          <button type="submit" method="POST">DONATE</button>
-          <input type="number" name="tip" id="tip" value="<%= post.price %>" step="1" min="1" size="3" style="text-align:right"; required>$
+          <button type="submit" method="POST" style="background-color: #303030;color:#f0f0f0; border: none; border-radius: 6px;">DONATE</button>
+          <input type="number" name="tip" id="tip" value="<%= post.price %>" step="1" min="1" size="3" style="text-align:right; background-color: #303030;color:#f0f0f0; border: none; border-radius: 6px;"; required>$
 
           
         </form>
