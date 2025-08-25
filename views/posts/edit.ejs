@@ -1,12 +1,103 @@
-<h2 class="text-xl text-neutral-100 mb-3">Edit Post</h2>
-<form method="POST" action="/posts/<%= post.id %>?_method=PUT" class="space-y-4">
-  <%- include("_form", { post }) %>
-  <div class="flex gap-3">
-    <button class="px-4 py-2 rounded-xl bg-indigo-600 text-white">Save</button>
+<h2>Edit post</h2>
 
-    <!-- Delete button -->
-    <form method="POST" action="/posts/<%= post.id %>?_method=DELETE" onsubmit="return confirm('Delete this post?');">
-      <button class="px-4 py-2 rounded-xl bg-red-600 text-white">Delete</button>
-    </form>
-  </div>
+<form action="/posts/<%= post.id %>?_method=PUT" method="POST" enctype="multipart/form-data" class="form">
+
+  <!-- Common fields -->
+  <label>
+  </label>
+
+  <label>
+  </label>
+
+  <input type="hidden" name="display_mode" value="<%= type %>"><!-- keep type -->
+
+  <% if (type === 'text') { %>
+    Title: <br>
+    <input type="text" name="title" value="<%= post.title || '' %>"> <br>
+    Content:  <br>
+    <textarea name="content" rows="5"><%= post.content || '' %></textarea> <br>
+  <% } else if (type === 'image') { %>
+    <fieldset>
+      <legend>Image settings</legend>
+      <label>Image URL
+        <input type="url" name="media_url" value="<%= post.media_url || '' %>">
+      </label>
+      <label>Or upload new image
+        <input type="file" name="media_file" accept="image/*">
+      </label>
+      <label>Thumbnail
+        <input type="file" name="thumbnail" accept="image/*">
+      </label>
+    </fieldset>
+  <% } else if (type === 'video') { %>
+    <fieldset>
+      <legend>Video</legend>
+      <label>Video URL
+        <input type="url" name="media_url" value="<%= post.media_url || '' %>">
+      </label>
+    </fieldset>
+  <% } else if (type === 'audio') { %>
+    <fieldset>
+      <legend>Audio</legend>
+      <label>Audio URL
+        <input type="url" name="media_url" value="<%= post.media_url || '' %>">
+      </label>
+    </fieldset>
+  <% } else if (type === 'link') { %>
+    <fieldset>
+      <legend>Link</legend>
+      <label>Target URL
+        <input type="url" name="media_url" value="<%= post.media_url || '' %>">
+      </label>
+      <label>Display text
+        <input type="text" name="display_text" value="<%= post.display_text || '' %>">
+      </label>
+    </fieldset>
+  <% } else if (type === 'file') { %>
+    <fieldset>
+      <legend>File</legend>
+      <label>File URL
+        <input type="url" name="media_url" value="<%= post.media_url || '' %>">
+      </label>
+      <label>Or upload new file
+        <input type="file" name="media_file">
+      </label>
+    </fieldset>
+  <% } else if (type === 'poll') { %>
+    <fieldset>
+      <legend>Poll options</legend>
+      <% for (let i = 1; i <= 10; i++) { %>
+        <label>Option <%= i %>
+          <input type="text" name="option_<%= i %>" value="<%= post['option_' + i] || '' %>">
+        </label>
+      <% } %>
+    </fieldset>
+  <% } else if (type === 'product') { %>
+    <fieldset>
+      <legend>Product</legend>
+      <label>Price
+        <input type="number" step="0.01" name="price" value="<%= post.price ?? '' %>">
+      </label>
+      <label>Image URL
+        <input type="url" name="media_url" value="<%= post.media_url || '' %>">
+      </label>
+    </fieldset>
+  <% } else if (type === 'tipjar') { %>
+    <fieldset>
+      <legend>Tip Jar</legend>
+      <label>Suggested tip
+        <input type="number" step="0.01" name="price" value="<%= post.price ?? '' %>">
+      </label>
+    </fieldset>
+  <% } else if (type === 'ama') { %>
+    <fieldset>
+      <legend>AMA</legend>
+      <label>Prompt
+        <input type="text" name="display_text" value="<%= post.display_text || '' %>">
+      </label>
+    </fieldset>
+  <% } %>
+
+  <button type="submit">Save</button>
+  <a href="/posts">Cancel</a>
 </form>
