@@ -138,12 +138,37 @@
 }
 
 .delete-btn {
-  background: red;
-  color: white;
+  background: rgba(255, 255, 255, 0.1); /* white with 10% opacity */
+  color: #f0f0f0;
   border: none;
-  padding: 6px 12px;
+  padding: 4px 8px;
   border-radius: 5px;
-  cursor: pointer;
+  float: right;
+}
+
+.delete-btn:hover {
+  background: rgba(255,255,255,0.2);
+  color: white;          /* optional hover brighten */
+}
+.edit-btn {
+  background: rgba(255,255,255,0.1);
+  border: none;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  color: #f0f0f0;           /* neutral grey */
+  padding: 4px 8px;
+  transition: background 0.2s;
+}
+
+.edit-btn:hover {
+  background: rgba(255,255,255,0.2);
+  color: white;          /* optional hover brighten */
+}
+
+.edit-delete {
+  display: flex;
+  justify-content: space-between; /* meta on left, actions on right */
+  align-items: center;
 }
 
 </style>
@@ -175,12 +200,15 @@
 
     <% if (post.media_type === 'text') { %>
       <div class="post-card" data-media="<%= post.media_type %>">
-
-        <!-- Delete button -->
-        <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
-          <button type="submit" class="delete-btn">Delete</button>
-        </form>
         
+        <div class="edit-delete">
+          <button class="edit-btn">✎</button>
+        
+          <!-- Delete button -->
+          <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
+            <button type="submit" class="delete-btn">&times;</button>
+          </form>
+        </div>
         <% if (post.title) { %><h3><%= post.title %></h3><% } %>
         <% if (post.content) { %><p><%= post.content %></p><% } %>
         
@@ -198,7 +226,7 @@
 
          <!-- Delete button -->
         <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
-          <button type="submit" class="delete-btn">Delete</button>
+          <button type="submit" class="delete-btn">&times;</button>
         </form>
 
         <% if (post.media_url) { %>
@@ -220,7 +248,7 @@
 
       <!-- Delete button -->
       <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
-        <button type="submit" class="delete-btn">Delete</button>
+        <button type="submit" class="delete-btn">&times;</button>
       </form>
 
       <div class="post-card" data-media="<%= post.media_type %>">
@@ -246,7 +274,7 @@
 
         <!-- Delete button -->
         <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
-          <button type="submit" class="delete-btn">Delete</button>
+          <button type="submit" class="delete-btn">&times;</button>
         </form>
 
         <% if (post.media_url) { %>
@@ -270,7 +298,7 @@
       <a href="<%= post.media_url %>" download="<%= post.title || 'download' %>" class="file-link" class="mt-2 inline-block">
         <!-- Delete button -->
         <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
-          <button type="submit" class="delete-btn">Delete</button>
+          <button type="submit" class="delete-btn">&times;</button>
         </form>
 
         <div class="post-card" data-media="<%= post.media_type %>">
@@ -294,7 +322,7 @@
           
           <!-- Delete button -->
           <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
-            <button type="submit" class="delete-btn">Delete</button>
+            <button type="submit" class="delete-btn">&times;</button>
           </form>
 
           <div class="post-card" data-media="<%= post.media_type %>">
@@ -326,7 +354,7 @@
 
         <!-- Delete button -->
         <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
-          <button type="submit" class="delete-btn">Delete</button>
+          <button type="submit" class="delete-btn">&times;</button>
         </form>
 
         <% if (post.title) { %><h3><%= post.title %></h3><% } %>
@@ -356,7 +384,7 @@
 
         <!-- Delete button -->
         <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
-          <button type="submit" class="delete-btn">Delete</button>
+          <button type="submit" class="delete-btn">&times;</button>
         </form>
 
         <% // price can be "1.00" (string) or null; cast safely %>
@@ -391,7 +419,7 @@
         
         <!-- Delete button -->
         <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
-          <button type="submit" class="delete-btn">Delete</button>
+          <button type="submit" class="delete-btn">&times;</button>
         </form>
 
         <% if (post.media_url) { %>
@@ -425,7 +453,7 @@
 
         <!-- Delete button -->
         <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
-          <button type="submit" class="delete-btn">Delete</button>
+          <button type="submit" class="delete-btn">&times;</button>
         </form>
 
         <% if (post.title) { %><h3><%= post.title %></h3><% } %>
@@ -484,4 +512,17 @@
   });
 </script>
 
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  // grab all author-info elements
+  const metas = document.getElementsByClassName("author-info");
 
+  // turn the HTMLCollection into a real array so we can loop safely
+  Array.from(metas).forEach(meta => {
+    // decide when to remove (example: empty or orphaned metas)
+    if (!meta.nextElementSibling || meta.nextElementSibling.classList.contains("deleted")) {
+      meta.remove();
+    }
+  });
+});
+</script>
