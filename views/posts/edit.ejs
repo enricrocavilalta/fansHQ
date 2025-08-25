@@ -1,0 +1,12 @@
+<h2 class="text-xl text-neutral-100 mb-3">Edit Post</h2>
+<form method="POST" action="/posts/<%= post.id %>?_method=PUT" class="space-y-4">
+  <%- include("_form", { post }) %>
+  <div class="flex gap-3">
+    <button class="px-4 py-2 rounded-xl bg-indigo-600 text-white">Save</button>
+
+    <!-- Delete button -->
+    <form method="POST" action="/posts/<%= post.id %>?_method=DELETE" onsubmit="return confirm('Delete this post?');">
+      <button class="px-4 py-2 rounded-xl bg-red-600 text-white">Delete</button>
+    </form>
+  </div>
+</form>

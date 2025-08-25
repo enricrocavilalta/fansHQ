@@ -137,6 +137,14 @@
   color: hsl(60, 90%, 50%);
 }
 
+.delete-btn {
+  background: red;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+}
 
 </style>
 
@@ -167,20 +175,54 @@
 
     <% if (post.media_type === 'text') { %>
       <div class="post-card" data-media="<%= post.media_type %>">
+
+        <!-- Delete button -->
+        <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
+          <button type="submit" class="delete-btn">Delete</button>
+        </form>
+        
         <% if (post.title) { %><h3><%= post.title %></h3><% } %>
         <% if (post.content) { %><p><%= post.content %></p><% } %>
+        
+        <div class="author-info mt-3 text-sm opacity-80">
+          By
+          <% if (post.email) { %>
+          <a href="/posts/by/<%= post.user_id %>"><%= post.email.split('@')[0] %></a>
+          <% } else { %>unknown<% } %>
+          · <%= new Date(post.created_at).toLocaleDateString() %>
+        </div>
       </div>
 
     <% } else if (post.media_type === 'image') { %>
       <div class="post-card" data-media="<%= post.media_type %>">
+
+         <!-- Delete button -->
+        <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
+          <button type="submit" class="delete-btn">Delete</button>
+        </form>
+
         <% if (post.media_url) { %>
           <img src="<%= post.media_url %>" alt="" class="w-full rounded mt-2" />
         <% } %>
         <% if (post.title) { %><h3><%= post.title %></h3><% } %>
         <% if (post.content) { %><p><%= post.content %></p><% } %>
+
+        <div class="author-info mt-3 text-sm opacity-80">
+          By
+          <% if (post.email) { %>
+          <a href="/posts/by/<%= post.user_id %>"><%= post.email.split('@')[0] %></a>
+          <% } else { %>unknown<% } %>
+          · <%= new Date(post.created_at).toLocaleDateString() %>
+        </div>
       </div>
 
     <% } else if (post.media_type === 'video') { %>
+
+      <!-- Delete button -->
+      <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
+        <button type="submit" class="delete-btn">Delete</button>
+      </form>
+
       <div class="post-card" data-media="<%= post.media_type %>">
         <% if (post.media_url) { %>
           <video controls class="w-full rounded mt-2">
@@ -189,10 +231,24 @@
         <% } %>
         <% if (post.title) { %><h3><%= post.title %></h3><% } %>
         <% if (post.content) { %><p><%= post.content %></p><% } %>
+
+        <div class="author-info mt-3 text-sm opacity-80">
+          By
+          <% if (post.email) { %>
+          <a href="/posts/by/<%= post.user_id %>"><%= post.email.split('@')[0] %></a>
+          <% } else { %>unknown<% } %>
+          · <%= new Date(post.created_at).toLocaleDateString() %>
+        </div>
       </div>
 
     <% } else if (post.media_type === 'audio') { %>
       <div class="post-card" data-media="<%= post.media_type %>">
+
+        <!-- Delete button -->
+        <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
+          <button type="submit" class="delete-btn">Delete</button>
+        </form>
+
         <% if (post.media_url) { %>
           <audio controls class="w-full mt-2">
             <source src="<%= post.media_url %>">
@@ -200,23 +256,58 @@
         <% } %>
         <% if (post.title) { %><h3><%= post.title %></h3><% } %>
         <% if (post.content) { %><p><%= post.content %></p><% } %>
+
+        <div class="author-info mt-3 text-sm opacity-80">
+          By
+          <% if (post.email) { %>
+          <a href="/posts/by/<%= post.user_id %>"><%= post.email.split('@')[0] %></a>
+          <% } else { %>unknown<% } %>
+          · <%= new Date(post.created_at).toLocaleDateString() %>
+        </div>
       </div>
 
     <% } else if (post.media_type === 'file') { %>
       <a href="<%= post.media_url %>" download="<%= post.title || 'download' %>" class="file-link" class="mt-2 inline-block">
+        <!-- Delete button -->
+        <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
+          <button type="submit" class="delete-btn">Delete</button>
+        </form>
+
         <div class="post-card" data-media="<%= post.media_type %>">
           <% if (post.media_url) { %>
             <h3><%= post.title || 'download' %></h3>
             <% if (post.content) { %><p><%= post.content %></p><% } %>
           <% } %>
         </div>
+
+        <div class="author-info mt-3 text-sm opacity-80">
+          By
+          <% if (post.email) { %>
+          <a href="/posts/by/<%= post.user_id %>"><%= post.email.split('@')[0] %></a>
+          <% } else { %>unknown<% } %>
+          · <%= new Date(post.created_at).toLocaleDateString() %>
+        </div>
       </a>
     <% } else if (post.media_type === 'link') { %>
       <% if (post.media_url) { %>
         <a href="<%= post.media_url %>" target="_blank" rel="noopener" class="file-link" class="underline mt-2 inline-block">
+          
+          <!-- Delete button -->
+          <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
+            <button type="submit" class="delete-btn">Delete</button>
+          </form>
+
           <div class="post-card" data-media="<%= post.media_type %>">
             <h3><%= post.title || 'link' %></h3>
             <% if (post.content) { %><p><%= post.content %></p><% } %>
+          </div>
+
+          <div class="author-info mt-3 text-sm opacity-80">
+            By
+            <% if (post.email) { %>
+            <a href="/posts/by/<%= post.user_id %>"><%= post.email.split('@')[0] %></a>
+            <% } else { %>unknown<% } %>
+            · <%= new Date(post.created_at).toLocaleDateString() %>
           </div>
         </a>
       <% } %>
@@ -232,6 +323,12 @@
       </div>
     <% } else if (post.media_type === 'poll') { %>
       <div class="post-card" data-media="<%= post.media_type %>">
+
+        <!-- Delete button -->
+        <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
+          <button type="submit" class="delete-btn">Delete</button>
+        </form>
+
         <% if (post.title) { %><h3><%= post.title %></h3><% } %>
         <% if (post.content) { %><p><%= post.content %></p><% } %>
         <% if (post.option_1) { %><p><%= post.votes_1 + " " + post.option_1 %></p><% } %>
@@ -244,10 +341,23 @@
         <% if (post.option_8) { %><p><%= post.votes_8 + " " + post.option_8 %></p><% } %>
         <% if (post.option_9) { %><p><%= post.votes_9 + " " + post.option_9 %></p><% } %>
         <% if (post.option_10) { %><p><%= post.votes_10 + " " + post.option_10 %></p><% } %>
+
+        <div class="author-info mt-3 text-sm opacity-80">
+          By
+          <% if (post.email) { %>
+          <a href="/posts/by/<%= post.user_id %>"><%= post.email.split('@')[0] %></a>
+          <% } else { %>unknown<% } %>
+          · <%= new Date(post.created_at).toLocaleDateString() %>
+        </div>
       </div>
 
     <% } else if (post.media_type === 'product') { %>
       <div class="post-card" data-media="<%= post.media_type %>">
+
+        <!-- Delete button -->
+        <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
+          <button type="submit" class="delete-btn">Delete</button>
+        </form>
 
         <% // price can be "1.00" (string) or null; cast safely %>
         <% const p = (post.price == null) ? null : Number(parseFloat(String(post.price))); %>
@@ -266,12 +376,23 @@
         <% if (post.title) { %><h3><%= post.title %></h3><% } %>
         
         <% if (post.content) { %><p><%= post.content %></p><% } %>
-      
+          
+        <div class="author-info mt-3 text-sm opacity-80">
+          By
+          <% if (post.email) { %>
+          <a href="/posts/by/<%= post.user_id %>"><%= post.email.split('@')[0] %></a>
+          <% } else { %>unknown<% } %>
+          · <%= new Date(post.created_at).toLocaleDateString() %>
+        </div>
       </div>
 
     <% } else if (post.media_type === 'tipjar') { %>
       <div class="post-card" data-media="<%= post.media_type %>">
         
+        <!-- Delete button -->
+        <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
+          <button type="submit" class="delete-btn">Delete</button>
+        </form>
 
         <% if (post.media_url) { %>
           <img 
@@ -289,11 +410,23 @@
           <button type="submit" method="POST" style="background-color: #303030;color:#f0f0f0; border: none; border-radius: 6px;">DONATE</button>
           <input type="number" name="tip" id="tip" value="<%= post.price %>" step="1" min="1" size="3" style="text-align:right; background-color: #303030;color:#f0f0f0; border: none; border-radius: 6px;"; required>$
         </form>
-
+        
+        <div class="author-info mt-3 text-sm opacity-80">
+          By
+          <% if (post.email) { %>
+          <a href="/posts/by/<%= post.user_id %>"><%= post.email.split('@')[0] %></a>
+          <% } else { %>unknown<% } %>
+          · <%= new Date(post.created_at).toLocaleDateString() %>
+        </div>
       </div>
 
     <% } else if (post.media_type === 'ama') { %>
       <div class="post-card" data-media="<%= post.media_type %>">
+
+        <!-- Delete button -->
+        <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
+          <button type="submit" class="delete-btn">Delete</button>
+        </form>
 
         <% if (post.title) { %><h3><%= post.title %></h3><% } %>
         
@@ -303,7 +436,15 @@
           <textarea type="text" name="question" id="question" value="?" style="background-color: #303030;color:#f0f0f0; border: none; border-radius: 6px;"; size="100" data-autogrow required></textarea>
           <br>
           <button type="submit" method="POST" style="background-color: #303030;color:#f0f0f0; border: none; border-radius: 6px;">ASK</button>
-           </form>
+        </form>
+
+        <div class="author-info mt-3 text-sm opacity-80">
+          By
+          <% if (post.email) { %>
+          <a href="/posts/by/<%= post.user_id %>"><%= post.email.split('@')[0] %></a>
+          <% } else { %>unknown<% } %>
+          · <%= new Date(post.created_at).toLocaleDateString() %>
+        </div>
       </div>
       
     <% } else { %>
@@ -316,17 +457,19 @@
             Open link
           </a>
         <% } %>
+
+         <!-- Optional: simple author/date (kept outside to avoid repetition of the same block 10x) -->
+        <div class="author-info mt-3 text-sm opacity-80">
+          By
+          <% if (post.email) { %>
+          <a href="/posts/by/<%= post.user_id %>"><%= post.email.split('@')[0] %></a>
+          <% } else { %>unknown<% } %>
+          · <%= new Date(post.created_at).toLocaleDateString() %>
+        </div>
       </div>
     <% } %>
 
-    <!-- Optional: simple author/date (kept outside to avoid repetition of the same block 10x) -->
-    <div class="author-info mt-3 text-sm opacity-80">
-      By
-      <% if (post.email) { %>
-        <a href="/posts/by/<%= post.user_id %>"><%= post.email.split('@')[0] %></a>
-      <% } else { %>unknown<% } %>
-      · <%= new Date(post.created_at).toLocaleDateString() %>
-    </div>
+   
 <% }); %>
 
 
@@ -340,3 +483,5 @@
     grid.style.setProperty('--columns', e.target.value);
   });
 </script>
+
+
