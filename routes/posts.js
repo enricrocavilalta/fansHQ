@@ -35,15 +35,13 @@ router.get('/_debug', async (req, res) => {
 router.get('/ping', (req, res) => res.send('posts router OK'));
 
 // ---------- NEW: text ----------
-router.get('/new/text', isLoggedIn, (req, res) => {
-  res.render('posts/new_text', {
-    mode: 'create',
-    type: 'text',
-    post: {},
-    action: '/posts',
-    submitLabel: 'Create'
-  });
+const VALID_TYPES = ['text','image','video','audio','link','file','poll','product','tipjar','ama'];
+router.get('/new/:type', isLoggedIn, (req,res)=>{
+  const type = String(req.params.type||'').toLowerCase();
+  if (!VALID_TYPES.includes(type)) return res.status(404).send('Invalid content type');
+  res.render(`posts/new_${type}`, { mode:'create', type, post:{}, action:'/posts', submitLabel:'Create', cancelHref:'/posts' });
 });
+
 
 // ---------- EDIT: reuse new_<type>.ejs ----------
 router.get('/:id/edit', isLoggedIn, async (req, res) => {
@@ -180,13 +178,59 @@ router.get('/', async (req, res) => {
   }
 });
 
-// ---------- UPDATE ----------
-router.put('/:id', isLoggedIn, upload.none(), async (req, res) => {
-  const id = Number(req.params.id);
-  const { title, content } = req.body || {};
-  await db.execute('UPDATE posts SET title = ?, content = ? WHERE id = ?', [title, content, id]);
-  return req.xhr ? res.sendStatus(204) : res.redirect('/posts');
-});
+// ---------- UPDATE (accept files on edit) ----------
+router.put(
+  '/:id',
+  isLoggedIn,
+  upload.fields([{ name: 'media_file', maxCount: 1 }, { name: 'thumbnail', maxCount: 1 }]),
+  async (req, res) => {
+    const id = Number(req.params.id);
+
+    const {
+      title,
+      content,
+      media_url: mediaUrlFromBody,   // optional URL replacement
+      display_mode,
+      media_type
+    } = req.body || {};
+
+    const mediaFile = req.files?.['media_file']?.[0];
+    const thumbFile = req.files?.['thumbnail']?.[0];
+
+    const updates = [];
+    const params  = [];
+
+    // Always allow text edits
+    if (typeof title   !== 'undefined') { updates.push('title = ?');   params.push(title || null); }
+    if (typeof content !== 'undefined') { updates.push('content = ?'); params.push(content || null); }
+
+    // Replace image via URL or uploaded file (URL wins if both provided)
+    if (mediaUrlFromBody && mediaUrlFromBody.trim() !== '') {
+      updates.push('media_url = ?'); params.push(mediaUrlFromBody.trim());
+    } else if (mediaFile) {
+      updates.push('media_url = ?'); params.push(`/uploads/${mediaFile.filename}`);
+    }
+
+    // Replace thumbnail if provided
+    if (thumbFile) {
+      updates.push('thumbnail_url = ?'); params.push(`/uploads/${thumbFile.filename}`);
+    }
+
+    // (Optional) persist/normalize type
+    if (display_mode) { updates.push('display_mode = ?'); params.push(display_mode); }
+    if (media_type)   { updates.push('media_type = ?');   params.push(media_type);   }
+
+    if (!updates.length) return res.redirect('/posts'); // nothing to change
+
+    //updates.push('updated_at = NOW()'); // if you have this column
+    const sql = `UPDATE posts SET ${updates.join(', ')} WHERE id = ?`;
+    params.push(id);
+
+    await db.execute(sql, params);
+    return res.redirect('/posts');
+  }
+);
+
 
 // ---------- DELETE ----------
 router.delete('/:id', isLoggedIn, async (req, res) => {

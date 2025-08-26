@@ -223,12 +223,12 @@
 
 <% posts.forEach(post => { %>
   
-
     <% if (post.media_type === 'text') { %>
       <div class="post-card" data-media="<%= post.media_type %>">
         
         <div class="edit-delete">
-
+          
+          <!-- Edit button -->
           <form class="edit-form" action="/posts/<%= post.id %>/edit" method="GET">
             <button class="edit-btn">✎</button>
           </form>
@@ -238,6 +238,7 @@
             <button type="submit" class="delete-btn">&times;</button>
           </form>
         </div>
+
         <% if (post.title) { %><h3><%= post.title %></h3><% } %>
         <% if (post.content) { %><p><%= post.content %></p><% } %>
         
@@ -253,10 +254,18 @@
     <% } else if (post.media_type === 'image') { %>
       <div class="post-card" data-media="<%= post.media_type %>">
 
-         <!-- Delete button -->
-        <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
-          <button type="submit" class="delete-btn">&times;</button>
-        </form>
+        <div class="edit-delete">
+          
+          <!-- Edit button -->
+          <form class="edit-form" action="/posts/<%= post.id %>/edit" method="GET">
+            <button class="edit-btn">✎</button>
+          </form>
+
+          <!-- Delete button -->
+          <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
+            <button type="submit" class="delete-btn">&times;</button>
+          </form>
+        </div>
 
         <% if (post.media_url) { %>
           <img src="<%= post.media_url %>" alt="" class="w-full rounded mt-2" />
@@ -277,10 +286,18 @@
 
       <div class="post-card" data-media="<%= post.media_type %>">
 
-        <!-- Delete button -->
-        <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
-          <button type="submit" class="delete-btn">&times;</button>
-        </form>
+        <div class="edit-delete">
+          
+          <!-- Edit button -->
+          <form class="edit-form" action="/posts/<%= post.id %>/edit" method="GET">
+            <button class="edit-btn">✎</button>
+          </form>
+
+          <!-- Delete button -->
+          <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
+            <button type="submit" class="delete-btn">&times;</button>
+          </form>
+        </div>
 
 
         <% if (post.media_url) { %>
@@ -303,10 +320,18 @@
     <% } else if (post.media_type === 'audio') { %>
       <div class="post-card" data-media="<%= post.media_type %>">
 
-        <!-- Delete button -->
-        <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
-          <button type="submit" class="delete-btn">&times;</button>
-        </form>
+        <div class="edit-delete">
+          
+          <!-- Edit button -->
+          <form class="edit-form" action="/posts/<%= post.id %>/edit" method="GET">
+            <button class="edit-btn">✎</button>
+          </form>
+
+          <!-- Delete button -->
+          <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
+            <button type="submit" class="delete-btn">&times;</button>
+          </form>
+        </div>
 
         <% if (post.media_url) { %>
           <audio controls class="w-full mt-2">
@@ -329,10 +354,18 @@
 
       <div class="post-card" data-media="<%= post.media_type %>">
       
-        <!-- Delete button -->
-        <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
-          <button type="submit" class="delete-btn">&times;</button>
-        </form>
+        <div class="edit-delete">
+          
+          <!-- Edit button -->
+          <form class="edit-form" action="/posts/<%= post.id %>/edit" method="GET">
+            <button class="edit-btn">✎</button>
+          </form>
+
+          <!-- Delete button -->
+          <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
+            <button type="submit" class="delete-btn">&times;</button>
+          </form>
+        </div>
    
           <% if (post.media_url) { %>
             <h3><%= post.title || 'download' %></h3>
@@ -356,10 +389,19 @@
 
         <div class="post-card" data-media="<%= post.media_type %>">
 
-          <!-- Delete button -->
-          <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
-            <button type="submit" class="delete-btn">&times;</button>
-          </form>
+          <div class="edit-delete">
+          
+            <!-- Edit button -->
+            <form class="edit-form" action="/posts/<%= post.id %>/edit" method="GET">
+              <button class="edit-btn">✎</button>
+            </form>
+
+            <!-- Delete button -->
+            <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
+              <button type="submit" class="delete-btn">&times;</button>
+            </form>
+
+          </div>
 
           <h3><%= post.title || 'link' %></h3>
           <% if (post.content) { %><p><%= post.content %></p><% } %>
@@ -389,10 +431,19 @@
     <% } else if (post.media_type === 'poll') { %>
       <div class="post-card" data-media="<%= post.media_type %>">
 
-        <!-- Delete button -->
-        <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
-          <button type="submit" class="delete-btn">&times;</button>
-        </form>
+        <div class="edit-delete">
+          
+          <!-- Edit button -->
+          <form class="edit-form" action="/posts/<%= post.id %>/edit" method="GET">
+            <button class="edit-btn">✎</button>
+          </form>
+
+          <!-- Delete button -->
+          <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
+            <button type="submit" class="delete-btn">&times;</button>
+          </form>
+
+        </div>
 
         <% if (post.title) { %><h3><%= post.title %></h3><% } %>
         <% if (post.content) { %><p><%= post.content %></p><% } %>
@@ -419,12 +470,20 @@
     <% } else if (post.media_type === 'product') { %>
       <div class="post-card" data-media="<%= post.media_type %>">
 
-        <!-- Delete button -->
-        <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
-          <button type="submit" class="delete-btn">&times;</button>
-        </form>
+        <div class="edit-delete">
+          
+          <!-- Edit button -->
+          <form class="edit-form" action="/posts/<%= post.id %>/edit" method="GET">
+            <button class="edit-btn">✎</button>
+          </form>
 
-        <% // price can be "1.00" (string) or null; cast safely %>
+          <!-- Delete button -->
+          <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
+            <button type="submit" class="delete-btn">&times;</button>
+          </form>
+
+        </div>
+
         <% const p = (post.price == null) ? null : Number(parseFloat(String(post.price))); %>
         <% if (p !== null && Number.isFinite(p) && p != 0) { %>
         <h2>€<%= p.toFixed(2) %></h2>
@@ -454,10 +513,19 @@
     <% } else if (post.media_type === 'tipjar') { %>
       <div class="post-card" data-media="<%= post.media_type %>">
         
-        <!-- Delete button -->
-        <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
-          <button type="submit" class="delete-btn">&times;</button>
-        </form>
+        <div class="edit-delete">
+          
+          <!-- Edit button -->
+          <form class="edit-form" action="/posts/<%= post.id %>/edit" method="GET">
+            <button class="edit-btn">✎</button>
+          </form>
+
+          <!-- Delete button -->
+          <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
+            <button type="submit" class="delete-btn">&times;</button>
+          </form>
+
+        </div>
 
         <% if (post.media_url) { %>
           <img 
@@ -488,10 +556,19 @@
     <% } else if (post.media_type === 'ama') { %>
       <div class="post-card" data-media="<%= post.media_type %>">
 
-        <!-- Delete button -->
-        <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
-          <button type="submit" class="delete-btn">&times;</button>
-        </form>
+        <div class="edit-delete">
+          
+          <!-- Edit button -->
+          <form class="edit-form" action="/posts/<%= post.id %>/edit" method="GET">
+            <button class="edit-btn">✎</button>
+          </form>
+
+          <!-- Delete button -->
+          <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
+            <button type="submit" class="delete-btn">&times;</button>
+          </form>
+
+        </div>
 
         <% if (post.title) { %><h3><%= post.title %></h3><% } %>
         
@@ -533,8 +610,6 @@
         </div>
       </div>
     <% } %>
-
-   
 <% }); %>
 
 

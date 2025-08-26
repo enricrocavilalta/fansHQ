@@ -22,6 +22,7 @@
   </label>
 
   <button type="submit"><%= submitLabel %></button>
+  <a id="cancelLink" href="/posts" class="btn btn-ghost">Cancel</a>
 </form>
 
 
@@ -81,3 +82,13 @@
     }
     
 </style>
+
+<script>
+  // If user came from another page, send them back there instead of /posts
+  (function () {
+    var a = document.getElementById('cancelLink');
+    if (document.referrer && new URL(document.referrer).origin === location.origin) {
+      a.href = document.referrer;
+    }
+  })();
+</script>
