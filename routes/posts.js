@@ -5,13 +5,16 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 
-const db = require('../db');                 // ✅ your mysql2/promise pool/conn
+const db = require('../db');
 const isLoggedIn = require('../middleware/auth');
 
-// ⚠️ Do NOT call app.use(...) in a router file.
-// Put this in app.js:
-// app.use(express.urlencoded({ extended: true }));
-// app.use(methodOverride('_method'));
+
+
+router.use((req, res, next) => {
+  console.log('[posts]', req.method, req.originalUrl);
+  next();
+});
+
 
 // ---------- Multer (uploads) ----------
 const storage = multer.diskStorage({
@@ -23,37 +26,49 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
+// ---------- Debug ----------
 router.get('/_debug', async (req, res) => {
   const [[countRow]] = await db.query('SELECT COUNT(*) AS n FROM posts');
   const [sample] = await db.query('SELECT id,title,created_at FROM posts ORDER BY id DESC LIMIT 5');
   res.json({ db: process.env.DB_NAME, rows: countRow.n, sample });
 });
+router.get('/ping', (req, res) => res.send('posts router OK'));
 
-router.get('/ping', (req, res) => res.send('posts router OK')); // debug route
-
-// ---------- New post form ----------
-// routes/posts.js
-const VALID_TYPES = ['text','image','video','audio','link','file','poll','product','tipjar','ama'];
-
-router.get('/new/:type', isLoggedIn, (req, res) => {
-  const type = String(req.params.type || '').toLowerCase();
-  if (!VALID_TYPES.includes(type)) return res.status(404).send('Invalid content type');
-  res.render(`posts/new_${type}`, { type });
+// ---------- NEW: text ----------
+router.get('/new/text', isLoggedIn, (req, res) => {
+  res.render('posts/new_text', {
+    mode: 'create',
+    type: 'text',
+    post: {},
+    action: '/posts',
+    submitLabel: 'Create'
+  });
 });
 
-router.get('/', async (req, res) => {
-  try {
-    const [rows] = await db.query(`
-      SELECT p.*, u.email, p.id AS post_id
-      FROM posts p
-      LEFT JOIN users u ON u.id = p.user_id
-      ORDER BY p.created_at DESC
-    `);
-    res.render('posts/index', { posts: rows });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('DB error');
-  }
+// ---------- EDIT: reuse new_<type>.ejs ----------
+router.get('/:id/edit', isLoggedIn, async (req, res) => {
+  const id = Number(req.params.id);
+  const [rows] = await db.execute('SELECT * FROM posts WHERE id = ?', [id]);
+  const post = rows[0];
+  if (!post) return res.status(404).send('Not found');
+
+  // if (post.user_id !== req.session.userId) return res.status(403).send('Forbidden');
+
+  const type = (post.display_mode || post.media_type || 'text').toLowerCase();
+  const viewByType = {
+    text:'new_text', image:'new_image', video:'new_video', audio:'new_audio',
+    link:'new_link', file:'new_file', poll:'new_poll', product:'new_product',
+    tipjar:'new_tipjar', ama:'new_ama'
+  };
+  const view = viewByType[type] || 'new_text';
+
+  res.render(`posts/${view}`, {
+    mode: 'edit',
+    type,
+    post,
+    action: `/posts/${id}?_method=PUT`,
+    submitLabel: 'Save changes'
+  });
 });
 
 // ---------- Posts by user ----------
@@ -67,8 +82,7 @@ router.get('/by/:userId', async (req, res) => {
       WHERE p.user_id = ?
       ORDER BY p.created_at DESC
     `, [userId]);
-
-    if (rows.length === 0) return res.send('This user has no posts.');
+    if (!rows.length) return res.send('This user has no posts.');
     const posts = rows.map(r => ({ ...r, price: r.price == null ? null : Number(r.price) }));
     res.render('posts/index', { posts });
   } catch (err) {
@@ -77,14 +91,20 @@ router.get('/by/:userId', async (req, res) => {
   }
 });
 
-
-
-// ---------- Create post ----------
+// ---------- CREATE ----------
 router.post(
   '/',
   isLoggedIn,
   upload.fields([{ name: 'media_file', maxCount: 1 }, { name: 'thumbnail', maxCount: 1 }]),
   async (req, res) => {
+    // debug
+    console.log('CREATE HIT:', {
+      ct: req.headers['content-type'],
+      bodyKeys: Object.keys(req.body || {}),
+      hasMedia: !!(req.files?.['media_file']?.[0]),
+      hasThumb: !!(req.files?.['thumbnail']?.[0]),
+    });
+
     const {
       title,
       content,
@@ -95,28 +115,20 @@ router.post(
       price,
       option_1, option_2, option_3, option_4, option_5,
       option_6, option_7, option_8, option_9, option_10
-    } = req.body;
+    } = req.body || {};
 
     const mediaFile = req.files?.['media_file']?.[0];
     const thumbnailFile = req.files?.['thumbnail']?.[0];
 
     let media_url = null;
-    let final_thumbnail_url = null;
-    let final_display_text = null;
+    if (mediaUrlFromBody && mediaUrlFromBody.trim() !== '') media_url = mediaUrlFromBody.trim();
+    else if (mediaFile) media_url = `/uploads/${mediaFile.filename}`;
 
-    if (mediaUrlFromBody && mediaUrlFromBody.trim() !== '') {
-      media_url = mediaUrlFromBody.trim();
-    } else if (mediaFile) {
-      media_url = `/uploads/${mediaFile.filename}`;
-    }
-
-    if (thumbnailFile) {
-      final_thumbnail_url = `/uploads/${thumbnailFile.filename}`;
-    } else if (display_mode === 'text') {
-      final_display_text = display_text || null;
-    }
+    const final_thumbnail_url = thumbnailFile ? `/uploads/${thumbnailFile.filename}` : null;
+    const final_display_text  = (!final_thumbnail_url && display_mode === 'text') ? (display_text || null) : null;
 
     const userId = req.session.userId;
+    if (!userId) return res.status(401).send('Login required');
 
     try {
       await db.execute(
@@ -132,11 +144,11 @@ router.post(
           userId,
           title || null,
           content || null,
-          media_type || null,
+          media_type || display_mode || 'text',
           media_url,
           final_display_text,
           final_thumbnail_url,
-          display_mode || null,
+          display_mode || media_type || 'text',
           price || 0,
           option_1 || null, option_2 || null, option_3 || null, option_4 || null, option_5 || null,
           option_6 || null, option_7 || null, option_8 || null, option_9 || null, option_10 || null,
@@ -144,56 +156,45 @@ router.post(
         ]
       );
 
-      res.redirect('/posts');
+      return res.redirect('/posts');
     } catch (err) {
-      console.error('INSERT ERROR:', err.message);
-      res.status(500).send('Error saving post');
+      console.error('INSERT ERROR:', err);
+      return res.status(500).send('Error saving post: ' + err.message);
     }
   }
 );
 
+// ---------- FEED (REAL QUERY; remove the stub) ----------
 router.get('/', async (req, res) => {
-  // Replace with your real DB query; this just proves the route exists
-  res.render('posts/index', { posts: [] });
-});
-
-module.exports = router;  // <-- export exactly once, at the end
-
-// ---------- Edit form (GET) ----------
-router.get('/:id/edit', isLoggedIn, async (req, res) => {
-  const id = Number(req.params.id);
-  const [rows] = await db.execute('SELECT * FROM posts WHERE id = ?', [id]);
-  const post = rows[0];
-  if (!post) return res.status(404).send('Not found');
-
-  const type = post.display_mode || post.media_type || 'text'; 
-  res.render('posts/edit', { post, type });                    
-});
-
-// ---------- Update (PUT) ----------
-// routes/posts.js
-router.put(
-  '/:id',
-  isLoggedIn,
-  upload.none(), // parses multipart but no files
-  async (req, res) => {
-    const id = Number(req.params.id);
-    const { title, content } = req.body;  // now defined
-    await db.execute('UPDATE posts SET title = ?, content = ? WHERE id = ?', [title, content, id]);
-    return req.xhr ? res.sendStatus(204) : res.redirect('/posts');
+  try {
+    const [rows] = await db.query(`
+      SELECT p.*, u.email, p.id AS post_id
+      FROM posts p
+      LEFT JOIN users u ON u.id = p.user_id
+      ORDER BY p.created_at DESC
+    `);
+    res.render('posts/index', { posts: rows });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('DB error');
   }
-);
+});
 
+// ---------- UPDATE ----------
+router.put('/:id', isLoggedIn, upload.none(), async (req, res) => {
+  const id = Number(req.params.id);
+  const { title, content } = req.body || {};
+  await db.execute('UPDATE posts SET title = ?, content = ? WHERE id = ?', [title, content, id]);
+  return req.xhr ? res.sendStatus(204) : res.redirect('/posts');
+});
 
-// ---------- Delete (DELETE) ----------
+// ---------- DELETE ----------
 router.delete('/:id', isLoggedIn, async (req, res) => {
   const id = Number(req.params.id);
-
   const [result] = await db.execute('DELETE FROM posts WHERE id = ?', [id]);
   const affected = result.affectedRows ?? result.rowCount ?? 0;
-
   if (req.xhr) return res.sendStatus(affected ? 204 : 404);
   return res.redirect('/posts');
 });
 
-module.exports = router;
+module.exports = router; // keep this ONCE, at the very end

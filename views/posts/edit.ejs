@@ -12,23 +12,23 @@
   <input type="hidden" name="display_mode" value="<%= type %>"><!-- keep type -->
 
   <% if (type === 'text') { %>
+
     Title: <br>
     <input type="text" name="title" value="<%= post.title || '' %>"> <br>
+
     Content:  <br>
-    <textarea name="content" rows="5"><%= post.content || '' %></textarea> <br>
+    <textarea name="content" rows="5" value="<%= post.content || '' %>"></textarea> <br>
+
   <% } else if (type === 'image') { %>
-    <fieldset>
-      <legend>Image settings</legend>
-      <label>Image URL
-        <input type="url" name="media_url" value="<%= post.media_url || '' %>">
-      </label>
-      <label>Or upload new image
-        <input type="file" name="media_file" accept="image/*">
-      </label>
-      <label>Thumbnail
-        <input type="file" name="thumbnail" accept="image/*">
-      </label>
-    </fieldset>
+    
+    Image:
+    <input type="file" name="media_file" accept="image/*" value="<%= post. || '' %>"><br>
+
+    <label for="title">Title:</label><input type="text" name="title" value="<%= post.title || '' %>"><br>
+    
+    <label for="title">Description:</label><textarea name="content" value="<%= post.content || '' %>"></textarea><br>
+    
+    <label for="title">Price:</label><input type="number" name="price" step="0.01" value="<%= post.content || '' %>"><br><br>
   <% } else if (type === 'video') { %>
     <fieldset>
       <legend>Video</legend>

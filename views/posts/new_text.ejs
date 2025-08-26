@@ -4,15 +4,26 @@
 <link rel="stylesheet" href="/styles_typed_colors.css">
 
 
-<form action="/posts" method="POST" enctype="multipart/form-data" class="content-form" data-media="text">
- <h1>Text upload</h1>
-  <input type="hidden" name="media_type" value="text">
-  Title: <br>
-  <input name="title"><br><br>
-  Text: <br>
-  <textarea name="content" required></textarea><br><br>
-  <button type="submit">Post Text</button>
+<% var isEdit = (mode === 'edit'); var P = post || {}; %>
+
+<form action="<%= action %>" method="POST" enctype="multipart/form-data" class="content-form" data-media="text">
+  <!-- for multipart forms, prefer query-string override -->
+  <!-- OR also include this hidden input if you want -->
+  <!-- <input type="hidden" name="_method" value="PUT"> -->
+
+  <input type="hidden" name="display_mode" value="<%= type %>">
+
+  <label>Title
+    <input type="text" name="title" value="<%= P.title ? P.title : '' %>">
+  </label>
+
+  <label>Content
+    <textarea name="content" rows="6" required><%= P.content ? P.content : '' %></textarea>
+  </label>
+
+  <button type="submit"><%= submitLabel %></button>
 </form>
+
 
 <style>
   .content-form[data-media="text"] {
