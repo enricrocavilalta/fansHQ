@@ -101,13 +101,19 @@
   font-weight: bold;
 }
 
-.content-form[data-media] button {
+.content-form[data-media="link"] button {
+  background-color: hsl(180, 90%, 50%);
+  color: #000;
   font-weight: bold;
   padding: 0.5rem 1rem;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.2s ease;
+}
+
+.content-form[data-media="link"] button:hover {
+  background-color: hsl(180, 90%, 60%);
 }
 
 .mode-box-container {

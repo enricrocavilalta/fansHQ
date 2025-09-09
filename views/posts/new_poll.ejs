@@ -61,13 +61,19 @@
   font-weight: bold;
 }
 
-.content-form[data-media] button {
+.content-form[data-media="poll"] button {
+  background-color: hsl(270, 90%, 50%);
+  color: #fff;
   font-weight: bold;
   padding: 0.5rem 1rem;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.2s ease;
+}
+
+.content-form[data-media="poll"] button:hover {
+  background-color: hsl(270, 90%, 60%);
 }
 
   form {

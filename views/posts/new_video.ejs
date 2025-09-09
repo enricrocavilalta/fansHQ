@@ -3,11 +3,17 @@
 <link rel="stylesheet" href="/styles.css">
 <link rel="stylesheet" href="/styles_typed_colors.css">
 
-<form action="/posts" method="POST" enctype="multipart/form-data" class="content-form" data-media="video">
-  
-  <input type="hidden" name="media_type" value="video">
+<% var isEdit = (mode === 'edit'); var P = post || {}; %>
 
-  <h1>Video upload</h1>
+
+<form action="<%= action %>" method="POST" enctype="multipart/form-data" class="content-form" data-media="video">
+
+  <!-- keep the type on submit -->
+  <input type="hidden" name="display_mode" value="video">
+  <input type="hidden" name="media_type"   value="video">
+
+  <h2><%= isEdit ? 'Edit video post' : 'New video post' %></h2>
+
 
   <div class="mode-box-container">
     <label class="mode-box active">
@@ -20,15 +26,15 @@
       <input type="radio" name="display_mode" value="embed" onchange="toggleSections()">
       <strong>🔗 Embed</strong><br>
       URL or embed code
-      <input name="media_url">
+      <input name="media_url" value="<%= P.media_url ? P.media_url : '' %>">
     </label>
   </div>
   <br>
   <label>Title:</label>  <br>
-  <input type="text" name="title"><br><br>
+  <input type="text" name="title" value="<%= P.title ? P.title : '' %>"><br><br>
 
   <label>Description:</label><br>
-  <textarea name="content"></textarea><br><br>
+  <textarea name="content"><%= P.content ? P.content : '' %></textarea><br><br>
 
   <div id="uploadSection">
  
@@ -41,7 +47,8 @@
   <label>Thumbnail:</label><br>
   <input type="file" name="thumbnail" accept="image/*"><br><br>
 
-  <button type="submit">Create Video Post</button>
+  <a href="<%= cancelHref || '/posts' %>" class="btn btn-ghost">Cancel</a>
+  <button type="submit" class="btn btn-primary"><%= submitLabel %></button>
 </form>
 
 <style>

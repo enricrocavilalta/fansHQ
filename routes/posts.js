@@ -8,6 +8,7 @@ const path = require('path');
 const db = require('../db');
 const isLoggedIn = require('../middleware/auth');
 
+router.use((req,res,next)=>{ console.log('[posts]', req.method, req.originalUrl); next(); });
 
 
 router.use((req, res, next) => {
@@ -44,6 +45,47 @@ router.get('/new/:type', isLoggedIn, (req,res)=>{
 
 
 // ---------- EDIT: reuse new_<type>.ejs ----------
+
+// routes/posts.js
+// EDIT (reuses new_<type>.ejs)
+// routes/posts.js
+// EDIT (reuses new_<type>.ejs)
+router.get('/:id/edit', isLoggedIn, async (req, res) => {
+  const id = Number(req.params.id);
+  const [rows] = await db.execute('SELECT * FROM posts WHERE id = ?', [id]);
+  const post = rows[0];
+  if (!post) return res.status(404).send('Not found');
+
+
+
+
+
+  
+  const type = (post.media_type).toLowerCase();
+
+  //console.log(type);
+
+  const viewByType = {
+    text:'new_text', image:'new_image', video:'new_video', audio:'new_audio',
+    link:'new_link', file:'new_file', poll:'new_poll', product:'new_product',
+    tipjar:'new_tipjar', ama:'new_ama'
+  };
+  const view = viewByType[type];
+
+  res.render(`posts/${view}`, {
+    mode: 'edit',
+    type,
+    post,
+    action: `/posts/${id}?_method=PUT`,
+    submitLabel: 'Update',
+    cancelHref: '/posts'
+  });
+});
+
+
+
+
+/*
 router.get('/:id/edit', isLoggedIn, async (req, res) => {
   const id = Number(req.params.id);
   const [rows] = await db.execute('SELECT * FROM posts WHERE id = ?', [id]);
@@ -68,7 +110,7 @@ router.get('/:id/edit', isLoggedIn, async (req, res) => {
     submitLabel: 'Save changes'
   });
 });
-
+*/
 // ---------- Posts by user ----------
 router.get('/by/:userId', async (req, res) => {
   const userId = Number(req.params.userId);
@@ -186,12 +228,17 @@ router.put(
   async (req, res) => {
     const id = Number(req.params.id);
 
+    // --- helpers to normalize body fields ---
+    const pickOne = v => Array.isArray(v) ? (v[0] ?? '') : (v ?? '');
+    const normLower = v => String(pickOne(v)).trim().toLowerCase();
+    const normStr   = v => String(pickOne(v)).trim();
+
     const {
       title,
       content,
-      media_url: mediaUrlFromBody,   // optional URL replacement
+      media_url: mediaUrlFromBodyRaw, // may be '', url, or undefined/array
       display_mode,
-      media_type
+      media_type,
     } = req.body || {};
 
     const mediaFile = req.files?.['media_file']?.[0];
@@ -200,36 +247,54 @@ router.put(
     const updates = [];
     const params  = [];
 
-    // Always allow text edits
-    if (typeof title   !== 'undefined') { updates.push('title = ?');   params.push(title || null); }
-    if (typeof content !== 'undefined') { updates.push('content = ?'); params.push(content || null); }
+    // text fields (keep exactly what user sent)
+    if (typeof title   !== 'undefined') { updates.push('title = ?');   params.push(pickOne(title)); }
+    if (typeof content !== 'undefined') { updates.push('content = ?'); params.push(pickOne(content)); }
 
-    // Replace image via URL or uploaded file (URL wins if both provided)
-    if (mediaUrlFromBody && mediaUrlFromBody.trim() !== '') {
-      updates.push('media_url = ?'); params.push(mediaUrlFromBody.trim());
-    } else if (mediaFile) {
-      updates.push('media_url = ?'); params.push(`/uploads/${mediaFile.filename}`);
+    // ---- media_url decision (URL or file or clear) ----
+    const bodyHadMediaUrl = Object.prototype.hasOwnProperty.call(req.body || {}, 'media_url');
+    const mediaUrlFromBody = bodyHadMediaUrl ? normStr(mediaUrlFromBodyRaw) : undefined;
+
+    let newMediaUrl; // undefined = don't touch; string = set; null = clear
+
+    if (mediaFile) newMediaUrl = `/uploads/${mediaFile.filename}`;   // file candidate
+
+    if (bodyHadMediaUrl) {                                           // form had media_url field → it wins
+      newMediaUrl = mediaUrlFromBody === '' ? null : mediaUrlFromBody;
     }
 
-    // Replace thumbnail if provided
+    if (newMediaUrl !== undefined) {
+      updates.push('media_url = ?');
+      params.push(newMediaUrl);
+    }
+
+    // thumbnail
     if (thumbFile) {
-      updates.push('thumbnail_url = ?'); params.push(`/uploads/${thumbFile.filename}`);
+      updates.push('thumbnail_url = ?');
+      params.push(`/uploads/${thumbFile.filename}`);
     }
 
-    // (Optional) persist/normalize type
-    if (display_mode) { updates.push('display_mode = ?'); params.push(display_mode); }
-    if (media_type)   { updates.push('media_type = ?');   params.push(media_type);   }
+    // normalize types safely (only if provided & non-empty)
+    const dm = normLower(display_mode);   // '' if missing
+    const mt = normLower(media_type);
+    if (dm) { updates.push('display_mode = ?'); params.push(dm); }
+    if (mt) { updates.push('media_type   = ?'); params.push(mt); }
 
-    if (!updates.length) return res.redirect('/posts'); // nothing to change
+    // debug
+    console.log('PUT media debug:', {
+      bodyHadMediaUrl, mediaUrlFromBody, hasFile: !!mediaFile, decided: newMediaUrl, dm, mt
+    });
 
-    //updates.push('updated_at = NOW()'); // if you have this column
+    if (!updates.length) return res.redirect('/posts');
+
     const sql = `UPDATE posts SET ${updates.join(', ')} WHERE id = ?`;
     params.push(id);
 
     await db.execute(sql, params);
-    return res.redirect('/posts');
+    res.redirect('/posts');
   }
 );
+
 
 
 // ---------- DELETE ----------
@@ -240,5 +305,17 @@ router.delete('/:id', isLoggedIn, async (req, res) => {
   if (req.xhr) return res.sendStatus(affected ? 204 : 404);
   return res.redirect('/posts');
 });
+
+
+
+router.get('/_routes', (req, res) => {
+  const list = router.stack
+    .filter(l => l.route)
+    .map(l => ({ path: l.route.path, methods: Object.keys(l.route.methods) }));
+  res.json(list);
+});
+
+
+
 
 module.exports = router; // keep this ONCE, at the very end

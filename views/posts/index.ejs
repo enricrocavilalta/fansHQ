@@ -447,16 +447,16 @@
 
         <% if (post.title) { %><h3><%= post.title %></h3><% } %>
         <% if (post.content) { %><p><%= post.content %></p><% } %>
-        <% if (post.option_1) { %><p><%= post.votes_1 + " " + post.option_1 %></p><% } %>
-        <% if (post.option_2) { %><p><%= post.votes_2 + " " + post.option_2 %></p><% } %>
-        <% if (post.option_3) { %><p><%= post.votes_3 + " " + post.option_3 %></p><% } %>
-        <% if (post.option_4) { %><p><%= post.votes_4 + " " + post.option_4 %></p><% } %>
-        <% if (post.option_5) { %><p><%= post.votes_5 + " " + post.option_5 %></p><% } %>
-        <% if (post.option_6) { %><p><%= post.votes_6 + " " + post.option_6 %></p><% } %>
-        <% if (post.option_7) { %><p><%= post.votes_7 + " " + post.option_7 %></p><% } %>
-        <% if (post.option_8) { %><p><%= post.votes_8 + " " + post.option_8 %></p><% } %>
-        <% if (post.option_9) { %><p><%= post.votes_9 + " " + post.option_9 %></p><% } %>
-        <% if (post.option_10) { %><p><%= post.votes_10 + " " + post.option_10 %></p><% } %>
+        <% if (post.option_1) { %><p><%= post.votes_1 %><input type="radio" id=<%= post.id %> name=<%= post.id %> value=1><%= post.option_1 %></p><% } %>
+        <% if (post.option_2) { %><p><%= post.votes_2 %><input type="radio" id=<%= post.id %> name=<%= post.id %> value=1><%= post.option_2 %></p><% } %>
+        <% if (post.option_3) { %><p><%= post.votes_3 %><input type="radio" id=<%= post.id %> name=<%= post.id %> value=1><%= post.option_3 %></p><% } %>
+        <% if (post.option_4) { %><p><%= post.votes_4 %><input type="radio" id=<%= post.id %> name=<%= post.id %> value=1><%= post.option_4 %></p><% } %>
+        <% if (post.option_5) { %><p><%= post.votes_5 %><input type="radio" id=<%= post.id %> name=<%= post.id %> value=1><%= post.option_5 %></p><% } %>
+        <% if (post.option_6) { %><p><%= post.votes_6 %><input type="radio" id=<%= post.id %> name=<%= post.id %> value=1><%= post.option_6 %></p><% } %>
+        <% if (post.option_7) { %><p><%= post.votes_7 %><input type="radio" id=<%= post.id %> name=<%= post.id %> value=1><%= post.option_7 %></p><% } %>
+        <% if (post.option_8) { %><p><%= post.votes_8 %><input type="radio" id=<%= post.id %> name=<%= post.id %> value=1><%= post.option_8 %></p><% } %>
+        <% if (post.option_9) { %><p><%= post.votes_9 %><input type="radio" id=<%= post.id %> name=<%= post.id %> value=1><%= post.option_9 %></p><% } %>
+        <% if (post.option_10) { %><p><%= post.votes_10 %><input type="radio" id=<%= post.id %> name=<%= post.id %> value=1><%= post.option_10 %></p><% } %>
 
         <div class="author-info mt-3 text-sm opacity-80">
           By
@@ -500,6 +500,11 @@
         <% if (post.title) { %><h3><%= post.title %></h3><% } %>
         
         <% if (post.content) { %><p><%= post.content %></p><% } %>
+        
+        <br>
+        <form action="" method="POST">
+          <button type="submit"style="background-color:hsl(30, 90%, 50%);color:#f0f0f0; border: none; border-radius: 6px;">Buy</button>
+        </form>
           
         <div class="author-info mt-3 text-sm opacity-80">
           By
@@ -540,7 +545,7 @@
         <% if (post.content) { %><p><%= post.content %></p><% } %>
 
         <form action="/tip/<%= post.id %>" method="POST">
-          <button type="submit" style="background-color: #303030;color:#f0f0f0; border: none; border-radius: 6px;">DONATE</button>
+          <button type="submit" style="background-color:hsl(0, 0%, 50%);color:#f0f0f0; border: none; border-radius: 6px;">DONATE</button>
           <input type="number" name="tip" id="tip" value="<%= post.price %>" step="1" min="1" size="3" style="text-align:right; background-color: #303030;color:#f0f0f0; border: none; border-radius: 6px;"; required>$
         </form>
         
@@ -573,11 +578,11 @@
         <% if (post.title) { %><h3><%= post.title %></h3><% } %>
         
         <% if (post.content) { %><p><%= post.content %></p><% } %>
-
+        <br>
         <form action="/tip/<%= post.id %>" method="POST">
-          <textarea type="text" name="question" id="question" value="?" style="background-color: #303030;color:#f0f0f0; border: none; border-radius: 6px;"; size="100" data-autogrow required></textarea>
-          <br>
-          <button type="submit"style="background-color: #303030;color:#f0f0f0; border: none; border-radius: 6px;">ASK</button>
+          <textarea type="text" name="question" id="question" value="?" style="background-color: #303030;color:#f0f0f0; border: none; border-radius: 6px;"; rows="5" cols="50" data-autogrow required></textarea>
+          <br><br>
+          <button type="submit"style="background-color: #f0f0f0;color:#000; border: none; border-radius: 6px;">ASK</button>
         </form>
 
         <div class="author-info mt-3 text-sm opacity-80">
@@ -611,7 +616,6 @@
       </div>
     <% } %>
 <% }); %>
-
 
 </section>
 
