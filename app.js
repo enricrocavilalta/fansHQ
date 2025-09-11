@@ -30,9 +30,52 @@ app.use((req, res, next) => {
   next();
 });
 
+// Parse JSON bodies
+app.use(express.json());
+
+// (Optional) parse HTML form posts (application/x-www-form-urlencoded)
+app.use(express.urlencoded({ extended: true }));
 
 // routes
 app.use('/posts', postsRouter);
+
+
+
+app.use((req, _res, next) => {
+  console.log(req.method, req.url, 'CT=', req.headers['content-type']);
+  next();
+});
+
+
+
+// POST /api/posts/:postId/ask
+app.post("/api/posts/:postId/ask", async (req, res) => {
+  try {
+    const postId = Number(req.params.postId);
+
+    // ✅ SAFE: rename on destructure to avoid self-reference TDZ
+    const { question: questionText } = req.body ?? {};
+
+    if (!Number.isInteger(postId)) {
+      return res.status(400).json({ message: "Invalid postId" });
+    }
+    if (!questionText || typeof questionText !== "string") {
+      return res.status(400).json({ message: "No question provided" });
+    }
+
+    await db.execute(
+      "INSERT INTO questions (post_id, question) VALUES (?, ?)",
+      [postId, questionText]
+    );
+
+    return res.json({ message: "Question saved!" });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Server error" });
+  }
+});
+
+
 
 // home -> feed
 app.get('/', (req, res) => res.redirect('/posts'));

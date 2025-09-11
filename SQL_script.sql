@@ -138,6 +138,14 @@ select * from posts;
 SET SQL_SAFE_UPDATES = 0;
 delete from posts where id=94;
 
+CREATE TABLE votes (
+  post_id   INT NOT NULL,
+  user_id   INT NOT NULL,
+  option_id INT NOT NULL,
+  PRIMARY KEY (post_id, user_id)   -- one vote per user per post
+);
+describe votes;
+drop table votes;
 CREATE TABLE questions (
   post_id INT PRIMARY KEY,
   question VARCHAR(255),
