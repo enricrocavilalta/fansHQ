@@ -176,10 +176,8 @@ router.post(
           user_id, title, content, media_type, media_url, display_text,
           thumbnail_url, display_mode, price,
           option_1, option_2, option_3, option_4, option_5,
-          option_6, option_7, option_8, option_9, option_10,
-          votes_1, votes_2, votes_3, votes_4, votes_5,
-          votes_6, votes_7, votes_8, votes_9, votes_10
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          option_6, option_7, option_8, option_9, option_10
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           userId,
           title || null,
@@ -191,8 +189,7 @@ router.post(
           display_mode || media_type || 'text',
           price || 0,
           option_1 || null, option_2 || null, option_3 || null, option_4 || null, option_5 || null,
-          option_6 || null, option_7 || null, option_8 || null, option_9 || null, option_10 || null,
-          ...Array(10).fill(0)
+          option_6 || null, option_7 || null, option_8 || null, option_9 || null, option_10 || null
         ]
       );
 

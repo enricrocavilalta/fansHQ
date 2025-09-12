@@ -585,6 +585,96 @@
           <button type="submit"style="background-color: #f0f0f0;color:#000; border: none; border-radius: 6px;">ASK</button>
         </form>
 
+
+
+
+        <section id="ama" data-post-id="<%= post.id %>">
+          <textarea id="q" rows="3" placeholder="Ask anything…"></textarea>
+          <div>
+            <input id="email" type="email" placeholder="Email (optional)">
+            <input id="tip" type="number" min="0" step="0.01" placeholder="Tip € (optional)">
+            <button id="send">Send</button>
+          </div>
+
+          <p id="err" style="color:#b91c1c;display:none"></p>
+
+          <ul id="list"></ul>
+        </section>
+
+
+
+        <script>
+(function () {
+  const box   = document.getElementById("ama");
+  if (!box) return;
+
+  const postId = box.dataset.postId;
+  const qEl    = box.querySelector("#q");
+  const email  = box.querySelector("#email");
+  const tip    = box.querySelector("#tip");
+  const send   = box.querySelector("#send");
+  const err    = box.querySelector("#err");
+  const list   = box.querySelector("#list");
+
+  function addRow(row) {
+    const li = document.createElement("li");
+
+    const meta = document.createElement("div");
+    meta.style.opacity = ".7";
+    meta.style.fontSize = ".8rem";
+    meta.textContent = (row.email || "Anonymous") + " • " + new Date(row.created_at).toLocaleString();
+    li.appendChild(meta);
+
+    if (row.question) {
+      const p = document.createElement("p");
+      p.textContent = row.question; // safe
+      li.appendChild(p);
+    }
+    if (Number(row.tip) > 0) {
+      const s = document.createElement("small");
+      s.textContent = "Tip: €" + Number(row.tip).toFixed(2);
+      li.appendChild(s);
+    }
+
+    list.insertBefore(li, list.firstChild);
+  }
+
+  send.addEventListener("click", async () => {
+    err.style.display = "none";
+    send.disabled = true;
+
+    try {
+      const payload = {
+        question: qEl.value.trim() || null,
+        email: email.value.trim() || null,
+        tip: tip.value ? Number(tip.value) : 0
+      };
+
+      const res = await fetch(`/api/posts/${postId}/ask`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) throw new Error("Server error");
+
+      const saved = await res.json();
+      addRow(saved);
+      qEl.value = "";
+      tip.value = "";
+    } catch (e) {
+      err.textContent = "Couldn’t send. Try again.";
+      err.style.display = "block";
+    } finally {
+      send.disabled = false;
+    }
+  });
+})();
+</script>
+
+
+
+
+
         <div class="author-info mt-3 text-sm opacity-80">
           By
           <% if (post.email) { %>
