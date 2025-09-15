@@ -559,117 +559,105 @@
       </div>
 
     <% } else if (post.media_type === 'ama') { %>
-      <div class="post-card" data-media="<%= post.media_type %>">
+  <div class="post-card" data-media="<%= post.media_type %>">
+    <div class="edit-delete">
+      <form class="edit-form" action="/posts/<%= post.id %>/edit" method="GET">
+        <button class="edit-btn">✎</button>
+      </form>
+      <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
+        <button type="submit" class="delete-btn">&times;</button>
+      </form>
+    </div>
 
-        <div class="edit-delete">
-          
-          <!-- Edit button -->
-          <form class="edit-form" action="/posts/<%= post.id %>/edit" method="GET">
-            <button class="edit-btn">✎</button>
-          </form>
+    <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+    <% if (post.content) { %><p><%= post.content %></p><% } %>
 
-          <!-- Delete button -->
-          <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
-            <button type="submit" class="delete-btn">&times;</button>
-          </form>
+    <section id="ama-<%= post.id %>" data-post-id="<%= post.id %>">
+      <textarea id="q-<%= post.id %>" rows="3" placeholder="Ask anything…"></textarea>
+      <div>
+        <input id="email-<%= post.id %>" type="email" placeholder="Email (optional)">
+        <input id="tip-<%= post.id %>" type="number" min="0" step="0.01" placeholder="Tip € (optional)">
+        <button id="send-<%= post.id %>">Send</button>
+      </div>
 
-        </div>
+      <p id="err-<%= post.id %>" style="color:#b91c1c;display:none"></p>
+      <ul id="list-<%= post.id %>"></ul>
+    </section>
 
-        <% if (post.title) { %><h3><%= post.title %></h3><% } %>
-        
-        <% if (post.content) { %><p><%= post.content %></p><% } %>
-        <br>
-        <form action="/tip/<%= post.id %>" method="POST">
-          <textarea type="text" name="question" id="question" value="?" style="background-color: #303030;color:#f0f0f0; border: none; border-radius: 6px;"; rows="5" cols="50" data-autogrow required></textarea>
-          <br><br>
-          <button type="submit"style="background-color: #f0f0f0;color:#000; border: none; border-radius: 6px;">ASK</button>
-        </form>
+    <script>
+    (function () {
+      const pid   = <%= post.id %>;
+      const box   = document.getElementById(`ama-${pid}`);
+      if (!box || box.dataset.bound === "1") return;   // bind once per block
+      box.dataset.bound = "1";
 
+      const postId = box.dataset.postId;
+      const qEl    = document.getElementById(`q-${pid}`);
+      const email  = document.getElementById(`email-${pid}`);
+      const tip    = document.getElementById(`tip-${pid}`);
+      const send   = document.getElementById(`send-${pid}`);
+      const err    = document.getElementById(`err-${pid}`);
+      const list   = document.getElementById(`list-${pid}`);
 
+      let busy = false;
 
+      function addRow(row) {
+        const li = document.createElement("li");
+        const meta = document.createElement("div");
+        meta.style.opacity = ".7";
+        meta.style.fontSize = ".8rem";
+        meta.textContent = (row.email || "Anonymous") + " • " + new Date(row.created_at).toLocaleString();
+        li.appendChild(meta);
+        if (row.question) {
+          const p = document.createElement("p");
+          p.textContent = row.question;
+          li.appendChild(p);
+        }
+        if (Number(row.tip) > 0) {
+          const s = document.createElement("small");
+          s.textContent = "Tip: €" + Number(row.tip).toFixed(2);
+          li.appendChild(s);
+        }
+        list.insertBefore(li, list.firstChild);
+      }
 
-        <section id="ama" data-post-id="<%= post.id %>">
-          <textarea id="q" rows="3" placeholder="Ask anything…"></textarea>
-          <div>
-            <input id="email" type="email" placeholder="Email (optional)">
-            <input id="tip" type="number" min="0" step="0.01" placeholder="Tip € (optional)">
-            <button id="send">Send</button>
-          </div>
+      send.addEventListener("click", async () => {
+        if (busy) return;                   // blocks double-click spam
+        busy = true;
+        err.style.display = "none";
+        send.disabled = true;
 
-          <p id="err" style="color:#b91c1c;display:none"></p>
+        try {
+          const payload = {
+            question: qEl.value.trim() || null,
+            email: email.value.trim() || null,
+            tip: tip.value ? Number(tip.value) : 0
+          };
 
-          <ul id="list"></ul>
-        </section>
+          const res = await fetch(`/api/posts/${postId}/ask`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(payload)
+          });
+          if (!res.ok) throw new Error("Server error");
 
-
-
-        <script>
-(function () {
-  const box   = document.getElementById("ama");
-  if (!box) return;
-
-  const postId = box.dataset.postId;
-  const qEl    = box.querySelector("#q");
-  const email  = box.querySelector("#email");
-  const tip    = box.querySelector("#tip");
-  const send   = box.querySelector("#send");
-  const err    = box.querySelector("#err");
-  const list   = box.querySelector("#list");
-
-  function addRow(row) {
-    const li = document.createElement("li");
-
-    const meta = document.createElement("div");
-    meta.style.opacity = ".7";
-    meta.style.fontSize = ".8rem";
-    meta.textContent = (row.email || "Anonymous") + " • " + new Date(row.created_at).toLocaleString();
-    li.appendChild(meta);
-
-    if (row.question) {
-      const p = document.createElement("p");
-      p.textContent = row.question; // safe
-      li.appendChild(p);
-    }
-    if (Number(row.tip) > 0) {
-      const s = document.createElement("small");
-      s.textContent = "Tip: €" + Number(row.tip).toFixed(2);
-      li.appendChild(s);
-    }
-
-    list.insertBefore(li, list.firstChild);
-  }
-
-  send.addEventListener("click", async () => {
-    err.style.display = "none";
-    send.disabled = true;
-
-    try {
-      const payload = {
-        question: qEl.value.trim() || null,
-        email: email.value.trim() || null,
-        tip: tip.value ? Number(tip.value) : 0
-      };
-
-      const res = await fetch(`/api/posts/${postId}/ask`, {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(payload)
+          const saved = await res.json();
+          addRow(saved);
+          qEl.value = "";
+          tip.value = "";
+        } catch (e) {
+          err.textContent = "Couldn’t send. Try again.";
+          err.style.display = "block";
+        } finally {
+          busy = false;
+          send.disabled = false;
+        }
       });
-      if (!res.ok) throw new Error("Server error");
+    })();
+    </script>
 
-      const saved = await res.json();
-      addRow(saved);
-      qEl.value = "";
-      tip.value = "";
-    } catch (e) {
-      err.textContent = "Couldn’t send. Try again.";
-      err.style.display = "block";
-    } finally {
-      send.disabled = false;
-    }
-  });
-})();
-</script>
+
+
 
 
 
