@@ -570,14 +570,15 @@
     </div>
 
     <% if (post.title) { %><h3><%= post.title %></h3><% } %>
-    <% if (post.content) { %><p><%= post.content %></p><% } %>
+    <% if (post.content) { %><p><%= post.content %></p><br><% } %>
 
     <section id="ama-<%= post.id %>" data-post-id="<%= post.id %>">
-      <textarea id="q-<%= post.id %>" rows="3" placeholder="Ask anything…"></textarea>
+      Question:<br>  
+      <textarea id="q-<%= post.id %>" rows="3" placeholder="Ask anything…" style="background-color: #303030;color:#f0f0f0; border: none; border-radius: 6px;"></textarea><br><br>
       <div>
-        <input id="email-<%= post.id %>" type="email" placeholder="Email (optional)">
-        <input id="tip-<%= post.id %>" type="number" min="0" step="0.01" placeholder="Tip € (optional)">
-        <button id="send-<%= post.id %>">Send</button>
+        Tip:<br>
+        <input type="number" name="tip" id="tip" value="<%= post.price %>" step="1" min="1" size="3" style="text-align:right; background-color: #303030;color:#f0f0f0; border: none; border-radius: 6px;";>$<br><br>
+        <button id="send-<%= post.id %>" style="background-color: #303030;color:#f0f0f0; border: none; border-radius: 6px;">Send</button>
       </div>
 
       <p id="err-<%= post.id %>" style="color:#b91c1c;display:none"></p>
