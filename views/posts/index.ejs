@@ -594,8 +594,8 @@
 
       const postId = box.dataset.postId;
       const qEl    = document.getElementById(`q-${pid}`);
-      const email  = document.getElementById(`email-${pid}`);
-      const tip    = document.getElementById(`tip-${pid}`);
+      const email  = document.getElementById(`email-${pid}`);   // may be null if you remove email field
+      const tip    = document.getElementById(`tip-${pid}`);     // now matches HTML
       const send   = document.getElementById(`send-${pid}`);
       const err    = document.getElementById(`err-${pid}`);
       const list   = document.getElementById(`list-${pid}`);
@@ -623,7 +623,7 @@
       }
 
       send.addEventListener("click", async () => {
-        if (busy) return;                   // blocks double-click spam
+        if (busy) return;
         busy = true;
         err.style.display = "none";
         send.disabled = true;
@@ -631,8 +631,8 @@
         try {
           const payload = {
             question: qEl.value.trim() || null,
-            email: email.value.trim() || null,
-            tip: tip.value ? Number(tip.value) : 0
+            email: email && email.value ? email.value.trim() : null,     // ✅ null-safe
+            tip: tip && tip.value ? Number(tip.value) : 0                // ✅ null-safe
           };
 
           const res = await fetch(`/api/posts/${postId}/ask`, {
@@ -645,7 +645,7 @@
           const saved = await res.json();
           addRow(saved);
           qEl.value = "";
-          tip.value = "";
+          if (tip) tip.value = "";
         } catch (e) {
           err.textContent = "Couldn’t send. Try again.";
           err.style.display = "block";
