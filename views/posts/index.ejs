@@ -643,7 +643,6 @@
           if (!res.ok) throw new Error("Server error");
 
           const saved = await res.json();
-          addRow(saved);
           qEl.value = "";
           if (tip) tip.value = "";
         } catch (e) {
