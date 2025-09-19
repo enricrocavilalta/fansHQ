@@ -51,29 +51,33 @@ app.use((req, _res, next) => {
 // POST /api/posts/:postId/ask
 app.post("/api/posts/:postId/ask", async (req, res) => {
   try {
-    const postId = Number(req.params.postId);
+    const postId = Number.parseInt(req.params.postId, 10);
+    const questionText = (req.body?.question ?? "").trim();
 
-    // ✅ SAFE: rename on destructure to avoid self-reference TDZ
-    const { question: questionText } = req.body ?? {};
+    if (!Number.isFinite(postId)) return res.status(400).json({ message: "Invalid postId" });
+    if (!questionText) return res.status(400).json({ message: "No question provided" });
 
-    if (!Number.isInteger(postId)) {
-      return res.status(400).json({ message: "Invalid postId" });
-    }
-    if (!questionText || typeof questionText !== "string") {
-      return res.status(400).json({ message: "No question provided" });
-    }
+    // Read user id regardless of how you stored it (object or flat)
+    const userId =
+      (req.session && req.session.user && req.session.user.id) ??
+      (req.session && req.session.userId) ??
+      null;
+
+    // TEMP: log once to confirm what the server sees
+    console.log("[ask] session user:", req.session?.user, "userId:", req.session?.userId);
 
     await db.execute(
-      "INSERT INTO questions (post_id, question) VALUES (?, ?)",
-      [postId, questionText]
+      "INSERT INTO questions (post_id, user_id, question) VALUES (?, ?, ?)",
+      [postId, userId, questionText]
     );
 
-    return res.json({ message: "Question saved!" });
+    return res.status(201).json({ message: "Question saved!" });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ message: "Server error" });
   }
 });
+
 
 
 
