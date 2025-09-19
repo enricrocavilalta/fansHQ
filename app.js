@@ -15,7 +15,6 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static('public'));
 
-app.use(express.urlencoded({ extended: true })); // replaces body-parser
 app.use(methodOverride('_method'));
 
 app.use(session({
@@ -23,6 +22,13 @@ app.use(session({
   resave: false,
   saveUninitialized: false
 }));
+
+// auth guards
+const ensureAuthPage = (req, res, next) => {
+  const uid = req.session?.user?.id ?? req.session?.userId;
+  if (uid) return next();
+  return res.redirect('/login');
+};
 
 // make session available in EJS
 app.use((req, res, next) => {
@@ -37,7 +43,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // routes
-app.use('/posts', postsRouter);
+app.use('/posts', ensureAuthPage, postsRouter);
 
 
 
@@ -49,60 +55,57 @@ app.use((req, _res, next) => {
 
 
 // POST /api/posts/:postId/ask
-app.post("/api/posts/:postId/ask", async (req, res) => {
-  try {
-    const postId = Number.parseInt(req.params.postId, 10);
-    const questionText = (req.body?.question ?? "").trim();
+app.post('/api/posts/:postId/ask', ensureAuthPage, async (req, res) => {
+  const postId = Number.parseInt(req.params.postId, 10);
+  const questionText = (req.body?.question ?? '').trim();
+  if (!Number.isFinite(postId)) return res.status(400).json({ message: 'Invalid postId' });
+  if (!questionText) return res.status(400).json({ message: 'No question provided' });
 
-    if (!Number.isFinite(postId)) return res.status(400).json({ message: "Invalid postId" });
-    if (!questionText) return res.status(400).json({ message: "No question provided" });
-
-    // Read user id regardless of how you stored it (object or flat)
-    const userId =
-      (req.session && req.session.user && req.session.user.id) ??
-      (req.session && req.session.userId) ??
-      null;
-
-    // TEMP: log once to confirm what the server sees
-    console.log("[ask] session user:", req.session?.user, "userId:", req.session?.userId);
-
-    await db.execute(
-      "INSERT INTO questions (post_id, user_id, question) VALUES (?, ?, ?)",
-      [postId, userId, questionText]
-    );
-
-    return res.status(201).json({ message: "Question saved!" });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ message: "Server error" });
-  }
+  const userId = req.session?.user?.id ?? req.session?.userId; // <- unified
+  await db.execute(
+    'INSERT INTO questions (post_id, user_id, question) VALUES (?, ?, ?)',
+    [postId, userId, questionText]
+  );
+  res.status(201).json({ message: 'Question saved!' });
 });
 
 
 
 
+
 // home -> feed
-app.get('/', (req, res) => res.redirect('/posts'));
+app.get('/', ensureAuthPage, (req, res) => res.redirect('/posts'));
 
 app.get('/login', (req, res) => res.render('login'));
+
+
 
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
   try {
-    const [rows] = await db.execute('SELECT * FROM users WHERE email = ?', [email]);
+    const [rows] = await db.execute('SELECT id, email, password FROM users WHERE email = ?', [email]);
     if (!rows.length) return res.status(401).send('Invalid credentials');
 
     const user = rows[0];
     const ok = await bcrypt.compare(password, user.password);
     if (!ok) return res.status(401).send('Invalid credentials');
 
-    req.session.userId = user.id;
-    res.redirect('/');
+    req.session.regenerate(err => {
+      if (err) return res.status(500).send('Session error');
+
+      // store consistent shape
+      req.session.user = { id: user.id, email: user.email };
+      // (optional) also keep userId for legacy
+      req.session.userId = user.id;
+
+      req.session.save(() => res.redirect('/posts'));
+    });
   } catch (err) {
     console.error(err);
     res.status(500).send('Login failed');
   }
 });
+
 
 app.get('/signup', (req, res) => res.render('signup'));
 
@@ -121,6 +124,9 @@ app.post('/signup', async (req, res) => {
     res.status(500).send('Signup failed');
   }
 });
+
+app.post('/logout', (req, res) => req.session.destroy(() => res.redirect('/login')));
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
