@@ -73,6 +73,9 @@ app.post('/api/posts/:postId/ask', ensureAuthPage, async (req, res) => {
 
 
 
+
+
+
 // home -> feed
 app.get('/', ensureAuthPage, (req, res) => res.redirect('/posts'));
 

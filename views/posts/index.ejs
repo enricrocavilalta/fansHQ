@@ -544,7 +544,8 @@
         
         <% if (post.content) { %><p><%= post.content %></p><% } %>
 
-        <form action="/tip/<%= post.id %>" method="POST">
+        <form action="/posts/<%= post.id %>/tip" method="POST">
+          message:<textarea></textarea>
           <button type="submit" style="background-color:hsl(0, 0%, 50%);color:#f0f0f0; border: none; border-radius: 6px;">DONATE</button>
           <input type="number" name="tip" id="tip" value="<%= post.price %>" step="1" min="1" size="3" style="text-align:right; background-color: #303030;color:#f0f0f0; border: none; border-radius: 6px;"; required>$
         </form>

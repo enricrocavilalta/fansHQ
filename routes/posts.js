@@ -313,6 +313,40 @@ router.get('/_routes', (req, res) => {
 });
 
 
+// POST /posts/:postId/tip  (HTML form submit or fetch)
+router.post('/:postId/tip', async (req, res) => {
+  try {
+    const postId = Number.parseInt(req.params.postId, 10);
+
+    // accept either "amount" or legacy "tip" from your form
+    const amount = Number(req.body?.amount ?? req.body?.tip);
+    const note   = (req.body?.note ?? '').slice(0, 500).trim() || null;
+
+    if (!Number.isFinite(postId))      return res.status(400).send('Bad postId');
+    if (!Number.isFinite(amount) || amount <= 0 || amount > 100000) {
+      return res.status(400).send('Bad amount');
+    }
+
+    // who tipped: user id from the session (app-level guard can enforce login)
+    const userId = req.session?.user?.id ?? req.session?.userId ?? null;
+
+    await db.execute(
+      'INSERT INTO tips (post_id, user_id, amount, note) VALUES (?, ?, ?, ?)',
+      [postId, userId, amount, note]
+    );
+
+    // If it’s a form post, redirect back; if it’s XHR/fetch, send JSON.
+    const wantsJSON = req.headers['content-type']?.includes('application/json') ||
+                      req.headers['accept']?.includes('application/json');
+
+    if (wantsJSON) return res.status(201).json({ ok: true, post_id: postId, amount, note });
+    return res.redirect(req.get('Referer') || '/posts');
+  } catch (e) {
+    console.error(e);
+    return res.status(500).send('Tip failed');
+  }
+});
+
 
 
 module.exports = router; // keep this ONCE, at the very end
