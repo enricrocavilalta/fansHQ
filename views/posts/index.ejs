@@ -544,10 +544,40 @@
         
         <% if (post.content) { %><p><%= post.content %></p><% } %>
 
+        <!--
         <form action="/posts/<%= post.id %>/tip" method="POST">
-          message:<textarea></textarea>
+          message: <br>
+          <textarea></textarea><br>
           <button type="submit" style="background-color:hsl(0, 0%, 50%);color:#f0f0f0; border: none; border-radius: 6px;">DONATE</button>
           <input type="number" name="tip" id="tip" value="<%= post.price %>" step="1" min="1" size="3" style="text-align:right; background-color: #303030;color:#f0f0f0; border: none; border-radius: 6px;"; required>$
+        </form>-->
+        
+        <form action="/posts/<%= post.id %>/tip" method="POST">
+          message: <br>
+          <textarea
+            name="note"
+            id="note-<%= post.id %>"
+            rows="3"
+            style="background-color:#303030;color:#f0f0f0;border:none;border-radius:6px;width:100%;"
+          ></textarea>
+          <br><br>
+
+          <button type="submit"
+            style="background-color:hsl(0,0%,50%);color:#f0f0f0;border:none;border-radius:6px;">
+            DONATE
+          </button>
+
+          <input
+            type="number"
+            name="tip"
+            id="tip-<%= post.id %>"
+            value="<%= post.price %>"
+            step="1"
+            min="1"
+            size="3"
+            required
+            style="text-align:right;background-color:#303030;color:#f0f0f0;border:none;border-radius:6px;"
+          >$
         </form>
         
         <div class="author-info mt-3 text-sm opacity-80">
@@ -575,7 +605,7 @@
 
     <section id="ama-<%= post.id %>" data-post-id="<%= post.id %>">
       Question:<br>  
-      <textarea id="q-<%= post.id %>" rows="3" placeholder="Ask anything…" style="background-color: #303030;color:#f0f0f0; border: none; border-radius: 6px;"></textarea><br><br>
+      <textarea id="q-<%= post.id %>" rows="3" placeholder="Ask anything…" style="background-color: #303030;color:#f0f0f0; border: none; border-radius: 6px;width:100%;"></textarea><br><br>
       <div>
         Tip:<br>
         <input type="number" name="tip" id="tip" value="<%= post.price %>" step="1" min="1" size="3" style="text-align:right; background-color: #303030;color:#f0f0f0; border: none; border-radius: 6px;";>$<br><br>
