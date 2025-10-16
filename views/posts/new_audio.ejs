@@ -8,6 +8,7 @@
     <input type="hidden" name="media_type" value="audio">
     <input type="hidden" name="display_mode" id="display_mode" value="upload">
 
+    <% const isEdit = (mode === 'edit'); %>
     <h1><%= isEdit ? 'Edit audio post' : 'Audio upload' %></h1>
 
 
