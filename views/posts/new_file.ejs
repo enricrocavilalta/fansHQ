@@ -3,108 +3,117 @@
 <link rel="stylesheet" href="/styles.css">
 <link rel="stylesheet" href="/styles_typed_colors.css">
 
-<form action="/posts" method="POST" enctype="multipart/form-data" class="content-form" data-media="file">
-  <h1>Upload a File</h1>
-  
-  <input type="hidden" name="media_type" value="file"><br>
-  
-  File:<br>
-  <input type="file" name="media_file" required><br>
-  
-  Title:<br>
-  <input type="text" name="title"><br>
-  
-  Description:<br>
-  <textarea name="content"></textarea><br><br>
-  
-  price:<br>
-  <input type="number" name="price" step="0.01" value="0"><br><br>
-  <button type="submit">Post Download</button>
-  <a id="cancelLink" href="/posts" class="btn btn-ghost">Cancel</a>
-</form>
+<div class="center-form">
+  <form action="/posts" method="POST" enctype="multipart/form-data" class="content-form" data-media="file">
+    <h1>Upload a File</h1>
+    
+    <input type="hidden" name="media_type" value="file"><br>
+    
+    File:<br>
+    <input type="file" name="media_file" required><br>
+    
+    Title:<br>
+    <input type="text" name="title"><br>
+    
+    Description:<br>
+    <textarea name="content"></textarea><br><br>
+    
+    price:<br>
+    <input type="number" name="price" step="0.01" value="0"><br><br>
+    <button type="submit">Post Download</button>
+    <a id="cancelLink" href="/posts" class="btn btn-ghost">Cancel</a>
+  </form>
+</div>
 
 <style>
 
-.content-form[data-media="file"] {
-  background-color: hsl(300, 50%, 10%);
-  border-top: 4px solid hsl(300, 90%, 50%);
-  padding: 1rem;
-  border-radius: 12px;
-  box-shadow: 0 0 8px hsl(300, 50%, 10%);
-  margin: 1rem 0;
-}
+  .center-form {
+    display: flex;
+    justify-content: center;   /* centers horizontally */
+    align-items: center;       /* centers vertically */
+    /*height: 100vh;*/
+  }
 
-.content-form[data-media="file"] h1 {
-  color: hsl(300, 90%, 50%);
-}
+  .content-form[data-media="file"] {
+    background-color: hsl(300, 50%, 10%);
+    border-top: 4px solid hsl(300, 90%, 50%);
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 0 8px hsl(300, 50%, 10%);
+    margin: 1rem 0;
+  }
 
-.content-form[data-media="file"] label {
-  display: block;
-  margin: 0.5rem 0 0.2rem;
-  color: #eee;
-  font-weight: bold;
-}
+  .content-form[data-media="file"] h1 {
+    color: hsl(300, 90%, 50%);
+  }
 
-.content-form[data-media="file"] input,
-.content-form[data-media="file"] textarea {
-  width: 100%;
-  background-color: #222;
-  border: 1px solid #555;
-  color: #f0f0f0;
-  padding: 0.5rem;
-  border-radius: 8px;
-  margin-bottom: 0.5rem;
-}
+  .content-form[data-media="file"] label {
+    display: block;
+    margin: 0.5rem 0 0.2rem;
+    color: #eee;
+    font-weight: bold;
+  }
 
-.content-form[data-media="file"] button, a.btn {
-  background-color: hsl(300, 90%, 25%);
-  color: #f0f0f0;
-  font-weight: bold;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  text-decoration: none;
-}
+  .content-form[data-media="file"] input,
+  .content-form[data-media="file"] textarea {
+    width: 100%;
+    background-color: #222;
+    border: 1px solid #555;
+    color: #f0f0f0;
+    padding: 0.5rem;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+  }
 
-.content-form[data-media="file"] button:hover, a.btn:hover {
-  background-color: hsl(300, 90%, 50%);
-  text-decoration: none;
-}
+  .content-form[data-media="file"] button, a.btn {
+    background-color: hsl(300, 90%, 25%);
+    color: #f0f0f0;
+    font-weight: bold;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    text-decoration: none;
+  }
 
-.content-form[data-media] input,
-.content-form[data-media] textarea {
-  width: 100%;
-  background-color: #222;
-  border: 1px solid #555;
-  color: #fff;
-  padding: 0.5rem;
-  border-radius: 8px;
-  margin-bottom: 0.5rem;
-}
+  .content-form[data-media="file"] button:hover, a.btn:hover {
+    background-color: hsl(300, 90%, 50%);
+    text-decoration: none;
+  }
 
-.content-form[data-media] label {
-  display: block;
-  margin: 0.5rem 0 0.2rem;
-  color: #eee;
-  font-weight: bold;
-}
+  .content-form[data-media] input,
+  .content-form[data-media] textarea {
+    width: 100%;
+    background-color: #222;
+    border: 1px solid #555;
+    color: #fff;
+    padding: 0.5rem;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+  }
 
-.content-form[data-media="file"] button {
-  background-color: hsl(300, 90%, 25%);
-  color: #f0f0f0;
-  font-weight: bold;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
+  .content-form[data-media] label {
+    display: block;
+    margin: 0.5rem 0 0.2rem;
+    color: #eee;
+    font-weight: bold;
+  }
 
-.content-form[data-media="text"] button:hover {
-  background-color: hsl(300, 90%, 60%);
-}
+  .content-form[data-media="file"] button {
+    background-color: hsl(300, 90%, 25%);
+    color: #f0f0f0;
+    font-weight: bold;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .content-form[data-media="text"] button:hover {
+    background-color: hsl(300, 90%, 60%);
+  }
 
   form {
     width: 50%;

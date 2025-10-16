@@ -3,29 +3,37 @@
 <link rel="stylesheet" href="/styles.css">
 <link rel="stylesheet" href="/styles_typed_colors.css">
 
+<div class="center-form">
+  <form action="/posts" method="POST" enctype="multipart/form-data" class="content-form" data-media="tipjar">
+    <input type="hidden" name="media_type" value="tipjar">
+    
+    <h1>Create a Tip Jar</h1>
+    
+    <label>Title:</label>
+    <input type="text" name="title"><br>
 
-<form action="/posts" method="POST" enctype="multipart/form-data" class="content-form" data-media="tipjar">
-  <input type="hidden" name="media_type" value="tipjar">
-  
-  <h1>Create a Tip Jar</h1>
-  
-  <label>Title:</label>
-  <input type="text" name="title"><br>
+    <label>Description:</label>
+    <textarea name="content"></textarea><br>
 
-  <label>Description:</label>
-  <textarea name="content"></textarea><br>
+    <label>Suggested Tip:</label>
+    <input type="number" name="price" step="0.01" min="0" value="1"><br>
 
-  <label>Suggested Tip:</label>
-  <input type="number" name="price" step="0.01" min="0" value="1"><br>
-
-   <label>Image:</label>
-  <input type="file" name="media_file" accept="image/*"><br>
-  
-  <button type="submit">Create Tip Jar</button>
-  <a id="cancelLink" href="/posts" class="btn btn-ghost">Cancel</a>
-</form>
+    <label>Image:</label>
+    <input type="file" name="media_file" accept="image/*"><br>
+    
+    <button type="submit">Create Tip Jar</button>
+    <a id="cancelLink" href="/posts" class="btn btn-ghost">Cancel</a>
+  </form>
+</div>
 
 <style>
+  .center-form {
+    display: flex;
+    justify-content: center;   /* centers horizontally */
+    align-items: center;       /* centers vertically */
+    /*height: 100vh;*/
+  }
+
   .content-form[data-media] input,
   .content-form[data-media] textarea {
     width: 100%;

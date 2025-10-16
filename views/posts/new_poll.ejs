@@ -3,35 +3,43 @@
 <link rel="stylesheet" href="/styles.css">
 <link rel="stylesheet" href="/styles_typed_colors.css">
 
-<form action="/posts" method="POST" enctype="multipart/form-data" class="content-form" data-media="poll">
-  <input type="hidden" name="media_type" value="poll">
-  
-   <h1>Poll upload</h1>
+<div class="center-form">
+  <form action="/posts" method="POST" enctype="multipart/form-data" class="content-form" data-media="poll">
+    <input type="hidden" name="media_type" value="poll">
+    
+    <h1>Poll upload</h1>
 
-  <label>Title:</label><br>
-  <input type="text" name="title"><br><br>
+    <label>Title:</label><br>
+    <input type="text" name="title"><br><br>
 
-  <label>Question:</label><br>
-  <textarea name="content" required></textarea><br><br>
-  
-   
-<% for (let i = 1; i <= 10; i++) { %>
-  Option <%= i %>: <br>
-  <input 
-    type="text" 
-    name="option_<%= i %>" 
-    <%= i <= 2 ? 'required' : '' %>
-  ><br><br>
-<% } %>
+    <label>Question:</label><br>
+    <textarea name="content" required></textarea><br><br>
+    
+    
+  <% for (let i = 1; i <= 10; i++) { %>
+    Option <%= i %>: <br>
+    <input 
+      type="text" 
+      name="option_<%= i %>" 
+      <%= i <= 2 ? 'required' : '' %>
+    ><br><br>
+  <% } %>
 
-  <br>
-  <button type="submit">Create Poll</button>
-  <a id="cancelLink" href="/posts" class="btn btn-ghost">Cancel</a>
-</form>
-
+    <br>
+    <button type="submit">Create Poll</button>
+    <a id="cancelLink" href="/posts" class="btn btn-ghost">Cancel</a>
+  </form>
+</div>
 <style>
 
-  .content-form[data-media="poll"] {
+.center-form {
+  display: flex;
+  justify-content: center;   /* centers horizontally */
+  align-items: center;       /* centers vertically */
+  /*height: 100vh;*/
+}
+
+.content-form[data-media="poll"] {
   background-color: hsl(270, 50%, 10%);
   border-top: 4px solid hsl(270, 90%, 50%);
   padding: 1rem;
