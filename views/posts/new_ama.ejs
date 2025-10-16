@@ -15,6 +15,7 @@
   <textarea name="content" required></textarea><br><br>
 
   <button type="submit">Create AMA</button>
+  <a id="cancelLink" href="/posts" class="btn btn-ghost">Cancel</a>
 </form>
 
 <style>
@@ -61,7 +62,7 @@
   width: 100%;
   background-color: #222;
   border: 1px solid #555;
-  color: #fff;
+  color: #f0f0f0;
   padding: 0.5rem;
   border-radius: 8px;
   margin-bottom: 0.5rem;
@@ -74,13 +75,20 @@
   font-weight: bold;
 }
 
-.content-form[data-media="ama"] button {
+.content-form[data-media="ama"] button, a.btn {
+  background-color: hsl(0, 0%, 90%);
+  color: #000;
   font-weight: bold;
   padding: 0.5rem 1rem;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  text-decoration: none;
+}
+
+.content-form[data-media="ama"] button:hover, a.btn:hover {
+  text-decoration: none;
 }
 
 </style>

@@ -65,7 +65,7 @@ body{
   margin-bottom: 0.5rem;
 }
 
-.content-form[data-media="image"] button {
+.content-form[data-media="image"] button,a.btn {
   background-color: hsl(60, 90%, 25%);
   color: #f0f0f0;
   font-weight: bold;
@@ -74,10 +74,12 @@ body{
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  text-decoration: none;
 }
 
-.content-form[data-media="image"] button:hover {
-  background-color: hsl(60, 90%, 50%);
+.content-form[data-media="image"] button:hover,a.btn:hover {
+  background-color: hsl(60, 90%, 35%);
+  text-decoration: none;
 }
 
 .content-form[data-media] input,

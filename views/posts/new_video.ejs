@@ -47,8 +47,9 @@
   <label>Thumbnail:</label><br>
   <input type="file" name="thumbnail" accept="image/*"><br><br>
 
-  <a href="<%= cancelHref || '/posts' %>" class="btn btn-ghost">Cancel</a>
+  
   <button type="submit" class="btn btn-primary"><%= submitLabel %></button>
+  <a href="<%= cancelHref || '/posts' %>" class="btn">Cancel</a>
 </form>
 
 <style>
@@ -122,7 +123,7 @@
   margin-bottom: 0.5rem;
 }
 
-.content-form[data-media="video"] button {
+.content-form[data-media="video"] button, a.btn {
   background-color: hsl(0, 90%, 25%);
   color: #f0f0f0;
   font-weight: bold;
@@ -131,10 +132,12 @@
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  text-decoration: none;
 }
 
-.content-form[data-media="video"] button:hover {
-  background-color: hsl(0, 90%, 50%);
+.content-form[data-media="video"] button:hover, a.btn:hover {
+  background-color: hsl(0, 90%, 35%);
+  text-decoration: none;
 }
 
   form {

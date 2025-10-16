@@ -9,7 +9,7 @@
     <!-- Optional UI control -->
 
     <% if (session && session.userId) { %>
-      <a href="/logout">Logout</a>
+      <a href="/logout" class="btn">Logout</a>
     <% } else { %>
       <a href="/login">Login</a> |
       <a href="/signup">Sign up</a>
@@ -18,3 +18,17 @@
   <img src="/fansHQgoldpic.png" alt="" style="margin: 0 auto; display:block;">
   <script src="/ama.js" defer></script>
 </header>
+
+<style>
+  a.btn{
+    background-color: #101010;
+    color: #f0f0f0;
+    font-weight: bold;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    text-decoration: none;
+  }
+</style>
