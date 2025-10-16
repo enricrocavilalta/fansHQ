@@ -13,9 +13,7 @@
     <input type="hidden" name="display_mode" value="image">
     <input type="hidden" name="media_type"   value="image">
 
-    <h2><%= isEdit ? 'Edit image post' : 'New image post' %></h2>
-    
-    <h1>Image upload</h1>
+    <h1><%= isEdit ? 'Edit image post' : 'Image upload' %></h1>
     
     Image:
     <input type="file" name="media_file" accept="image/*" value="<%= P.media_file ? P.media_file : '' %>"><br>

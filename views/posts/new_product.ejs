@@ -5,7 +5,8 @@
 
 <div class="center-form">
   <form action="/posts" method="POST" enctype="multipart/form-data" class="content-form" data-media="product">
-    <h1>Product/Service upload</h1>
+    
+    <h1><%= isEdit ? 'Edit product post' : 'Product upload' %></h1>
     <input type="hidden" name="media_type" value="product">
     Product: <br>
     <input type="text" name="title"><br><br>

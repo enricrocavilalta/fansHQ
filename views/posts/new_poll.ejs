@@ -7,7 +7,7 @@
   <form action="/posts" method="POST" enctype="multipart/form-data" class="content-form" data-media="poll">
     <input type="hidden" name="media_type" value="poll">
     
-    <h1>Poll upload</h1>
+    <h1><%= isEdit ? 'Edit poll post' : 'Poll upload' %></h1>
 
     <label>Title:</label><br>
     <input type="text" name="title"><br><br>
