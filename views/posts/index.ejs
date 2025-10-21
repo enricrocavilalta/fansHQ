@@ -328,7 +328,8 @@
           </form>
 
           <!-- Delete button -->
-          <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
+          <f
+          orm action="/posts/<%= post.id %>?_method=DELETE" method="POST">
             <button type="submit" class="delete-btn">&times;</button>
           </form>
         </div>
@@ -365,25 +366,31 @@
           <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
             <button type="submit" class="delete-btn">&times;</button>
           </form>
+          
         </div>
    
           <% if (post.media_url) { %>
-            <h3><%= post.title || 'download' %></h3>
-            <% if (post.content) { %><p><%= post.content %></p><% } %>
+            <h3><%= post.title %></h3>
+    
+            <% if (post.content) { %>
+              <p><%= post.content %></p>
+            <% } %>
+
+            <a href="<%= post.media_url %>" download>
+              Download
+            </a>
           <% } %>
-        </div>
-
-        <div class="author-info mt-3 text-sm opacity-80">
-          By
-          <% if (post.email) { %>
-          <a href="/posts/by/<%= post.user_id %>"><%= post.email.split('@')[0] %></a>
-          <% } else { %>unknown<% } %>
-          · <%= new Date(post.created_at).toLocaleDateString() %>
-        </div>
-
-        <a href="<%= post.media_url %>" download="<%= post.title || 'download' %>" class="file-link mt-2 inline-block"></a>
 
       </div>
+
+      <div class="author-info mt-3 text-sm opacity-80">
+        By
+        <% if (post.email) { %>
+        <a href="/posts/by/<%= post.user_id %>"><%= post.email.split('@')[0] %></a>
+        <% } else { %>unknown<% } %>
+        · <%= new Date(post.created_at).toLocaleDateString() %>
+      </div>
+      
     <% } else if (post.media_type === 'link') { %>
       <% if (post.media_url) { %>
 

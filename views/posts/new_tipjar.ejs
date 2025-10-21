@@ -7,7 +7,8 @@
   <form action="/posts" method="POST" enctype="multipart/form-data" class="content-form" data-media="tipjar">
     <input type="hidden" name="media_type" value="tipjar">
     
-    <h1>Create a Tip Jar</h1>
+    <% const isEdit = (mode === 'edit'); %>
+    <h1><%= isEdit ? 'Edit TipJar post' : 'TipJar upload' %></h1>
     
     <label>Title:</label>
     <input type="text" name="title"><br>
