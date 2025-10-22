@@ -131,6 +131,16 @@ app.post('/signup', async (req, res) => {
 app.post('/logout', (req, res) => req.session.destroy(() => res.redirect('/login')));
 
 
+
+const isLoggedIn = require('./middleware/auth');//  no { }
+const ordersRouter = require('./routes/orders');
+//const { isLoggedIn } = require('./middleware/auth');
+
+console.log('isLoggedIn type =', typeof isLoggedIn);  // should print "function"
+
+app.use('/orders', ordersRouter);
+
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`FansHQ running at http://localhost:${PORT}`);

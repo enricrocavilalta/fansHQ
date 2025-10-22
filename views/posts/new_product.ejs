@@ -17,7 +17,7 @@
     Image: <br>
     <input type="file" name="media_file" accept="image/*"><br><br>
     Price: <br>
-    <input type="number" name="price" step="0.01" value="0" required><br><br>
+    <input type="number" name="price" step="0.01" value="0" min="0.01" required><br><br>
     <button type="submit">Post</button>
     <a id="cancelLink" href="/posts" class="btn btn-ghost">Cancel</a>
   </form>
@@ -83,7 +83,6 @@
   form {
     width: 50%;
     margin: 1rem auto;
-    margin: 1rem auto;  
     padding: 1rem;
     border-radius: 12px;
     }
