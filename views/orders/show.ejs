@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Order <%= order.id %></title>
+  <link rel="icon" type="image/png" href="/HQgold.png">
+</head>
+<body style="background:#000;color:#fff;font-family:sans-serif">
+  <h1>Order #<%= order.id %></h1>
+  <p>Product: <%= order.title %></p>
+  <p>Total: €<%= (order.price_cents/100).toFixed(2) %> <%= order.currency %></p>
+  <p>Status: <%= order.status %></p>
+  <p>Buyer: <%= order.buyer_email || '—' %></p>
+
+  <p><a href="/posts" style="color:hsl(180,90%,50%)">← Back to posts</a></p>
+</body>
+</html>

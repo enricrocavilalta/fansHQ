@@ -8,29 +8,37 @@ const db = require('../db');
 // --------------------------------------------------
 router.post('/', async (req, res, next) => {
   try {
-    // ⚙️ if you use sessions/passport, you'll still have req.user here
-    const buyerId = req.user ? req.user.id : null;
-    const { post_id } = req.body;
+    console.log('[orders] session.userId =', req.session?.userId, 'req.user?.id =', req.user?.id);
 
-    // 1) validate product post
+    const buyerId = req.session?.userId || req.user?.id || null;
+    if (!buyerId) {
+      return res.status(401).send('Login required');
+    }
+
+    const postId = Number(req.body.post_id);
+    if (!Number.isFinite(postId)) {
+      return res.status(400).send('Invalid product id.');
+    }
+
     const [rows] = await db.query(
       `SELECT id, user_id AS creator_id, media_type, title, price
        FROM posts WHERE id = ? LIMIT 1`,
-      [post_id]
+      [postId]
     );
-
     const post = rows[0];
-    if (!post || post.media_type !== 'product') {
+
+    const kind = (post?.media_type || '').toString().trim().toLowerCase();
+    if (!post || kind !== 'product') {
       return res.status(400).send('Invalid product.');
     }
 
-    // 2) convert price
-    const priceCents = Math.round(Number(post.price) * 100);
+    // Parse price robustly (0 not allowed)
+    const raw = (post.price ?? '').toString();
+    const priceCents = Math.round(Number.parseFloat(raw.replace(/[€\s]/g,'').replace(',', '.')) * 100);
     if (!Number.isFinite(priceCents) || priceCents <= 0) {
       return res.status(400).send('Invalid price.');
     }
 
-    // 3) create order
     const [result] = await db.query(
       `INSERT INTO orders
          (buyer_id, creator_id, post_id, title, price_cents, currency, status)
@@ -39,13 +47,12 @@ router.post('/', async (req, res, next) => {
     );
 
     const orderId = result.insertId;
-
-    // 4) redirect to order summary
-    res.redirect(`/orders/${orderId}`);
-  } catch (err) {
-    next(err);
+    return res.redirect(`/orders/${orderId}`);
+  } catch (e) {
+    next(e);
   }
 });
+
 
 // --------------------------------------------------
 // SHOW ORDER PAGE
