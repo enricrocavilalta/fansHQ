@@ -454,16 +454,16 @@
 
         <% if (post.title) { %><h3><%= post.title %></h3><% } %>
         <% if (post.content) { %><p><%= post.content %></p><% } %>
-        <% if (post.option_1) { %><p><%= post.votes_1 %><input type="radio" name=<%= post.id %> value=1><%= post.option_1 %></p><% } %>
-        <% if (post.option_2) { %><p><%= post.votes_2 %><input type="radio" name=<%= post.id %> value=2><%= post.option_2 %></p><% } %>
-        <% if (post.option_3) { %><p><%= post.votes_3 %><input type="radio" name=<%= post.id %> value=3><%= post.option_3 %></p><% } %>
-        <% if (post.option_4) { %><p><%= post.votes_4 %><input type="radio" name=<%= post.id %> value=4><%= post.option_4 %></p><% } %>
-        <% if (post.option_5) { %><p><%= post.votes_5 %><input type="radio" name=<%= post.id %> value=5><%= post.option_5 %></p><% } %>
-        <% if (post.option_6) { %><p><%= post.votes_6 %><input type="radio" name=<%= post.id %> value=6><%= post.option_6 %></p><% } %>
-        <% if (post.option_7) { %><p><%= post.votes_7 %><input type="radio" name=<%= post.id %> value=7><%= post.option_7 %></p><% } %>
-        <% if (post.option_8) { %><p><%= post.votes_8 %><input type="radio" name=<%= post.id %> value=8><%= post.option_8 %></p><% } %>
-        <% if (post.option_9) { %><p><%= post.votes_9 %><input type="radio" name=<%= post.id %> value=9><%= post.option_9 %></p><% } %>
-        <% if (post.option_10) { %><p><%= post.votes_10 %><input type="radio" name=<%= post.id %> value=10><%= post.option_10 %></p><% } %>
+        <% if (post.option_1) { %><p><%= post.votes_1 %><input type="checkbox" name=<%= post.id %> value=1><%= post.option_1 %></p><% } %>
+        <% if (post.option_2) { %><p><%= post.votes_2 %><input type="checkbox" name=<%= post.id %> value=2><%= post.option_2 %></p><% } %>
+        <% if (post.option_3) { %><p><%= post.votes_3 %><input type="checkbox" name=<%= post.id %> value=3><%= post.option_3 %></p><% } %>
+        <% if (post.option_4) { %><p><%= post.votes_4 %><input type="checkbox" name=<%= post.id %> value=4><%= post.option_4 %></p><% } %>
+        <% if (post.option_5) { %><p><%= post.votes_5 %><input type="checkbox" name=<%= post.id %> value=5><%= post.option_5 %></p><% } %>
+        <% if (post.option_6) { %><p><%= post.votes_6 %><input type="checkbox" name=<%= post.id %> value=6><%= post.option_6 %></p><% } %>
+        <% if (post.option_7) { %><p><%= post.votes_7 %><input type="checkbox" name=<%= post.id %> value=7><%= post.option_7 %></p><% } %>
+        <% if (post.option_8) { %><p><%= post.votes_8 %><input type="checkbox" name=<%= post.id %> value=8><%= post.option_8 %></p><% } %>
+        <% if (post.option_9) { %><p><%= post.votes_9 %><input type="checkbox" name=<%= post.id %> value=9><%= post.option_9 %></p><% } %>
+        <% if (post.option_10) { %><p><%= post.votes_10 %><input type="checkbox" name=<%= post.id %> value=10><%= post.option_10 %></p><% } %>
 
         <div class="author-info mt-3 text-sm opacity-80">
           By
