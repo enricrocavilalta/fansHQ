@@ -449,11 +449,14 @@
         <% for (let i = 1; i <= 10; i++) {
           const label = post['option_' + i];
           if (!label) continue; %>
-        <label style="display:block;margin:.25rem 0">
+
+        <label style="display:flex;align-items:center;gap:.5rem;margin:.25rem 0">
+          <span class="count" data-option="<%= i %>" style="min-width:1.5em;text-align:right;"></span>
           <input type="checkbox" name="choices" value="<%= i %>">
           <span><%= label %></span>
-          <span class="count" data-option="<%= i %>"></span>
         </label>
+
+
   <% } %>
   <span class="msg" style="margin-left:.5rem;opacity:.8"></span>
 </form>
@@ -500,7 +503,7 @@
     (json.counts || []).forEach(r => counts[r.option_num] = r.votes);
     form.querySelectorAll('.count').forEach(span => {
       const opt = Number(span.dataset.option);
-      span.textContent = counts[opt] != null ? ` (${counts[opt]})` : '';
+      span.textContent = counts[opt] != null ? counts[opt] : '';
     });
 
     if (msg) { msg.textContent = 'Saved'; setTimeout(() => msg.textContent = '', 800); }
