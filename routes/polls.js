@@ -1,49 +1,45 @@
-// routes/polls.js
 const express = require('express');
 const router = express.Router();
-const db = require('../db');
-const isLoggedIn = require('../middleware/auth'); // you have default export
+const isLoggedIn = require('../middleware/auth');
+const db = require('../db'); // adjust path to your pool/conn
 
-// Vote (multi-choice)
-router.post('/api/polls/:id/vote', isLoggedIn, async (req, res) => {
+router.post('/:id/vote', isLoggedIn, async (req, res) => {
   const pollId = Number(req.params.id);
-  const userId = req.user.id;
+  const userId = req.user?.id;           // set by isLoggedIn
 
-  // Expect { choices: [1,3,5] }
+  console.log('[polls] /:id/vote hit', { pollId, body:req.body, userId });
+
   const choices = Array.isArray(req.body.choices)
-    ? req.body.choices.map(n => Number(n)).filter(Number.isInteger)
+    ? req.body.choices.map(Number).filter(Number.isInteger)
     : [];
 
   const conn = await db.getConnection();
   try {
     await conn.beginTransaction();
 
-    await conn.query(
-      'DELETE FROM poll_votes WHERE poll_id = ? AND user_id = ?',
-      [pollId, userId]
-    );
+    await conn.query('DELETE FROM poll_votes WHERE poll_id=? AND user_id=?', [pollId, userId]);
 
     if (choices.length) {
-      const values = choices.map(opt => [pollId, userId, opt]);
-      // MySQL bulk insert
+      const tuples = choices.map(opt => [pollId, userId, opt]);
+      const placeholders = tuples.map(() => '(?,?,?)').join(',');
+      const flat = tuples.flat();
       await conn.query(
-        'INSERT INTO poll_votes (poll_id, user_id, option_num) VALUES ?',
-        [values]
+        `INSERT INTO poll_votes (poll_id,user_id,option_num) VALUES ${placeholders}`,
+        flat
       );
     }
 
-    // Return fresh counts for this poll
     const [rows] = await conn.query(
-      'SELECT option_num, COUNT(*) AS votes FROM poll_votes WHERE poll_id = ? GROUP BY option_num',
+      'SELECT option_num, COUNT(*) AS votes FROM poll_votes WHERE poll_id=? GROUP BY option_num',
       [pollId]
     );
 
     await conn.commit();
-    res.json({ ok: true, counts: rows });
+    res.json({ ok:true, counts: rows });
   } catch (e) {
     await conn.rollback();
-    console.error(e);
-    res.status(500).json({ ok: false, error: 'Failed to save vote' });
+    console.error('[polls] vote error', e);
+    res.status(500).json({ ok:false, error:'Failed to save vote' });
   } finally {
     conn.release();
   }

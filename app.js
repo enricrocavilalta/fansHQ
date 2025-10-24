@@ -141,11 +141,19 @@ console.log('isLoggedIn type =', typeof isLoggedIn);  // should print "function"
 app.use('/orders', ordersRouter);
 
 
+
 const pollsRouter = require('./routes/polls');
 app.use(pollsRouter);
 
+// parsers BEFORE routers
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+// mount router at the API prefix
+app.use('/api/polls', pollsRouter);
 
 
+console.log('📦 Connected pool to DB:', process.env.DB_NAME, 'on', process.env.DB_HOST);
 
 
 const PORT = process.env.PORT || 3000;
