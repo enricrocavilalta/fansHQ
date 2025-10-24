@@ -435,35 +435,93 @@
         <% if (post.title) { %><h3><%= post.title %></h3><% } %>
         <% if (post.content) { %><p><%= post.content %></p><% } %>
       </div>
+
     <% } else if (post.media_type === 'poll') { %>
-      <div class="post-card" data-media="<%= post.media_type %>">
+      <div class="post-card" data-media="poll">
+        <% if (post.title) { %>
+          <h3><%= post.title %></h3>
+        <% } %>
 
-        <div class="edit-delete">
-          
-          <!-- Edit button -->
-          <form class="edit-form" action="/posts/<%= post.id %>/edit" method="GET">
-            <button class="edit-btn">✎</button>
-          </form>
+        <% if (post.content) { %>
+          <p><%= post.content %></p>
+        <% } %>
+      <form id="poll-<%= post.id %>" data-poll-id="<%= post.id %>">
+        <% for (let i = 1; i <= 10; i++) {
+          const label = post['option_' + i];
+          if (!label) continue; %>
+        <label style="display:block;margin:.25rem 0">
+          <input type="checkbox" name="choices" value="<%= i %>">
+          <span><%= label %></span>
+          <span class="count" data-option="<%= i %>"></span>
+        </label>
+  <% } %>
+  <span class="msg" style="margin-left:.5rem;opacity:.8"></span>
+</form>
 
-          <!-- Delete button -->
-          <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
-            <button type="submit" class="delete-btn">&times;</button>
-          </form>
+<script>
+(() => {
+  const form = document.getElementById('poll-<%= post.id %>');
+  if (!form || form.dataset.bound === '1') return;
+  form.dataset.bound = '1';
 
-        </div>
+  // prevent any default submits (just in case)
+  form.addEventListener('submit', e => e.preventDefault());
 
-        <% if (post.title) { %><h3><%= post.title %></h3><% } %>
-        <% if (post.content) { %><p><%= post.content %></p><% } %>
-        <% if (post.option_1) { %><p><%= post.votes_1 %><input type="checkbox" name=<%= post.id %> value=1><%= post.option_1 %></p><% } %>
-        <% if (post.option_2) { %><p><%= post.votes_2 %><input type="checkbox" name=<%= post.id %> value=2><%= post.option_2 %></p><% } %>
-        <% if (post.option_3) { %><p><%= post.votes_3 %><input type="checkbox" name=<%= post.id %> value=3><%= post.option_3 %></p><% } %>
-        <% if (post.option_4) { %><p><%= post.votes_4 %><input type="checkbox" name=<%= post.id %> value=4><%= post.option_4 %></p><% } %>
-        <% if (post.option_5) { %><p><%= post.votes_5 %><input type="checkbox" name=<%= post.id %> value=5><%= post.option_5 %></p><% } %>
-        <% if (post.option_6) { %><p><%= post.votes_6 %><input type="checkbox" name=<%= post.id %> value=6><%= post.option_6 %></p><% } %>
-        <% if (post.option_7) { %><p><%= post.votes_7 %><input type="checkbox" name=<%= post.id %> value=7><%= post.option_7 %></p><% } %>
-        <% if (post.option_8) { %><p><%= post.votes_8 %><input type="checkbox" name=<%= post.id %> value=8><%= post.option_8 %></p><% } %>
-        <% if (post.option_9) { %><p><%= post.votes_9 %><input type="checkbox" name=<%= post.id %> value=9><%= post.option_9 %></p><% } %>
-        <% if (post.option_10) { %><p><%= post.votes_10 %><input type="checkbox" name=<%= post.id %> value=10><%= post.option_10 %></p><% } %>
+  const inputs = form.querySelectorAll('input[type="checkbox"][name="choices"]');
+  const pid = form.dataset.pollId;
+  const msg = form.querySelector('.msg');
+  let t = null;
+  let busy = false;
+
+ async function send() {
+  if (busy) return;
+  busy = true;
+  if (msg) msg.textContent = 'Saving…';
+
+  const choices = Array.from(inputs)
+    .filter(ch => ch.checked)
+    .map(ch => Number(ch.value));
+
+  try {
+    const res = await fetch(`/api/polls/${pid}/vote`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      credentials: 'same-origin', // 👈 ensures cookies/session go with the request
+      body: JSON.stringify({ choices })
+    });
+
+    if (!res.ok) throw new Error('server');
+    const json = await res.json();
+
+    const counts = {};
+    (json.counts || []).forEach(r => counts[r.option_num] = r.votes);
+    form.querySelectorAll('.count').forEach(span => {
+      const opt = Number(span.dataset.option);
+      span.textContent = counts[opt] != null ? ` (${counts[opt]})` : '';
+    });
+
+    if (msg) { msg.textContent = 'Saved'; setTimeout(() => msg.textContent = '', 800); }
+  } catch (e) {
+    if (msg) msg.textContent = 'Error';
+    console.error(e);
+  } finally {
+    busy = false;
+  }
+}
+
+
+  function schedule() {
+    if (t) clearTimeout(t);
+    t = setTimeout(send, 250); // debounce rapid toggles
+  }
+
+  inputs.forEach(ch => ch.addEventListener('change', schedule));
+})();
+</script>
+
 
         <div class="author-info mt-3 text-sm opacity-80">
           By

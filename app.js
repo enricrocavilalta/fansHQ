@@ -141,6 +141,13 @@ console.log('isLoggedIn type =', typeof isLoggedIn);  // should print "function"
 app.use('/orders', ordersRouter);
 
 
+const pollsRouter = require('./routes/polls');
+app.use(pollsRouter);
+
+
+
+
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`FansHQ running at http://localhost:${PORT}`);
