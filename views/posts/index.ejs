@@ -455,7 +455,11 @@
           <input type="checkbox" name="choices" value="<%= i %>">
           <span><%= label %></span>
         </label>
-
+      <style>
+        input[type="checkbox"] {
+          accent-color: hsl(270, 90%, 50%); /* or #9b59b6 / #a855f7 for a softer tone */
+        }
+      </style>
 
   <% } %>
   <span class="msg" style="margin-left:.5rem;opacity:.8"></span>
