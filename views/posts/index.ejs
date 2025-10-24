@@ -456,9 +456,49 @@
           <span><%= label %></span>
         </label>
       <style>
-        input[type="checkbox"] {
-          accent-color: hsl(270, 90%, 50%); /* or #9b59b6 / #a855f7 for a softer tone */
+          /* only for poll posts */
+        .post-card[data-media="poll"] input[type="checkbox"] {
+          appearance: none;
+          width: 1rem;
+          height: 1rem;
+          border: 2px solid #ccc;
+          border-radius: 3px;
+          display: inline-block;
+          position: relative;
+          cursor: pointer;
+          transition: border-color .15s, background-color .15s;
         }
+
+        /* hover effect */
+        .post-card[data-media="poll"] input[type="checkbox"]:hover {
+          border-color: hsl(270, 90%, 560%);
+        }
+
+        /* checked (purple fill + white tick) */
+        .post-card[data-media="poll"] input[type="checkbox"]:checked {
+          background-color: hsl(270, 90%, 50%);
+          border-color: hsl(270, 90%, 50%);
+        }
+
+        /* draw the ✓ */
+        .post-card[data-media="poll"] input[type="checkbox"]:checked::after {
+          content: "";
+          position: absolute;
+          top: 2px;
+          left: 6px;
+          width: 4px;
+          height: 8px;
+          border: solid white;
+          border-width: 0 2px 2px 0;
+          transform: rotate(45deg);
+        }
+
+
+        /*
+        input[type="checkbox"] {
+          accent-color: hsl(270, 90%, 50%);
+        }
+        */
       </style>
 
   <% } %>
