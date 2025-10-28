@@ -140,15 +140,20 @@ delete from posts where id=94;
 
 CREATE TABLE votes (
   post_id   INT NOT NULL,
-  user_id   INT NOT NULL,
+  user_id   INT NULL,
   option_id INT NOT NULL,
-  PRIMARY KEY (post_id, user_id)   -- one vote per user per post
+  PRIMARY KEY (post_id, user_id)   -- one vote per user per post but Id rather have multiple choice.
 );
 describe votes;
 drop table votes;
+
+-- Adjust BIGINT UNSIGNED to match your posts.id / users.id types!
 CREATE TABLE questions (
-  post_id INT PRIMARY KEY,
-  question VARCHAR(255),
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  post_id INT NOT NULL,
+  user_id INT NULL,
+  question TEXT NULL,
+  tip DECIMAL(10,2) DEFAULT 0.00,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 describe questions;
@@ -160,4 +165,99 @@ CREATE TABLE tips (
 );
 describe tips;
 
+ALTER TABLE posts
+DROP COLUMN votes_1,
+DROP COLUMN votes_2,
+DROP COLUMN votes_3,
+DROP COLUMN votes_4,
+DROP COLUMN votes_5,
+DROP COLUMN votes_6,
+DROP COLUMN votes_7,
+DROP COLUMN votes_8,
+DROP COLUMN votes_9,
+DROP COLUMN votes_10;
+
+describe posts;
+SHOW TABLES LIKE 'questions';
+drop table questions;
+describe questions;
+select * from questions;
+
+CREATE USER 'fanshq'@'localhost' IDENTIFIED BY 'strong-pass-here';
+GRANT ALL PRIVILEGES ON fanshq.* TO 'fanshq'@'localhost';
+FLUSH PRIVILEGES;
+drop table tips;
+
+CREATE TABLE IF NOT EXISTS tips (
+  id        INT AUTO_INCREMENT PRIMARY KEY,
+  post_id   INT NOT NULL,
+  user_id   INT NULL,
+  amount    DECIMAL(10,2) NOT NULL,
+  note      VARCHAR(500) NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_tips_post (post_id),
+  INDEX idx_tips_user (user_id),
+  CONSTRAINT fk_tips_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+);
+select * from posts;
+
+CREATE TABLE orders (
+  id            BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  buyer_id      BIGINT UNSIGNED NOT NULL,       -- the fan (current user)
+  creator_id    BIGINT UNSIGNED NOT NULL,       -- the influencer (post.owner)
+  post_id       BIGINT UNSIGNED NOT NULL,       -- the product post
+  title         VARCHAR(255) NOT NULL,          -- snapshot from post.title
+  price_cents   INT UNSIGNED NOT NULL,          -- snapshot from post.price
+  currency      CHAR(3) NOT NULL DEFAULT 'EUR',
+  status        ENUM('pending','paid','canceled','refunded') NOT NULL DEFAULT 'pending',
+  created_at    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  paid_at       DATETIME NULL,
+  INDEX (buyer_id),
+  INDEX (creator_id),
+  INDEX (post_id),
+  UNIQUE KEY (order_uuid)
+);
+describe orders;
+drop table orders;
+ALTER TABLE orders DROP COLUMN order_uuid;
+select * from orders;
+describe votes;
+drop table votes;
+CREATE TABLE IF NOT EXISTS votes (
+  id         BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  poll_id    BIGINT UNSIGNED NOT NULL,       -- posts.id of the poll
+  user_id    BIGINT UNSIGNED NOT NULL,       -- who voted
+  option_num TINYINT UNSIGNED NOT NULL,      -- 1..10
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+  UNIQUE KEY uniq_vote (poll_id, user_id, option_num),
+  INDEX idx_poll (poll_id),
+  INDEX idx_user (user_id)
+);
+select * from poll_votes;
+
+CREATE TABLE creator_subscription_settings (
+  user_id INT PRIMARY KEY,
+  enabled TINYINT(1) NOT NULL DEFAULT 1,
+  price_cents INT NOT NULL DEFAULT 100,
+  billing_days INT NOT NULL DEFAULT 1,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+drop table subscriptions;
+CREATE TABLE subscriptions (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  subscriber_id INT NOT NULL,
+  creator_id INT NOT NULL,
+  start_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  end_at DATETIME NOT NULL,
+  status ENUM('active','canceled','expired') NOT NULL DEFAULT 'active',
+  price_cents INT NOT NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (subscriber_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE CASCADE,
+  INDEX idx_sub_state (subscriber_id, creator_id, end_at, status)
+);
+DESCRIBE users;
+select * from users;
 

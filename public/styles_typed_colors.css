@@ -105,3 +105,6 @@ a[data-media="tipjar"]{
   color:hsl(0, 0%, 50%);
 }
 
+.btn-subscribe{
+  background-color: red;
+}

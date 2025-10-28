@@ -111,34 +111,6 @@ router.get('/:id/edit', isLoggedIn, async (req, res) => {
 
 
 
-
-/*
-router.get('/:id/edit', isLoggedIn, async (req, res) => {
-  const id = Number(req.params.id);
-  const [rows] = await db.execute('SELECT * FROM posts WHERE id = ?', [id]);
-  const post = rows[0];
-  if (!post) return res.status(404).send('Not found');
-
-  // if (post.user_id !== req.session.userId) return res.status(403).send('Forbidden');
-
-  const type = (post.display_mode || post.media_type || 'text').toLowerCase();
-  const viewByType = {
-    text:'new_text', image:'new_image', video:'new_video', audio:'new_audio',
-    link:'new_link', file:'new_file', poll:'new_poll', product:'new_product',
-    tipjar:'new_tipjar', ama:'new_ama'
-  };
-  const view = viewByType[type] || 'new_text';
-
-  res.render(`posts/${view}`, {
-    mode: 'edit',
-    type,
-    post,
-    action: `/posts/${id}?_method=PUT`,
-    submitLabel: 'Save changes'
-  });
-});
-*/
-
 // ---------- Posts by user (hard paywall) ----------
 router.get('/by/:id', async (req, res) => {
   const creatorId = Number(req.params.id);
@@ -178,6 +150,10 @@ router.get('/by/:id', async (req, res) => {
       [creatorId]
     );
   }
+
+  // in routes/posts.js, inside /by/:id just before res.render
+console.log('[by/:id] creator =', creator); // should show { id: 123, username: '...' }
+
 
   // 6) Render
   res.render('posts/by_user', {

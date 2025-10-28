@@ -1,12 +1,19 @@
+<link rel="stylesheet" href="/styles_typed_colors.css">
+
 <div class="creator-header">
-  <h1><%= creator.username %></h1>
+  <h1 style="text-transform: uppercase;""><%= creator.username %></h1>
 
   <% if (viewingOwnProfile) { %>
     <a class="btn" href="/me/settings">Manage subscription settings</a>
   <% } else if (creatorSettings?.enabled) { %>
     <% if (!viewerIsSubscribed) { %>
       <form id="sub-<%= creator.id %>" method="POST" action="/api/subscriptions/<%= creator.id %>/subscribe">
-        <button class="btn-subscribe">Subscribe €<%= (creatorSettings.price_cents/100).toFixed(2) %></button>
+        <button class="btn-subscribe"  
+          style="background:#e53935;color:white;font-size:1.5rem;padding:1rem 2rem;
+          border:none;border-radius:1rem;cursor:pointer;display:block;
+          width:100%;max-width:400px;margin:2rem auto;font-weight:700;
+          box-shadow:0 4px 12px rgba(0,0,0,0.3);transition:background 0.2s;">
+          Subscribe €<%= (creatorSettings.price_cents / 100).toFixed(2) %></button>
       </form>
     <% } else { %>
       <form id="unsub-<%= creator.id %>" method="POST" action="/api/subscriptions/<%= creator.id %>/cancel">
