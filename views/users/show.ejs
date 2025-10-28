@@ -1,0 +1,39 @@
+<div class="creator-header">
+  <h1><%= creator.username %></h1>
+
+  <% if (creatorSettings && creatorSettings.enabled) { %>
+    <% if (!viewerIsSubscribed) { %>
+      <form id="sub-<%= creator.id %>" method="POST" action="/api/subscriptions/<%= creator.id %>/subscribe">
+        <button class="btn-subscribe">
+          Subscribe €<%= (creatorSettings.price_cents / 100).toFixed(2) %>
+        </button>
+      </form>
+    <% } else { %>
+      <form id="unsub-<%= creator.id %>" method="POST" action="/api/subscriptions/<%= creator.id %>/cancel">
+        <button class="btn-unsubscribe">Unsubscribe</button>
+      </form>
+    <% } %>
+  <% } %>
+</div>
+
+<script>
+(() => {
+  const subForm = document.getElementById('sub-<%= creator.id %>');
+  const unsubForm = document.getElementById('unsub-<%= creator.id %>');
+
+  async function handleForm(e, action) {
+    e.preventDefault();
+    const res = await fetch(action, {
+      method: 'POST',
+      headers: { 'Accept':'application/json', 'Content-Type':'application/json' },
+      credentials: 'same-origin'
+    });
+    const json = await res.json();
+    if (json.ok) location.reload();
+    else alert(json.error || 'Failed');
+  }
+
+  if (subForm) subForm.addEventListener('submit', e => handleForm(e, subForm.action));
+  if (unsubForm) unsubForm.addEventListener('submit', e => handleForm(e, unsubForm.action));
+})();
+</script>

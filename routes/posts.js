@@ -8,6 +8,33 @@ const path = require('path');
 const db = require('../db');
 const isLoggedIn = require('../middleware/auth');
 
+//const { getCreatorSettings, isSubscribed } = require('../lib/subscriptions');
+// --- inline subscription helpers (no external require) ---
+async function getCreatorSettings(creatorId) {
+  const [rows] = await db.query(
+    'SELECT enabled, price_cents, billing_days FROM creator_subscription_settings WHERE user_id=?',
+    [creatorId]
+  );
+  return rows[0] || { enabled: 1, price_cents: 100, billing_days: 1 };
+}
+
+async function isSubscribed(subscriberId, creatorId) {
+  if (!subscriberId) return false;
+  if (subscriberId === creatorId) return true; // creator sees own content
+  const [rows] = await db.query(
+    `SELECT 1 FROM subscriptions
+     WHERE subscriber_id=? AND creator_id=? AND status='active' AND end_at>NOW()
+     LIMIT 1`,
+    [subscriberId, creatorId]
+  );
+  return rows.length > 0;
+}
+// --- end inline helpers ---
+
+
+
+
+
 router.use((req,res,next)=>{ console.log('[posts]', req.method, req.originalUrl); next(); });
 
 
@@ -111,25 +138,57 @@ router.get('/:id/edit', isLoggedIn, async (req, res) => {
   });
 });
 */
-// ---------- Posts by user ----------
-router.get('/by/:userId', async (req, res) => {
-  const userId = Number(req.params.userId);
-  try {
-    const [rows] = await db.query(`
-      SELECT p.*, u.email
-      FROM posts p
-      JOIN users u ON u.id = p.user_id
-      WHERE p.user_id = ?
-      ORDER BY p.created_at DESC
-    `, [userId]);
-    if (!rows.length) return res.send('This user has no posts.');
-    const posts = rows.map(r => ({ ...r, price: r.price == null ? null : Number(r.price) }));
-    res.render('posts/index', { posts });
-  } catch (err) {
-    console.error('SQL Error:', err.message);
-    res.status(500).send('Database error: ' + err.message);
+
+// ---------- Posts by user (hard paywall) ----------
+router.get('/by/:id', async (req, res) => {
+  const creatorId = Number(req.params.id);
+
+  // 1) Creator
+  const [userRows] = await db.query('SELECT id, username FROM users WHERE id=?', [creatorId]);
+  if (!userRows.length) return res.status(404).send('User not found');
+  const creator = userRows[0];
+
+  // 2) Subscription settings (price, enabled, days)
+  //const { getCreatorSettings, isSubscribed } = require('../lib/subscriptions'); // or inline helper(s)
+  const creatorSettings = await getCreatorSettings(creatorId);
+
+  // 3) Who is viewing?
+  const viewingOwnProfile = !!req.user && req.user.id === creatorId;
+
+  // 4) Check access (creator or active subscriber)
+  let viewerIsSubscribed = false;
+  if (viewingOwnProfile) {
+    viewerIsSubscribed = true;
+  } else if (req.user) {
+    // use helper; or keep your simple SELECT if you prefer
+    const [rows] = await db.query(
+      `SELECT 1 FROM subscriptions
+       WHERE subscriber_id=? AND creator_id=? AND status='active' AND end_at>NOW()
+       LIMIT 1`,
+      [req.user.id, creatorId]
+    );
+    viewerIsSubscribed = rows.length > 0;
   }
+
+  // 5) Only load posts if allowed
+  let posts = [];
+  if (viewerIsSubscribed) {
+    [posts] = await db.query(
+      'SELECT * FROM posts WHERE user_id=? ORDER BY created_at DESC',
+      [creatorId]
+    );
+  }
+
+  // 6) Render
+  res.render('posts/by_user', {
+    creator,
+    posts,                 // empty if not subscribed (paywall)
+    creatorSettings,
+    viewerIsSubscribed,    // true = show posts; false = show subscribe button/paywall
+    viewingOwnProfile
+  });
 });
+
 
 // ---------- CREATE ----------
 router.post(

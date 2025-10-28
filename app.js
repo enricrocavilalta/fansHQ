@@ -153,6 +153,14 @@ app.use(express.json());
 app.use('/api/polls', pollsRouter);
 
 
+
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+app.use(require('./routes/subscriptions'));
+
+
+
 console.log('📦 Connected pool to DB:', process.env.DB_NAME, 'on', process.env.DB_HOST);
 
 
