@@ -105,6 +105,245 @@ a[data-media="tipjar"]{
   color:hsl(0, 0%, 50%);
 }
 
-.btn-subscribe{
-  background-color: red;
+body {
+  background: #000;
+  color: #eee;
+  font-family: 'Ubuntu', sans-serif;
+}
+
+.creator-header {
+  text-align: center;
+  margin: 4rem auto 3rem;
+  max-width: 800px;
+  color: #fff;
+}
+
+.creator-header h1 {
+  font-size: 2.6rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  color: #fff;
+  letter-spacing: 1px;
+  text-shadow: 0 0 20px rgba(255, 0, 0, 0.2);
+}
+
+/* subscribe CTA */
+.btn-subscribe {
+  background: #d40000;
+  color: #fff;
+  font-size: 1.4rem;
+  font-weight: 700;
+  padding: 1rem 2.5rem;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  display: inline-block;
+  box-shadow: 0 0 15px rgba(255, 0, 0, 0.25);
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-subscribe:hover {
+  background: #ff0000;
+  transform: scale(1.05);
+  box-shadow: 0 0 25px rgba(255, 0, 0, 0.4);
+}
+
+/* unsubscribe button (smaller, subtle) */
+.btn-unsubscribe {
+  background: none;
+  border: 2px solid #666;
+  color: #aaa;
+  font-size: 1rem;
+  padding: 0.5rem 1.5rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.btn-unsubscribe:hover {
+  color: #fff;
+  border-color: #fff;
+}
+
+
+:root {
+  --font-main: 'Ubuntu', sans-serif;
+}
+
+html, body {
+  background: #000;
+  color: #eee;
+  font-family: var(--font-main);
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.2px;
+}
+
+h1, h2, h3, h4, h5, h6,
+button, input, textarea {
+  font-family: var(--font-main);
+  letter-spacing: 0.3px;
+}
+
+.btn-subscribe,
+.btn-unsubscribe {
+  font-family: var(--font-main);
+}
+
+
+:root {
+  --font-main: 'Ubuntu', sans-serif;
+
+  /* Base font sizes */
+  --fs-base: 16px;
+  --fs-small: 14px;
+  --fs-large: 18px;
+
+  /* Headings */
+  --fs-h1: 2.5rem;
+  --fs-h2: 1.8rem;
+  --fs-h3: 1.3rem;
+
+  /* Font weights */
+  --fw-light: 300;
+  --fw-normal: 400;
+  --fw-medium: 500;
+  --fw-bold: 700;
+}
+
+/* GLOBAL */
+html, body {
+  font-family: var(--font-main);
+  font-weight: var(--fw-normal);
+  font-size: var(--fs-base);
+  background: #000;
+  color: #eee;
+  line-height: 1.5;
+  letter-spacing: 0.2px;
+}
+
+/* HEADINGS */
+h1, h2, h3, h4 {
+  font-family: var(--font-main);
+  margin: 0.5em 0;
+  color: #fff;
+}
+
+h1 {
+  font-size: var(--fs-h1);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.5px;
+}
+
+h2 {
+  font-size: var(--fs-h2);
+  font-weight: var(--fw-bold);
+}
+
+h3 {
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-medium);
+}
+
+/* POST TITLE */
+.post-card h2 {
+  font-size: 1.8rem;
+  font-weight: var(--fw-bold);
+  margin-bottom: 0.4rem;
+}
+
+/* POST CONTENT */
+.post-card p {
+  font-size: var(--fs-large);
+  font-weight: var(--fw-normal);
+  color: #ccc;
+}
+
+/* SMALL TEXT (meta info) */
+small, .meta {
+  font-size: var(--fs-small);
+  font-weight: var(--fw-light);
+  color: #888;
+}
+
+/* BUTTONS */
+button, .btn-subscribe, .btn-unsubscribe {
+  font-family: var(--font-main);
+  font-weight: var(--fw-medium);
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+:root {
+  /* --- Fonts --- */
+  --font-main: 'Ubuntu', sans-serif;
+
+  /* --- Text colors --- */
+  --c-text-main: hsl(40, 10%, 92%);     /* soft warm white */
+  --c-text-muted: hsl(0, 0%, 65%);      /* medium gray for body */
+  --c-text-meta: hsl(0, 0%, 45%);       /* dim gray for metadata */
+  --c-accent: hsl(0, 80%, 55%);         /* red accent */
+  --c-accent-hover: hsl(0, 90%, 60%);
+
+  /* --- Backgrounds --- */
+  --c-bg-main: hsl(0, 0%, 0%);
+  --c-bg-card: hsl(0, 0%, 7%);
+  --c-bg-border: hsl(0, 0%, 15%);
+}
+
+body {
+  background: var(--c-bg-main);
+  color: var(--c-text-main);
+  font-family: var(--font-main);
+  font-weight: 400;
+  line-height: 1.55;
+}
+
+/* --- Typography hierarchy --- */
+h1, h2, h3, h4 {
+  color: var(--c-text-main);
+}
+
+p {
+  color: var(--c-text-muted);
+}
+
+.meta, small {
+  color: var(--c-text-meta);
+  font-weight: 300;
+}
+
+/* --- Post card --- */
+.post-card {
+  background: var(--c-bg-card);
+  border: 1px solid var(--c-bg-border);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.post-card h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.post-card p {
+  font-size: 1.1rem;
+  color: var(--c-text-muted);
+}
+
+/* --- Buttons --- */
+.btn-subscribe {
+  background: var(--c-accent);
+  color: #fff;
+  font-weight: 600;
+  padding: 1rem 2rem;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-subscribe:hover {
+  background: var(--c-accent-hover);
 }
