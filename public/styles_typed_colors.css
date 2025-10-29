@@ -1,3 +1,18 @@
+html{
+    background-color:black;
+    color:white;
+}
+
+a:link{
+  color:hsl(180,70%,50%); 
+}
+a:visited{
+  color:hsl(300,70%,50%);
+}
+a:hover{
+  color:hsl(60,70%,50%);
+}
+
 :root {
   --saturation: 70%;
 }
@@ -266,7 +281,7 @@ small, .meta {
   color: #888;
 }
 
-/* BUTTONS */
+/* BUTTONS*/ 
 button, .btn-subscribe, .btn-unsubscribe {
   font-family: var(--font-main);
   font-weight: var(--fw-medium);
@@ -285,15 +300,10 @@ button, .btn-subscribe, .btn-unsubscribe {
   --c-accent: hsl(0, 80%, 55%);         /* red accent */
   --c-accent-hover: hsl(0, 90%, 60%);
 
-  /* --- Backgrounds --- */
-  --c-bg-main: hsl(0, 0%, 0%);
-  --c-bg-card: hsl(0, 0%, 7%);
-  --c-bg-border: hsl(0, 0%, 15%);
+
 }
 
 body {
-  background: var(--c-bg-main);
-  color: var(--c-text-main);
   font-family: var(--font-main);
   font-weight: 400;
   line-height: 1.55;
@@ -313,37 +323,24 @@ p {
   font-weight: 300;
 }
 
-/* --- Post card --- */
-.post-card {
-  background: var(--c-bg-card);
-  border: 1px solid var(--c-bg-border);
-  border-radius: 1rem;
-  padding: 1.5rem;
-  margin-bottom: 2rem;
-}
-
-.post-card h2 {
-  font-size: 1.8rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-}
-
-.post-card p {
-  font-size: 1.1rem;
-  color: var(--c-text-muted);
-}
-
-/* --- Buttons --- */
-.btn-subscribe {
-  background: var(--c-accent);
-  color: #fff;
-  font-weight: 600;
-  padding: 1rem 2rem;
-  border-radius: 999px;
+/* Delete button inside post-card */
+.delete-btn {
+  background: none;
   border: none;
+  color: #888;
+  font-size: 1.6rem;
+  font-weight: 700;
   cursor: pointer;
-  transition: background 0.2s;
+  line-height: 1;
+  padding: 0;
+  margin-left: 0.3rem;
+  transition: color 0.15s, transform 0.1s;
 }
-.btn-subscribe:hover {
-  background: var(--c-accent-hover);
+
+.delete-btn:hover {
+  transform: scale(1.1);
+}
+
+.delete-btn:active {
+  transform: scale(0.95);
 }
