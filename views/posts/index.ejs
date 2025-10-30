@@ -199,27 +199,22 @@
 
 </style>
 
-<head>
-  <%- include('../partials/title', { pageTitle: 'Home · fansHQ' }) %>
-  <link rel="icon" type="image/png" href="/HQgold.png">
-</head>
-
 <!-- Posts Grid -->
 <section class="post-grid-container">
 
 <div class="post-grid">
 
-<div class="latest-posts-header">
-  <h2 class="latest-posts-title">
-    Latest Posts
-    <select id="columnSelector">
-      <option value="1">1 Column</option>
-      <option value="2">2 Columns</option>
-      <option value="3">3 Columns</option>
-      <option value="4">4 Columns</option>
-    </select>
-  </h2>
-</div>
+  <div class="latest-posts-header">
+    <h2 class="latest-posts-title">
+      Latest Posts
+      <select id="columnSelector">
+        <option value="1">1 Column</option>
+        <option value="2">2 Columns</option>
+        <option value="3">3 Columns</option>
+        <option value="4">4 Columns</option>
+      </select>
+    </h2>
+  </div>
 
 <% posts.forEach(post => { %>
   
@@ -242,15 +237,14 @@
         <% if (post.title) { %><h3><%= post.title %></h3><% } %>
         <% if (post.content) { %><p><%= post.content %></p><% } %>
         
-        <div class="author-info mt-3 text-sm opacity-80">
+        <div>
           By
           <% if (post.email) { %>
-          <a href="/posts/by/<%= post.user_id %>"><%= post.email.split('@')[0] %></a>
+          <a href="/posts/by/<%= post.username %>"><%= post.username %></a>
           <% } else { %>unknown<% } %>
           · <%= new Date(post.created_at).toLocaleDateString() %>
         </div>
       </div>
-
     <% } else if (post.media_type === 'image') { %>
       <div class="post-card" data-media="<%= post.media_type %>">
 
@@ -273,17 +267,15 @@
         <% if (post.title) { %><h3><%= post.title %></h3><% } %>
         <% if (post.content) { %><p><%= post.content %></p><% } %>
 
-        <div class="author-info mt-3 text-sm opacity-80">
+        <div>
           By
           <% if (post.email) { %>
-          <a href="/posts/by/<%= post.user_id %>"><%= post.email.split('@')[0] %></a>
+          <a href="/posts/by/<%= post.username %>"><%= post.username %></a>
           <% } else { %>unknown<% } %>
           · <%= new Date(post.created_at).toLocaleDateString() %>
         </div>
       </div>
-
     <% } else if (post.media_type === 'video') { %>
-
       <div class="post-card" data-media="<%= post.media_type %>">
 
         <div class="edit-delete">
@@ -308,15 +300,14 @@
         <% if (post.title) { %><h3><%= post.title %></h3><% } %>
         <% if (post.content) { %><p><%= post.content %></p><% } %>
 
-        <div class="author-info mt-3 text-sm opacity-80">
+        <div>
           By
           <% if (post.email) { %>
-          <a href="/posts/by/<%= post.user_id %>"><%= post.email.split('@')[0] %></a>
+          <a href="/posts/by/<%= post.username %>"><%= post.username %></a>
           <% } else { %>unknown<% } %>
           · <%= new Date(post.created_at).toLocaleDateString() %>
         </div>
       </div>
-
     <% } else if (post.media_type === 'audio') { %>
       <div class="post-card" data-media="<%= post.media_type %>">
 
@@ -328,8 +319,7 @@
           </form>
 
           <!-- Delete button -->
-          <f
-          orm action="/posts/<%= post.id %>?_method=DELETE" method="POST">
+          <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
             <button type="submit" class="delete-btn">&times;</button>
           </form>
         </div>
@@ -342,17 +332,15 @@
         <% if (post.title) { %><h3><%= post.title %></h3><% } %>
         <% if (post.content) { %><p><%= post.content %></p><% } %>
 
-        <div class="author-info mt-3 text-sm opacity-80">
+        <div>
           By
           <% if (post.email) { %>
-          <a href="/posts/by/<%= post.user_id %>"><%= post.email.split('@')[0] %></a>
+          <a href="/posts/by/<%= post.username %>"><%= post.username %></a>
           <% } else { %>unknown<% } %>
           · <%= new Date(post.created_at).toLocaleDateString() %>
         </div>
       </div>
-
     <% } else if (post.media_type === 'file') { %>
-
       <div class="post-card" data-media="<%= post.media_type %>">
       
         <div class="edit-delete">
@@ -381,19 +369,17 @@
             </a>
           <% } %>
 
-      </div>
+        <div>
+          By
+          <% if (post.email) { %>
+          <a href="/posts/by/<%= post.username %>"><%= post.username %></a>
+          <% } else { %>unknown<% } %>
+          · <%= new Date(post.created_at).toLocaleDateString() %>
+        </div>
 
-      <div class="author-info mt-3 text-sm opacity-80">
-        By
-        <% if (post.email) { %>
-        <a href="/posts/by/<%= post.user_id %>"><%= post.email.split('@')[0] %></a>
-        <% } else { %>unknown<% } %>
-        · <%= new Date(post.created_at).toLocaleDateString() %>
       </div>
-      
     <% } else if (post.media_type === 'link') { %>
       <% if (post.media_url) { %>
-
         <div class="post-card" data-media="<%= post.media_type %>">
 
           <div class="edit-delete">
@@ -413,17 +399,17 @@
           <h3><%= post.title || 'link' %></h3>
           <% if (post.content) { %><p><%= post.content %></p><% } %>
 
-          <div class="author-info mt-3 text-sm opacity-80">
+          <a href="<%= post.media_url %>" target="_blank" rel="noopener" class="file-link underline mt-2 inline-block">Open link</a>
+      
+          <div>
             By
             <% if (post.email) { %>
-            <a href="/posts/by/<%= post.user_id %>"><%= post.email.split('@')[0] %></a>
+            <a href="/posts/by/<%= post.username %>"><%= post.username %></a>
             <% } else { %>unknown<% } %>
             · <%= new Date(post.created_at).toLocaleDateString() %>
           </div>
 
-          <a href="<%= post.media_url %>" target="_blank" rel="noopener" class="file-link underline mt-2 inline-block"></a>
         </div>
-
       <% } %>
     <% } else if (post.media_type === 'embed') { %>
       <div class="post-card" data-media="<%= post.media_type %>">
@@ -435,26 +421,33 @@
         <% if (post.title) { %><h3><%= post.title %></h3><% } %>
         <% if (post.content) { %><p><%= post.content %></p><% } %>
       </div>
-
     <% } else if (post.media_type === 'poll') { %>
       <div class="post-card" data-media="poll">
-        <% if (post.title) { %>
-          <h3><%= post.title %></h3>
-        <% } %>
+        <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+        <% if (post.content) { %><p><%= post.content %></p><% } %>
 
-        <% if (post.content) { %>
-          <p><%= post.content %></p>
-        <% } %>
-      <form id="poll-<%= post.id %>" data-poll-id="<%= post.id %>">
-        <% for (let i = 1; i <= 10; i++) {
-          const label = post['option_' + i];
-          if (!label) continue; %>
+        <form id="poll-<%= post.id %>" data-poll-id="<%= post.id %>">
+          <% for (let i = 1; i <= 10; i++) {
+              const label = post['option_' + i];
+              if (!label) continue; %>
+            <label style="display:flex;align-items:center;gap:.5rem;margin:.25rem 0">
+              <span class="count" data-option="<%= i %>" style="min-width:1.5em;text-align:right;"></span>
+              <input type="checkbox" name="choices" value="<%= i %>">
+              <span><%= label %></span>
+            </label>
+          <% } %>
+          <span class="msg" style="margin-left:.5rem;opacity:.8"></span>
+        </form>
 
-        <label style="display:flex;align-items:center;gap:.5rem;margin:.25rem 0">
-          <span class="count" data-option="<%= i %>" style="min-width:1.5em;text-align:right;"></span>
-          <input type="checkbox" name="choices" value="<%= i %>">
-          <span><%= label %></span>
-        </label>
+        <div>
+          By
+          <% if (post.email) { %>
+          <a href="/posts/by/<%= post.username %>"><%= post.username %></a>
+          <% } else { %>unknown<% } %>
+          · <%= new Date(post.created_at).toLocaleDateString() %>
+        </div>
+      </div>
+  
       <style>
           /* only for poll posts */
         .post-card[data-media="poll"] input[type="checkbox"] {
@@ -495,11 +488,7 @@
 
       </style>
 
-  <% } %>
-  <span class="msg" style="margin-left:.5rem;opacity:.8"></span>
-</form>
-
-<script>
+      <script>
 (() => {
   const form = document.getElementById('poll-<%= post.id %>');
   if (!form || form.dataset.bound === '1') return;
@@ -561,18 +550,8 @@
 
   inputs.forEach(ch => ch.addEventListener('change', schedule));
 })();
-</script>
-
-
-        <div class="author-info mt-3 text-sm opacity-80">
-          By
-          <% if (post.email) { %>
-          <a href="/posts/by/<%= post.user_id %>"><%= post.email.split('@')[0] %></a>
-          <% } else { %>unknown<% } %>
-          · <%= new Date(post.created_at).toLocaleDateString() %>
-        </div>
-      </div>
-
+      </script>
+    
     <% } else if (post.media_type === 'product') { %>
       <div class="post-card" data-media="<%= post.media_type %>">
 
@@ -613,10 +592,10 @@
           <button type="submit"style="background-color:hsl(30, 90%, 50%);color:#f0f0f0; border: none; border-radius: 6px;">Buy</button>
         </form>
           
-        <div class="author-info mt-3 text-sm opacity-80">
+        <div>
           By
           <% if (post.email) { %>
-          <a href="/posts/by/<%= post.user_id %>"><%= post.email.split('@')[0] %></a>
+          <a href="/posts/by/<%= post.username %>"><%= post.username %></a>
           <% } else { %>unknown<% } %>
           · <%= new Date(post.created_at).toLocaleDateString() %>
         </div>
@@ -651,13 +630,7 @@
         
         <% if (post.content) { %><p><%= post.content %></p><% } %>
 
-        <!--
-        <form action="/posts/<%= post.id %>/tip" method="POST">
-          message: <br>
-          <textarea></textarea><br>
-          <button type="submit" style="background-color:hsl(0, 0%, 50%);color:#f0f0f0; border: none; border-radius: 6px;">DONATE</button>
-          <input type="number" name="tip" id="tip" value="<%= post.price %>" step="1" min="1" size="3" style="text-align:right; background-color: #303030;color:#f0f0f0; border: none; border-radius: 6px;"; required>$
-        </form>-->
+     
         
         <form action="/posts/<%= post.id %>/tip" method="POST">
           message: <br>
@@ -687,152 +660,126 @@
           >$
         </form>
         
-        <div class="author-info mt-3 text-sm opacity-80">
+        <div>
           By
           <% if (post.email) { %>
-          <a href="/posts/by/<%= post.user_id %>"><%= post.email.split('@')[0] %></a>
+          <a href="/posts/by/<%= post.username %>"><%= post.username %></a>
           <% } else { %>unknown<% } %>
           · <%= new Date(post.created_at).toLocaleDateString() %>
         </div>
       </div>
 
     <% } else if (post.media_type === 'ama') { %>
-  <div class="post-card" data-media="<%= post.media_type %>">
-    <div class="edit-delete">
-      <form class="edit-form" action="/posts/<%= post.id %>/edit" method="GET">
-        <button class="edit-btn">✎</button>
-      </form>
-      <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
-        <button type="submit" class="delete-btn">&times;</button>
-      </form>
-    </div>
-
-    <% if (post.title) { %><h3><%= post.title %></h3><% } %>
-    <% if (post.content) { %><p><%= post.content %></p><br><% } %>
-
-    <section id="ama-<%= post.id %>" data-post-id="<%= post.id %>">
-      Question:<br>  
-      <textarea id="q-<%= post.id %>" rows="3" placeholder="Ask anything…" style="background-color: #303030;color:#f0f0f0; border: none; border-radius: 6px;width:100%;"></textarea><br><br>
-      <div>
-        Tip:<br>
-        <input type="number" name="tip" id="tip" value="<%= post.price %>" step="1" min="1" size="3" style="text-align:right; background-color: #303030;color:#f0f0f0; border: none; border-radius: 6px;";>$<br><br>
-        <button id="send-<%= post.id %>" style="background-color: #303030;color:#f0f0f0; border: none; border-radius: 6px;">Send</button>
-      </div>
-
-      <p id="err-<%= post.id %>" style="color:#b91c1c;display:none"></p>
-      <ul id="list-<%= post.id %>"></ul>
-    </section>
-
-    <script>
-    (function () {
-      const pid   = <%= post.id %>;
-      const box   = document.getElementById(`ama-${pid}`);
-      if (!box || box.dataset.bound === "1") return;   // bind once per block
-      box.dataset.bound = "1";
-
-      const postId = box.dataset.postId;
-      const qEl    = document.getElementById(`q-${pid}`);
-      const email  = document.getElementById(`email-${pid}`);   // may be null if you remove email field
-      const tip    = document.getElementById(`tip-${pid}`);     // now matches HTML
-      const send   = document.getElementById(`send-${pid}`);
-      const err    = document.getElementById(`err-${pid}`);
-      const list   = document.getElementById(`list-${pid}`);
-
-      let busy = false;
-
-      function addRow(row) {
-        const li = document.createElement("li");
-        const meta = document.createElement("div");
-        meta.style.opacity = ".7";
-        meta.style.fontSize = ".8rem";
-        meta.textContent = (row.email || "Anonymous") + " • " + new Date(row.created_at).toLocaleString();
-        li.appendChild(meta);
-        if (row.question) {
-          const p = document.createElement("p");
-          p.textContent = row.question;
-          li.appendChild(p);
-        }
-        if (Number(row.tip) > 0) {
-          const s = document.createElement("small");
-          s.textContent = "Tip: €" + Number(row.tip).toFixed(2);
-          li.appendChild(s);
-        }
-        list.insertBefore(li, list.firstChild);
-      }
-
-      send.addEventListener("click", async () => {
-        if (busy) return;
-        busy = true;
-        err.style.display = "none";
-        send.disabled = true;
-
-        try {
-          const payload = {
-            question: qEl.value.trim() || null,
-            email: email && email.value ? email.value.trim() : null,     // ✅ null-safe
-            tip: tip && tip.value ? Number(tip.value) : 0                // ✅ null-safe
-          };
-
-          const res = await fetch(`/api/posts/${postId}/ask`, {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify(payload)
-          });
-          if (!res.ok) throw new Error("Server error");
-
-          const saved = await res.json();
-          qEl.value = "";
-          if (tip) tip.value = "";
-        } catch (e) {
-          err.textContent = "Couldn’t send. Try again.";
-          err.style.display = "block";
-        } finally {
-          busy = false;
-          send.disabled = false;
-        }
-      });
-    })();
-    </script>
-
-
-
-
-
-
-
-
-        <div class="author-info mt-3 text-sm opacity-80">
-          By
-          <% if (post.email) { %>
-          <a href="/posts/by/<%= post.user_id %>"><%= post.email.split('@')[0] %></a>
-          <% } else { %>unknown<% } %>
-          · <%= new Date(post.created_at).toLocaleDateString() %>
-        </div>
-      </div>
-      
-    <% } else { %>
       <div class="post-card" data-media="<%= post.media_type %>">
-        <!-- Fallback for unknown type -->
-        <% if (post.title) { %><h3><%= post.title %></h3><% } %>
-        <% if (post.content) { %><p><%= post.content %></p><% } %>
-        <% if (post.media_url) { %>
-          <a href="<%= post.media_url %>" target="_blank" rel="noopener" class="underline mt-2 inline-block">
-            Open link
-          </a>
-        <% } %>
+        <div class="edit-delete">
+         <form class="edit-form" action="/posts/<%= post.id %>/edit" method="GET">
+           <button class="edit-btn">✎</button>
+         </form>
+          <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
+           <button type="submit" class="delete-btn">&times;</button>
+          </form>
+        </div>
 
-         <!-- Optional: simple author/date (kept outside to avoid repetition of the same block 10x) -->
-        <div class="author-info mt-3 text-sm opacity-80">
-          By
-          <% if (post.email) { %>
-          <a href="/posts/by/<%= post.user_id %>"><%= post.email.split('@')[0] %></a>
-          <% } else { %>unknown<% } %>
-          · <%= new Date(post.created_at).toLocaleDateString() %>
+        <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+        <% if (post.content) { %><p><%= post.content %></p><br><% } %>
+
+        <div id="ama-<%= post.id %>" data-post-id="<%= post.id %>">
+          Question:<br>  
+          <textarea id="q-<%= post.id %>" rows="3" placeholder="Ask anything…" style="background-color: #303030;color:#f0f0f0; border: none; border-radius: 6px;width:100%;"></textarea><br><br>
+        <div>
+          Tip:<br>
+          <input type="number" name="tip" id="tip-<%= post.id %>" value="<%= post.price %>" step="1" min="1" size="3"
+          style="text-align:right;background-color:#303030;color:#f0f0f0;border:none;border-radius:6px;">
+          $
+          <button id="send-<%= post.id %>" style="background-color: #303030;color:#f0f0f0; border: none; border-radius: 6px;">Send</button>
+        </div>
+
+        <p id="err-<%= post.id %>" style="color:#b91c1c;display:none"></p>
+        <ul id="list-<%= post.id %>"></ul>
         </div>
       </div>
-    <% } %>
-<% }); %>
 
+      <script>
+(function () {
+  const pid = <%= post.id %>;
+  const box = document.getElementById(`ama-${pid}`);
+  if (!box || box.dataset.bound === "1") return;
+  box.dataset.bound = "1";
+
+  // Scope everything to this AMA card
+  const qEl  = box.querySelector(`#q-${pid}`);
+  const email = box.querySelector(`#email-${pid}`); // may be null
+  const tipEl = box.querySelector(`#tip-${pid}`);   // requires id="tip-<%= post.id %>"
+  const send = box.querySelector(`#send-${pid}`);
+  const err  = box.querySelector(`#err-${pid}`);
+  const list = box.querySelector(`#list-${pid}`);
+  const postId = box.dataset.postId;
+
+  // Prevent accidental form submit
+  if (send) send.type = 'button';
+
+  let busy = false;
+
+  function addRow(row) {
+    const li = document.createElement("li");
+    const meta = document.createElement("div");
+    meta.style.opacity = ".7";
+    meta.style.fontSize = ".8rem";
+    meta.textContent = (row.email || "Anonymous") + " • " + new Date(row.created_at || Date.now()).toLocaleString();
+    li.appendChild(meta);
+    if (row.question) {
+      const p = document.createElement("p");
+      p.textContent = row.question;
+      li.appendChild(p);
+    }
+    if (Number(row.tip) > 0) {
+      const s = document.createElement("small");
+      s.textContent = "Tip: €" + Number(row.tip).toFixed(2);
+      li.appendChild(s);
+    }
+    list?.insertBefore(li, list.firstChild || null);
+  }
+
+  async function submit() {
+    if (busy) return;
+    busy = true;
+    err.style.display = "none";
+    send.disabled = true;
+
+    const payload = {
+      question: (qEl?.value || '').trim() || null,
+      email: (email && email.value ? email.value.trim() : null),
+      tip: tipEl && tipEl.value ? Number(tipEl.value) : 0
+    };
+
+    try {
+      const res = await fetch(`/api/posts/${postId}/ask`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        credentials: "same-origin",
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const saved = await res.json().catch(() => ({}));
+      addRow(saved && (saved.row || saved) || payload);
+      if (qEl) qEl.value = "";
+      // if (tipEl) tipEl.value = ""; // keep tip if you prefer
+    } catch (e) {
+      console.error(e);
+      err.textContent = "Couldn’t send. Try again.";
+      err.style.display = "block";
+    } finally {
+      busy = false;
+      send.disabled = false;
+    }
+  }
+
+  send?.addEventListener("click", submit);
+})();
+      </script>
+    <% } %>
+<% }) %>     <!-- end posts.forEach -->
+</div>
 </section>
 
 <script>
@@ -844,17 +791,3 @@
   });
 </script>
 
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  // grab all author-info elements
-  const metas = document.getElementsByClassName("author-info");
-
-  // turn the HTMLCollection into a real array so we can loop safely
-  Array.from(metas).forEach(meta => {
-    // decide when to remove (example: empty or orphaned metas)
-    if (!meta.nextElementSibling || meta.nextElementSibling.classList.contains("deleted")) {
-      meta.remove();
-    }
-  });
-});
-</script>

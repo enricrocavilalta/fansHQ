@@ -47,6 +47,17 @@ app.use('/posts', ensureAuthPage, postsRouter);
 
 
 
+// normalize req.user from the session for every request
+app.use((req, res, next) => {
+  if (req.session && req.session.userId) {
+    req.user = req.user || {};
+    req.user.id = Number(req.session.userId);
+  }
+  next();
+});
+
+
+
 app.use((req, _res, next) => {
   console.log(req.method, req.url, 'CT=', req.headers['content-type']);
   next();

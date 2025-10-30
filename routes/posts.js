@@ -111,59 +111,64 @@ router.get('/:id/edit', isLoggedIn, async (req, res) => {
 
 
 
-// ---------- Posts by user (hard paywall) ----------
-router.get('/by/:id', async (req, res) => {
-  const creatorId = Number(req.params.id);
+/// ---------- Posts by user (hard paywall, by username) ----------
+router.get('/by/:username', async (req, res) => {
+  const username = req.params.username;
 
-  // 1) Creator
-  const [userRows] = await db.query('SELECT id, username FROM users WHERE id=?', [creatorId]);
+  // 1) Creator (by username)
+  const [userRows] = await db.query(
+    'SELECT id, username FROM users WHERE username = ?',
+    [username]
+  );
   if (!userRows.length) return res.status(404).send('User not found');
   const creator = userRows[0];
+  const creatorId = Number(creator.id);
 
-  // 2) Subscription settings (price, enabled, days)
-  //const { getCreatorSettings, isSubscribed } = require('../lib/subscriptions'); // or inline helper(s)
+  // 2) Viewer id from session (normalize to number)
+  const viewerId = Number(
+    (req.user && req.user.id) ||
+    (req.session && req.session.userId) || 0
+  );
+
+  // 3) Subscription settings
   const creatorSettings = await getCreatorSettings(creatorId);
 
-  // 3) Who is viewing?
-  const viewingOwnProfile = !!req.user && req.user.id === creatorId;
+  // 4) Are we viewing our own profile?
+  const viewingOwnProfile = viewerId === creatorId;
 
-  // 4) Check access (creator or active subscriber)
+  // 5) Check subscription only if not owner & logged in
   let viewerIsSubscribed = false;
-  if (viewingOwnProfile) {
-    viewerIsSubscribed = true;
-  } else if (req.user) {
-    // use helper; or keep your simple SELECT if you prefer
+  if (!viewingOwnProfile && viewerId) {
     const [rows] = await db.query(
       `SELECT 1 FROM subscriptions
-       WHERE subscriber_id=? AND creator_id=? AND status='active' AND end_at>NOW()
+       WHERE subscriber_id=? AND creator_id=? AND LOWER(status)='active'
        LIMIT 1`,
-      [req.user.id, creatorId]
+      [viewerId, creatorId]
     );
     viewerIsSubscribed = rows.length > 0;
   }
 
-  // 5) Only load posts if allowed
+  // 6) Load posts only if allowed (owner OR subscribed)
   let posts = [];
-  if (viewerIsSubscribed) {
+  if (viewingOwnProfile || viewerIsSubscribed) {
     [posts] = await db.query(
       'SELECT * FROM posts WHERE user_id=? ORDER BY created_at DESC',
       [creatorId]
     );
   }
 
-  // in routes/posts.js, inside /by/:id just before res.render
-console.log('[by/:id] creator =', creator); // should show { id: 123, username: '...' }
+  // debug
+  console.log('[subs check]', { viewer: viewerId || null, creator: creatorId });
 
-
-  // 6) Render
   res.render('posts/by_user', {
     creator,
-    posts,                 // empty if not subscribed (paywall)
+    posts,
     creatorSettings,
-    viewerIsSubscribed,    // true = show posts; false = show subscribe button/paywall
+    viewerIsSubscribed: viewingOwnProfile || viewerIsSubscribed,
     viewingOwnProfile
   });
 });
+
 
 
 // ---------- CREATE ----------
