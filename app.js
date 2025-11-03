@@ -175,6 +175,62 @@ app.use(require('./routes/subscriptions'));
 console.log('📦 Connected pool to DB:', process.env.DB_NAME, 'on', process.env.DB_HOST);
 
 
+
+
+
+// --- helper function ---
+function emailToHandle(email) {
+  if (!email) return null;
+  const [local, domainRaw] = String(email).split('@');
+  const domain = (domainRaw || '').toLowerCase();
+  let base = local.replace(/\+.*$/, '');
+  if (domain === 'gmail.com') base = base.replace(/\./g, '');
+  return base.toLowerCase();
+}
+
+// --- reserved words (so /feed doesn't get mistaken for username) ---
+const RESERVED = new Set(['feed', 'api', 'posts', 'static', 'assets']);
+
+// --- FEED (no create form) ---
+app.get('/feed', async (req, res) => {
+  const [posts] = await db.query(`
+    SELECT * FROM posts ORDER BY created_at DESC LIMIT 200
+  `);
+  res.render('posts/index', { posts, pageHeading: 'Feed', canPost: false });
+});
+
+// --- USER PAGE (/username) ---
+app.get('/:handle', async (req, res, next) => {
+  const handle = String(req.params.handle || '').toLowerCase();
+  if (!handle || RESERVED.has(handle)) return next(); // skip if reserved
+
+  const [posts] = await db.query(`
+    SELECT * FROM posts
+    WHERE LOWER(
+      CASE
+        WHEN LOWER(SUBSTRING_INDEX(email,'@',-1))='gmail.com'
+          THEN REPLACE(SUBSTRING_INDEX(SUBSTRING_INDEX(email,'@',1), '+', 1), '.', '')
+        ELSE SUBSTRING_INDEX(SUBSTRING_INDEX(email,'@',1), '+', 1)
+      END
+    ) = ?
+    ORDER BY created_at DESC
+    LIMIT 200
+  `, [handle]);
+
+  const userHandle = emailToHandle(req.user?.email);
+  const canPost = userHandle === handle; // owner check
+
+  res.render('posts/index', {
+    posts,
+    pageHeading: `Posts by ${handle}`,
+    canPost
+  });
+});
+
+
+
+
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`FansHQ running at http://localhost:${PORT}`);

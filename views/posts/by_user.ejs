@@ -1,48 +1,809 @@
+<!--<link rel="stylesheet" href="/styles.css">-->
 <link rel="stylesheet" href="/styles_typed_colors.css">
+<%- include('../partials/header') %>
+<%- include('../partials/create_post') %>
+<style>
+  body {
+  background-color: #000;
+  color: #fff;
+  font-family: sans-serif;
+}
 
-<div class="creator-header">
-  <h1 style="text-transform: uppercase;""><%= creator.username %></h1>
+.post-grid-container {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 100%;
+}
 
-  <% if (viewingOwnProfile) { %>
-    <a class="btn" href="/me/settings">Manage subscription settings</a>
-  <% } else if (creatorSettings?.enabled) { %>
-    <% if (!viewerIsSubscribed) { %>
-      <form id="sub-<%= creator.id %>" method="POST" action="/api/subscriptions/<%= creator.id %>/subscribe">
-        <button class="btn-subscribe"  
-          style="background:#e53935;color:white;font-size:1.5rem;padding:1rem 2rem;
-          border:none;border-radius:1rem;cursor:pointer;display:block;
-          width:100%;max-width:400px;margin:2rem auto;font-weight:700;
-          box-shadow:0 4px 12px rgba(0,0,0,0.3);transition:background 0.2s;">
-          Subscribe €<%= (creatorSettings.price_cents / 100).toFixed(2) %></button>
-      </form>
-    <% } else { %>
-      <form id="unsub-<%= creator.id %>" method="POST" action="/api/subscriptions/<%= creator.id %>/cancel">
-        <button class="btn-unsubscribe">Unsubscribe</button>
-      </form>
+.post-grid-container h2 {
+  margin-bottom: 1rem;
+}
+
+.post-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--columns, 1), minmax(0, 1fr)); /* 1 column default */
+  gap: 1rem;
+}
+
+.post-card {
+  /*background-color: #1e1e1e;*/
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.2s ease;
+  overflow: visible; /* or remove if not needed */
+  min-width: 0;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.post-card:hover {
+ /* background-color: #2a2a2a;*/
+}
+
+.post-card h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+}
+
+.post-card p {
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.author-info {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.author-info a {
+  color: hsl(180, 90%, 50%);
+  text-decoration: underline;
+}
+
+.author-info a:visited {
+  color: hsl(300, 90%, 50%);
+  text-decoration: underline;
+}
+
+.author-info a:hover {
+  color: hsl(60, 90%, 50%);
+  text-decoration: underline;
+}
+
+.post-card img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 8px;
+}
+
+.post-card video {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 8px;
+}
+
+.post-card audio {
+  width: 100%;
+  display: block;
+  margin-top: 0.5rem;
+}
+
+.latest-posts-header {
+  display: flex;
+  justify-content: center;  /* centers horizontally */
+  align-items: center;      /* centers vertically */
+}
+
+.latest-posts-title {
+  display: inline-flex;
+  align-items: center; /* keeps text & dropdown aligned */
+  gap: 8px;
+  margin: 0;
+}
+
+.latest-posts-title select {
+  background-color: #1e1e1e; /* dark background */
+  color: #fff;              /* white text */
+  border: 1px solid #444;   /* subtle border */
+  border-radius: 4px;
+  padding: 4px 6px;
+}
+
+.latest-posts-title select:focus {
+  outline: none;
+  border-color: #888; /* lighter on focus */
+}
+
+.post-grid {
+  background-color: #101010;  /* slightly lighter than background */
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  margin-top: 16px;
+}
+
+.file-link:link {
+  color: hsl(180, 90%, 50%);
+}
+
+.file-link:visited {
+  color: hsl(300, 90%, 50%);
+}
+
+.file-link:hover {
+  color: hsl(60, 90%, 50%);
+}
+
+.delete-btn {
+  background: rgba(255, 255, 255, 0.1); /* white with 10% opacity */
+  color: #f0f0f0;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 5px;
+}
+
+.delete-btn:hover {
+  background: rgba(255,255,255,0.2);
+  color: white;          /* optional hover brighten */
+}
+.edit-btn {
+  background: rgba(255,255,255,0.1);
+  border: none;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  color: #f0f0f0;           /* neutral grey */
+  padding: 4px 8px;
+  transition: background 0.2s;
+}
+
+.edit-btn:hover {
+  background: rgba(255,255,255,0.2);
+  color: white;          /* optional hover brighten */
+}
+
+.edit-delete {
+  display: flex;
+  justify-content: space-between; /* meta on left, actions on right */
+  align-items: center;
+}
+
+.link-card { position: relative; }
+
+/* clickable overlay that makes the whole card a link */
+.link-card .cover-link {
+  position: absolute;
+  inset: 0;                 /* top:0 right:0 bottom:0 left:0 */
+  z-index: 2;               /* above content... */
+  border-radius: inherit;   /* match the card rounding */
+}
+
+/* ...but keep actions above the overlay so they are clickable */
+.link-card .edit-delete,
+.link-card .actions,
+.link-card .edit-btn,
+.link-card .delete-btn {
+  position: relative;
+  z-index: 3;
+}
+
+/* normal content can sit below the overlay (it’ll still “click-through”) */
+.link-card .post-title,
+.link-card .post-content,
+.link-card .url {
+  position: relative;
+  z-index: 1;
+}
+
+</style>
+
+<!-- Posts Grid -->
+<section class="post-grid-container">
+
+<div class="post-grid">
+
+  <div class="latest-posts-header">
+    <h2 class="latest-posts-title">
+      Latest Posts
+      <select id="columnSelector">
+        <option value="1">1 Column</option>
+        <option value="2">2 Columns</option>
+        <option value="3">3 Columns</option>
+        <option value="4">4 Columns</option>
+      </select>
+    </h2>
+  </div>
+
+<% posts.forEach(post => { %>
+  
+    <% if (post.media_type === 'text') { %>
+      <div class="post-card" data-media="<%= post.media_type %>">
+        
+        <div class="edit-delete">
+          
+          <!-- Edit button -->
+          <form class="edit-form" action="/posts/<%= post.id %>/edit" method="GET">
+            <button class="edit-btn">✎</button>
+          </form>
+
+          <!-- Delete button -->
+          <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
+            <button type="submit" class="delete-btn">&times;</button>
+          </form>
+        </div>
+
+        <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+        <% if (post.content) { %><p><%= post.content %></p><% } %>
+        
+        <div>
+          By
+          <% if (post.email) { %>
+          <a href="/posts/by/<%= post.email.split('@')[0] %>"><%= post.email.split('@')[0] %></a>
+          <% } else { %>unknown<% } %>
+          · <%= new Date(post.created_at).toLocaleDateString() %>
+        </div>
+      </div>
+    <% } else if (post.media_type === 'image') { %>
+      <div class="post-card" data-media="<%= post.media_type %>">
+
+        <div class="edit-delete">
+          
+          <!-- Edit button -->
+          <form class="edit-form" action="/posts/<%= post.id %>/edit" method="GET">
+            <button class="edit-btn">✎</button>
+          </form>
+
+          <!-- Delete button -->
+          <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
+            <button type="submit" class="delete-btn">&times;</button>
+          </form>
+        </div>
+
+        <% if (post.media_url) { %>
+          <img src="<%= post.media_url %>" alt="" class="w-full rounded mt-2" />
+        <% } %>
+        <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+        <% if (post.content) { %><p><%= post.content %></p><% } %>
+
+        <div>
+          By
+          <% if (post.email) { %>
+          <a href="/posts/by/<%= post.email.split('@')[0] %>"><%= post.email.split('@')[0] %></a>
+          <% } else { %>unknown<% } %>
+          · <%= new Date(post.created_at).toLocaleDateString() %>
+        </div>
+      </div>
+    <% } else if (post.media_type === 'video') { %>
+      <div class="post-card" data-media="<%= post.media_type %>">
+
+        <div class="edit-delete">
+          
+          <!-- Edit button -->
+          <form class="edit-form" action="/posts/<%= post.id %>/edit" method="GET">
+            <button class="edit-btn">✎</button>
+          </form>
+
+          <!-- Delete button -->
+          <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
+            <button type="submit" class="delete-btn">&times;</button>
+          </form>
+        </div>
+
+
+        <% if (post.media_url) { %>
+          <video controls class="w-full rounded mt-2">
+            <source src="<%= post.media_url %>">
+          </video>
+        <% } %>
+        <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+        <% if (post.content) { %><p><%= post.content %></p><% } %>
+
+        <div>
+          By
+          <% if (post.email) { %>
+          <a href="/posts/by/<%= post.email.split('@')[0] %>"><%= post.email.split('@')[0] %></a>
+          <% } else { %>unknown<% } %>
+          · <%= new Date(post.created_at).toLocaleDateString() %>
+        </div>
+      </div>
+    <% } else if (post.media_type === 'audio') { %>
+      <div class="post-card" data-media="<%= post.media_type %>">
+
+        <div class="edit-delete">
+          
+          <!-- Edit button -->
+          <form class="edit-form" action="/posts/<%= post.id %>/edit" method="GET">
+            <button class="edit-btn">✎</button>
+          </form>
+
+          <!-- Delete button -->
+          <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
+            <button type="submit" class="delete-btn">&times;</button>
+          </form>
+        </div>
+
+        <% if (post.media_url) { %>
+          <audio controls class="w-full mt-2">
+            <source src="<%= post.media_url %>">
+          </audio>
+        <% } %>
+        <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+        <% if (post.content) { %><p><%= post.content %></p><% } %>
+
+        <div>
+          By
+          <% if (post.email) { %>
+          <a href="/posts/by/<%= post.email.split('@')[0] %>"><%= post.email.split('@')[0] %></a>
+          <% } else { %>unknown<% } %>
+          · <%= new Date(post.created_at).toLocaleDateString() %>
+        </div>
+      </div>
+    <% } else if (post.media_type === 'file') { %>
+      <div class="post-card" data-media="<%= post.media_type %>">
+      
+        <div class="edit-delete">
+          
+          <!-- Edit button -->
+          <form class="edit-form" action="/posts/<%= post.id %>/edit" method="GET">
+            <button class="edit-btn">✎</button>
+          </form>
+
+          <!-- Delete button -->
+          <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
+            <button type="submit" class="delete-btn">&times;</button>
+          </form>
+          
+        </div>
+   
+          <% if (post.media_url) { %>
+            <h3><%= post.title %></h3>
+    
+            <% if (post.content) { %>
+              <p><%= post.content %></p>
+            <% } %>
+
+            <a href="<%= post.media_url %>" download>
+              Download
+            </a>
+          <% } %>
+
+        <div>
+          By
+          <% if (post.email) { %>
+          <a href="/posts/by/<%= post.email.split('@')[0] %>"><%= post.email.split('@')[0] %></a>
+          <% } else { %>unknown<% } %>
+          · <%= new Date(post.created_at).toLocaleDateString() %>
+        </div>
+
+      </div>
+    <% } else if (post.media_type === 'link') { %>
+      <% if (post.media_url) { %>
+        <div class="post-card" data-media="<%= post.media_type %>">
+
+          <div class="edit-delete">
+          
+            <!-- Edit button -->
+            <form class="edit-form" action="/posts/<%= post.id %>/edit" method="GET">
+              <button class="edit-btn">✎</button>
+            </form>
+
+            <!-- Delete button -->
+            <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
+              <button type="submit" class="delete-btn">&times;</button>
+            </form>
+
+          </div>
+
+          <h3><%= post.title || 'link' %></h3>
+          <% if (post.content) { %><p><%= post.content %></p><% } %>
+
+          <a href="<%= post.media_url %>" target="_blank" rel="noopener" class="file-link underline mt-2 inline-block">Open link</a>
+      
+          <div>
+            By
+            <% if (post.email) { %>
+            <a href="/posts/by/<%= post.email.split('@')[0] %>"><%= post.email.split('@')[0] %></a>
+            <% } else { %>unknown<% } %>
+            · <%= new Date(post.created_at).toLocaleDateString() %>
+          </div>
+
+        </div>
+      <% } %>
+    <% } else if (post.media_type === 'embed') { %>
+      <div class="post-card" data-media="<%= post.media_type %>">
+        <% if (post.media_url) { %>
+          <div class="video-wrapper mt-2">
+            <iframe src="<%= post.media_url %>" class="w-full rounded" frameborder="0" allowfullscreen></iframe>
+          </div>
+        <% } %>
+        <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+        <% if (post.content) { %><p><%= post.content %></p><% } %>
+
+        <div>
+          By
+          <% if (post.email) { %>
+          <a href="/posts/by/<%= post.email.split('@')[0] %>"><%= post.email.split('@')[0] %></a>
+          <% } else { %>unknown<% } %>
+          · <%= new Date(post.created_at).toLocaleDateString() %>
+        </div>
+      </div>
+    <% } else if (post.media_type === 'poll') { %>
+      <div class="post-card" data-media="poll">
+        <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+        <% if (post.content) { %><p><%= post.content %></p><% } %>
+
+        <form id="poll-<%= post.id %>" data-poll-id="<%= post.id %>">
+          <% for (let i = 1; i <= 10; i++) {
+              const label = post['option_' + i];
+              if (!label) continue; %>
+            <label style="display:flex;align-items:center;gap:.5rem;margin:.25rem 0">
+              <span class="count" data-option="<%= i %>" style="min-width:1.5em;text-align:right;"></span>
+              <input type="checkbox" name="choices" value="<%= i %>">
+              <span><%= label %></span>
+            </label>
+          <% } %>
+          <span class="msg" style="margin-left:.5rem;opacity:.8"></span>
+        </form>
+
+        <div>
+          By
+          <% if (post.email) { %>
+          <a href="/posts/by/<%= post.email.split('@')[0] %>"><%= post.email.split('@')[0] %></a>
+          <% } else { %>unknown<% } %>
+          · <%= new Date(post.created_at).toLocaleDateString() %>
+        </div>
+      </div>
+  
+      <style>
+          /* only for poll posts */
+        .post-card[data-media="poll"] input[type="checkbox"] {
+          appearance: none;
+          width: 1rem;
+          height: 1rem;
+          border: 2px solid #ccc;
+          border-radius: 3px;
+          display: inline-block;
+          position: relative;
+          cursor: pointer;
+          transition: border-color .15s, background-color .15s;
+        }
+
+        /* hover effect */
+        .post-card[data-media="poll"] input[type="checkbox"]:hover {
+          border-color: hsl(270, 90%, 60%);
+        }
+
+        /* checked (purple fill + white tick) */
+        .post-card[data-media="poll"] input[type="checkbox"]:checked {
+          background-color: hsl(270, 90%, 50%);
+          border-color: hsl(270, 90%, 50%);
+        }
+
+        /* draw the ✓ */
+        .post-card[data-media="poll"] input[type="checkbox"]:checked::after {
+          content: "";
+          position: absolute;
+          top: 2px;
+          left: 6px;
+          width: 4px;
+          height: 8px;
+          border: solid #f0f0f0;
+          border-width: 0 2px 2px 0;
+          transform: rotate(45deg);
+        }
+
+      </style>
+
+      <script>
+(() => {
+  const form = document.getElementById('poll-<%= post.id %>');
+  if (!form || form.dataset.bound === '1') return;
+  form.dataset.bound = '1';
+
+  // prevent any default submits (just in case)
+  form.addEventListener('submit', e => e.preventDefault());
+
+  const inputs = form.querySelectorAll('input[type="checkbox"][name="choices"]');
+  const pid = form.dataset.pollId;
+  const msg = form.querySelector('.msg');
+  let t = null;
+  let busy = false;
+
+ async function send() {
+  if (busy) return;
+  busy = true;
+  if (msg) msg.textContent = 'Saving…';
+
+  const choices = Array.from(inputs)
+    .filter(ch => ch.checked)
+    .map(ch => Number(ch.value));
+
+  try {
+    const res = await fetch(`/api/polls/${pid}/vote`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      credentials: 'same-origin', // 👈 ensures cookies/session go with the request
+      body: JSON.stringify({ choices })
+    });
+
+    if (!res.ok) throw new Error('server');
+    const json = await res.json();
+
+    const counts = {};
+    (json.counts || []).forEach(r => counts[r.option_num] = r.votes);
+    form.querySelectorAll('.count').forEach(span => {
+      const opt = Number(span.dataset.option);
+      span.textContent = counts[opt] != null ? counts[opt] : '';
+    });
+
+    if (msg) { msg.textContent = 'Saved'; setTimeout(() => msg.textContent = '', 800); }
+  } catch (e) {
+    if (msg) msg.textContent = 'Error';
+    console.error(e);
+  } finally {
+    busy = false;
+  }
+}
+
+
+  function schedule() {
+    if (t) clearTimeout(t);
+    t = setTimeout(send, 250); // debounce rapid toggles
+  }
+
+  inputs.forEach(ch => ch.addEventListener('change', schedule));
+})();
+      </script>
+    
+    <% } else if (post.media_type === 'product') { %>
+      <div class="post-card" data-media="<%= post.media_type %>">
+
+        <div class="edit-delete">
+          
+          <!-- Edit button -->
+          <form class="edit-form" action="/posts/<%= post.id %>/edit" method="GET">
+            <button class="edit-btn">✎</button>
+          </form>
+
+          <!-- Delete button -->
+          <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
+            <button type="submit" class="delete-btn">&times;</button>
+          </form>
+
+        </div>
+
+        <% const p = (post.price == null) ? null : Number(parseFloat(String(post.price))); %>
+        <% if (p !== null && Number.isFinite(p) && p != 0) { %>
+        <h2>€<%= p.toFixed(2) %></h2>
+        <% } %>
+
+        <% if (post.media_url) { %>
+          <img 
+            src="<%= post.media_url %>" 
+            alt="<%= post.title || 'Product image' %>" 
+            class="max-w-full h-auto rounded-lg"
+          />
+        <% } %>
+
+        <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+        
+        <% if (post.content) { %><p><%= post.content %></p><% } %>
+        
+        <br>
+        <form action="/orders" method="POST">
+          <input type="hidden" name="post_id" value="<%= post.id %>">
+          <button type="submit"style="background-color:hsl(30, 90%, 50%);color:#f0f0f0; border: none; border-radius: 6px;">Buy</button>
+        </form>
+          
+        <div>
+          By
+          <% if (post.username) { %>
+          <a href="/posts/by/<%= post.email.split('@')[0] %>"><%= post.username %></a>
+          <% } else { %>unknown<% } %>
+          · <%= new Date(post.created_at).toLocaleDateString() %>
+        </div>
+      </div>
+
+    <% } else if (post.media_type === 'tipjar') { %>
+      <div class="post-card" data-media="<%= post.media_type %>">
+        
+        <div class="edit-delete">
+          
+          <!-- Edit button -->
+          <form class="edit-form" action="/posts/<%= post.id %>/edit" method="GET">
+            <button class="edit-btn">✎</button>
+          </form>
+
+          <!-- Delete button -->
+          <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
+            <button type="submit" class="delete-btn">&times;</button>
+          </form>
+
+        </div>
+
+        <% if (post.media_url) { %>
+          <img 
+            src="<%= post.media_url %>" 
+            alt="<%= post.title || 'Product image' %>" 
+            class="max-w-full h-auto rounded-lg"
+          />
+        <% } %>
+
+        <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+        
+        <% if (post.content) { %><p><%= post.content %></p><% } %>
+
+     
+        
+        <form action="/posts/<%= post.id %>/tip" method="POST">
+          message: <br>
+          <textarea
+            name="note"
+            id="note-<%= post.id %>"
+            rows="3"
+            style="background-color:#303030;color:#f0f0f0;border:none;border-radius:6px;width:100%;"
+          ></textarea>
+          <br><br>
+
+          <button type="submit"
+            style="background-color:hsl(0,0%,50%);color:#f0f0f0;border:none;border-radius:6px;">
+            DONATE
+          </button>
+
+          <input
+            type="number"
+            name="tip"
+            id="tip-<%= post.id %>"
+            value="<%= post.price %>"
+            step="1"
+            min="1"
+            size="3"
+            required
+            style="text-align:right;background-color:#303030;color:#f0f0f0;border:none;border-radius:6px;"
+          >$
+        </form>
+        
+        <div>
+          By
+          <% if (post.email) { %>
+          <a href="/posts/by/<%= post.email.split('@')[0] %>"><%= post.email.split('@')[0] %></a>
+          <% } else { %>unknown<% } %>
+          · <%= new Date(post.created_at).toLocaleDateString() %>
+        </div>
+      </div>
+
+    <% } else if (post.media_type === 'ama') { %>
+      <div class="post-card" data-media="<%= post.media_type %>">
+        <div class="edit-delete">
+         <form class="edit-form" action="/posts/<%= post.id %>/edit" method="GET">
+           <button class="edit-btn">✎</button>
+         </form>
+          <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
+           <button type="submit" class="delete-btn">&times;</button>
+          </form>
+        </div>
+
+        <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+        <% if (post.content) { %><p><%= post.content %></p><br><% } %>
+
+        <div id="ama-<%= post.id %>" data-post-id="<%= post.id %>">
+          Question:<br>  
+          <textarea id="q-<%= post.id %>" rows="3" placeholder="Ask anything…" style="background-color: #303030;color:#f0f0f0; border: none; border-radius: 6px;width:100%;"></textarea><br><br>
+        <div>
+          Tip:<br>
+          <input type="number" name="tip" id="tip-<%= post.id %>" value="<%= post.price %>" step="1" min="1" size="3"
+          style="text-align:right;background-color:#303030;color:#f0f0f0;border:none;border-radius:6px;">
+          $
+          <button id="send-<%= post.id %>" style="background-color: #303030;color:#f0f0f0; border: none; border-radius: 6px;">Send</button>
+        </div>
+
+        <p id="err-<%= post.id %>" style="color:#b91c1c;display:none"></p>
+        <ul id="list-<%= post.id %>"></ul>
+        </div>
+
+        <div>
+          By
+          <% if (post.email) { %>
+          <a href="/posts/by/<%= post.email.split('@')[0] %>"><%= post.email.split('@')[0] %></a>
+          <% } else { %>unknown<% } %>
+          · <%= new Date(post.created_at).toLocaleDateString() %>
+        </div>
+      </div>
+
+      <script>
+(function () {
+  const pid = <%= post.id %>;
+  const box = document.getElementById(`ama-${pid}`);
+  if (!box || box.dataset.bound === "1") return;
+  box.dataset.bound = "1";
+
+  // Scope everything to this AMA card
+  const qEl  = box.querySelector(`#q-${pid}`);
+  const email = box.querySelector(`#email-${pid}`); // may be null
+  const tipEl = box.querySelector(`#tip-${pid}`);   // requires id="tip-<%= post.id %>"
+  const send = box.querySelector(`#send-${pid}`);
+  const err  = box.querySelector(`#err-${pid}`);
+  const list = box.querySelector(`#list-${pid}`);
+  const postId = box.dataset.postId;
+
+  // Prevent accidental form submit
+  if (send) send.type = 'button';
+
+  let busy = false;
+
+  function addRow(row) {
+    const li = document.createElement("li");
+    const meta = document.createElement("div");
+    meta.style.opacity = ".7";
+    meta.style.fontSize = ".8rem";
+    meta.textContent = (row.email || "Anonymous") + " • " + new Date(row.created_at || Date.now()).toLocaleString();
+    li.appendChild(meta);
+    if (row.question) {
+      const p = document.createElement("p");
+      p.textContent = row.question;
+      li.appendChild(p);
+    }
+    if (Number(row.tip) > 0) {
+      const s = document.createElement("small");
+      s.textContent = "Tip: €" + Number(row.tip).toFixed(2);
+      li.appendChild(s);
+    }
+    list?.insertBefore(li, list.firstChild || null);
+  }
+
+  async function submit() {
+    if (busy) return;
+    busy = true;
+    err.style.display = "none";
+    send.disabled = true;
+
+    const payload = {
+      question: (qEl?.value || '').trim() || null,
+      email: (email && email.value ? email.value.trim() : null),
+      tip: tipEl && tipEl.value ? Number(tipEl.value) : 0
+    };
+
+    try {
+      const res = await fetch(`/api/posts/${postId}/ask`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        credentials: "same-origin",
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const saved = await res.json().catch(() => ({}));
+      addRow(saved && (saved.row || saved) || payload);
+      if (qEl) qEl.value = "";
+      // if (tipEl) tipEl.value = ""; // keep tip if you prefer
+    } catch (e) {
+      console.error(e);
+      err.textContent = "Couldn’t send. Try again.";
+      err.style.display = "block";
+    } finally {
+      busy = false;
+      send.disabled = false;
+    }
+  }
+
+  send?.addEventListener("click", submit);
+})();
+      </script>
     <% } %>
-  <% } %>
+<% }) %>     <!-- end posts.forEach -->
 </div>
-
-<% if (!viewerIsSubscribed && !viewingOwnProfile) { %>
-  <div class="paywall">Subscribe to see all posts from <%= creator.username %>.</div>
-<% } else { %>
-  <ul class="post-list">
-    <% posts.forEach(p => { %>
-      <li><%= p.media_type %> — <%= p.title || '(untitled)' %></li>
-    <% }) %>
-  </ul>
-<% } %>
-
+</section>
 
 <script>
-(() => {
-  const subForm = document.getElementById('sub-<%= creator.id %>');
-  const unsubForm = document.getElementById('unsub-<%= creator.id %>');
-  async function handle(e, form){ e.preventDefault();
-    const r = await fetch(form.action,{method:'POST',headers:{'Accept':'application/json','Content-Type':'application/json'},credentials:'same-origin'});
-    const j = await r.json(); if (j.ok) location.reload(); else alert(j.error||'Failed');
-  }
-  if (subForm) subForm.addEventListener('submit', e => handle(e, subForm));
-  if (unsubForm) unsubForm.addEventListener('submit', e => handle(e, unsubForm));
-})();
+  const selector = document.getElementById('columnSelector');
+  const grid = document.querySelector('.post-grid');
+
+  selector.addEventListener('change', (e) => {
+    grid.style.setProperty('--columns', e.target.value);
+  });
 </script>
+
