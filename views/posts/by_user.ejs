@@ -199,6 +199,29 @@
 
 </style>
 
+
+
+<% /* Subscribe / Cancel button (wall header) */ %>
+<% if (!viewingOwnProfile) { %>
+  <% if (creator.sub_is_on) { %>
+    <form action="/subscriptions/<%= encodeURIComponent(creator.username) %>/<%= viewerIsSubscribed ? 'cancel' : 'subscribe' %>" method="POST" style="margin: .5rem 0;">
+      <!-- optional CSRF:
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      -->
+      <button class="edit-btn">
+        <%= viewerIsSubscribed ? 'Cancel subscription' : 'Subscribe' %>
+        <% if (!viewerIsSubscribed) { %>
+          (€<%= ((creator.sub_price_cents ?? 500) / 100).toFixed(2) %>/mo)
+        <% } %>
+      </button>
+    </form>
+  <% } else { %>
+    <p style="opacity:.7;margin:.5rem 0;">This creator isn’t accepting subscriptions.</p>
+  <% } %>
+<% } %>
+
+
+
 <!-- Posts Grid -->
 <section class="post-grid-container">
 

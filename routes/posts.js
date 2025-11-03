@@ -109,6 +109,9 @@ router.get('/:id/edit', isLoggedIn, async (req, res) => {
   });
 });
 
+const RESERVED = new Set([
+  'logout','login','register','feed','posts','api','static','assets','settings','subscriptions'
+]);
 
 
 /// ---------- Posts by user (hard paywall, by username) ----------
@@ -155,10 +158,11 @@ if (viewingOwnProfile || viewerIsSubscribed) {
     SELECT p.*, u.username, u.email
     FROM posts p
     JOIN users u ON u.id = p.user_id
-    WHERE p.user_id = ?
+    WHERE u.username = ?
     ORDER BY p.created_at DESC
-  `, [creatorId]);
+  `, [username]);
 }
+
 
 
   // debug

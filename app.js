@@ -63,6 +63,14 @@ app.use((req, _res, next) => {
   next();
 });
 
+app.post('/logout', (req, res) => req.session.destroy(() => res.redirect('/login')));
+
+
+app.get('/logout', (req, res) => {
+  req.session?.destroy(()=>{});
+  req.logout?.();
+  res.redirect('/login');
+});
 
 
 // POST /api/posts/:postId/ask
@@ -139,7 +147,7 @@ app.post('/signup', async (req, res) => {
   }
 });
 
-app.post('/logout', (req, res) => req.session.destroy(() => res.redirect('/login')));
+
 
 
 
@@ -227,6 +235,7 @@ app.get('/:handle', async (req, res, next) => {
   });
 });
 
+app.use((req,res,next)=>{ console.log('HIT', req.method, req.path); next(); });
 
 
 
