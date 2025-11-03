@@ -237,11 +237,15 @@
         <% if (post.title) { %><h3><%= post.title %></h3><% } %>
         <% if (post.content) { %><p><%= post.content %></p><% } %>
         
-        <div>
+        <div class="author-info">
           By
-          <% if (post.email) { %>
-          <a href="/posts/by/<%= post.email.split('@')[0] %>"><%= post.email.split('@')[0] %></a>
-          <% } else { %>unknown<% } %>
+          <% if (post.username) { %>
+            <a href="/posts/by/<%= post.username %>">
+              <%= post.username %>
+            </a>
+          <% } else { %>
+            unknown
+          <% } %>
           · <%= new Date(post.created_at).toLocaleDateString() %>
         </div>
       </div>
@@ -267,11 +271,15 @@
         <% if (post.title) { %><h3><%= post.title %></h3><% } %>
         <% if (post.content) { %><p><%= post.content %></p><% } %>
 
-        <div>
+        <div class="author-info">
           By
-          <% if (post.email) { %>
-          <a href="/posts/by/<%= post.email.split('@')[0] %>"><%= post.email.split('@')[0] %></a>
-          <% } else { %>unknown<% } %>
+          <% if (post.username) { %>
+            <a href="/posts/by/<%= post.username %>">
+              <%= post.username %>
+            </a>
+          <% } else { %>
+            unknown
+          <% } %>
           · <%= new Date(post.created_at).toLocaleDateString() %>
         </div>
       </div>
@@ -300,11 +308,15 @@
         <% if (post.title) { %><h3><%= post.title %></h3><% } %>
         <% if (post.content) { %><p><%= post.content %></p><% } %>
 
-        <div>
+        <div class="author-info">
           By
-          <% if (post.email) { %>
-          <a href="/posts/by/<%= post.email.split('@')[0] %>"><%= post.email.split('@')[0] %></a>
-          <% } else { %>unknown<% } %>
+          <% if (post.username) { %>
+            <a href="/posts/by/<%= post.username %>">
+              <%= post.username %>
+            </a>
+          <% } else { %>
+            unknown
+          <% } %>
           · <%= new Date(post.created_at).toLocaleDateString() %>
         </div>
       </div>
@@ -332,11 +344,15 @@
         <% if (post.title) { %><h3><%= post.title %></h3><% } %>
         <% if (post.content) { %><p><%= post.content %></p><% } %>
 
-        <div>
+        <div class="author-info">
           By
-          <% if (post.email) { %>
-          <a href="/posts/by/<%= post.email.split('@')[0] %>"><%= post.email.split('@')[0] %></a>
-          <% } else { %>unknown<% } %>
+          <% if (post.username) { %>
+            <a href="/posts/by/<%= post.username %>">
+              <%= post.username %>
+            </a>
+          <% } else { %>
+            unknown
+          <% } %>
           · <%= new Date(post.created_at).toLocaleDateString() %>
         </div>
       </div>
@@ -369,11 +385,15 @@
             </a>
           <% } %>
 
-        <div>
+       <div class="author-info">
           By
-          <% if (post.email) { %>
-          <a href="/posts/by/<%= post.email.split('@')[0] %>"><%= post.email.split('@')[0] %></a>
-          <% } else { %>unknown<% } %>
+          <% if (post.username) { %>
+            <a href="/posts/by/<%= post.username %>">
+              <%= post.username %>
+            </a>
+          <% } else { %>
+            unknown
+          <% } %>
           · <%= new Date(post.created_at).toLocaleDateString() %>
         </div>
 
@@ -401,13 +421,17 @@
 
           <a href="<%= post.media_url %>" target="_blank" rel="noopener" class="file-link underline mt-2 inline-block">Open link</a>
       
-          <div>
-            By
-            <% if (post.email) { %>
-            <a href="/posts/by/<%= post.email.split('@')[0] %>"><%= post.email.split('@')[0] %></a>
-            <% } else { %>unknown<% } %>
-            · <%= new Date(post.created_at).toLocaleDateString() %>
-          </div>
+           <div class="author-info">
+          By
+          <% if (post.username) { %>
+            <a href="/posts/by/<%= post.username %>">
+              <%= post.username %>
+            </a>
+          <% } else { %>
+            unknown
+          <% } %>
+          · <%= new Date(post.created_at).toLocaleDateString() %>
+        </div>
 
         </div>
       <% } %>
@@ -421,11 +445,15 @@
         <% if (post.title) { %><h3><%= post.title %></h3><% } %>
         <% if (post.content) { %><p><%= post.content %></p><% } %>
 
-        <div>
+        <div class="author-info">
           By
-          <% if (post.email) { %>
-          <a href="/posts/by/<%= post.email.split('@')[0] %>"><%= post.email.split('@')[0] %></a>
-          <% } else { %>unknown<% } %>
+          <% if (post.username) { %>
+            <a href="/posts/by/<%= post.username %>">
+              <%= post.username %>
+            </a>
+          <% } else { %>
+            unknown
+          <% } %>
           · <%= new Date(post.created_at).toLocaleDateString() %>
         </div>
       </div>
@@ -447,11 +475,15 @@
           <span class="msg" style="margin-left:.5rem;opacity:.8"></span>
         </form>
 
-        <div>
+       <div class="author-info">
           By
-          <% if (post.email) { %>
-          <a href="/posts/by/<%= post.email.split('@')[0] %>"><%= post.email.split('@')[0] %></a>
-          <% } else { %>unknown<% } %>
+          <% if (post.username) { %>
+            <a href="/posts/by/<%= post.username %>">
+              <%= post.username %>
+            </a>
+          <% } else { %>
+            unknown
+          <% } %>
           · <%= new Date(post.created_at).toLocaleDateString() %>
         </div>
       </div>
@@ -600,11 +632,15 @@
           <button type="submit"style="background-color:hsl(30, 90%, 50%);color:#f0f0f0; border: none; border-radius: 6px;">Buy</button>
         </form>
           
-        <div>
+        <div class="author-info">
           By
           <% if (post.username) { %>
-          <a href="/posts/by/<%= post.email.split('@')[0] %>"><%= post.username %></a>
-          <% } else { %>unknown<% } %>
+            <a href="/posts/by/<%= post.username %>">
+              <%= post.username %>
+            </a>
+          <% } else { %>
+            unknown
+          <% } %>
           · <%= new Date(post.created_at).toLocaleDateString() %>
         </div>
       </div>
@@ -668,11 +704,15 @@
           >$
         </form>
         
-        <div>
+         <div class="author-info">
           By
-          <% if (post.email) { %>
-          <a href="/posts/by/<%= post.email.split('@')[0] %>"><%= post.email.split('@')[0] %></a>
-          <% } else { %>unknown<% } %>
+          <% if (post.username) { %>
+            <a href="/posts/by/<%= post.username %>">
+              <%= post.username %>
+            </a>
+          <% } else { %>
+            unknown
+          <% } %>
           · <%= new Date(post.created_at).toLocaleDateString() %>
         </div>
       </div>
@@ -706,11 +746,15 @@
         <ul id="list-<%= post.id %>"></ul>
         </div>
 
-        <div>
+        <div class="author-info">
           By
-          <% if (post.email) { %>
-          <a href="/posts/by/<%= post.email.split('@')[0] %>"><%= post.email.split('@')[0] %></a>
-          <% } else { %>unknown<% } %>
+          <% if (post.username) { %>
+            <a href="/posts/by/<%= post.username %>">
+              <%= post.username %>
+            </a>
+          <% } else { %>
+            unknown
+          <% } %>
           · <%= new Date(post.created_at).toLocaleDateString() %>
         </div>
       </div>

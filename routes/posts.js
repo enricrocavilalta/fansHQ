@@ -148,14 +148,18 @@ router.get('/by/:username', async (req, res) => {
     viewerIsSubscribed = rows.length > 0;
   }
 
-  // 6) Load posts only if allowed (owner OR subscribed)
-  let posts = [];
-  if (viewingOwnProfile || viewerIsSubscribed) {
-    [posts] = await db.query(
-      'SELECT * FROM posts WHERE user_id=? ORDER BY created_at DESC',
-      [creatorId]
-    );
-  }
+// 6) Load posts only if allowed (owner OR subscribed)
+let posts = [];
+if (viewingOwnProfile || viewerIsSubscribed) {
+  [posts] = await db.query(`
+    SELECT p.*, u.username, u.email
+    FROM posts p
+    JOIN users u ON u.id = p.user_id
+    WHERE p.user_id = ?
+    ORDER BY p.created_at DESC
+  `, [creatorId]);
+}
+
 
   // debug
   console.log('[subs check]', { viewer: viewerId || null, creator: creatorId });
