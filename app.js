@@ -238,6 +238,68 @@ app.get('/:handle', async (req, res, next) => {
 app.use((req,res,next)=>{ console.log('HIT', req.method, req.path); next(); });
 
 
+// Subscribe (or reactivate)
+app.post('/subscriptions/:username/subscribe', isLoggedIn, async (req, res) => {
+  try {
+    const [[creator]] = await db.query(
+      'SELECT id, sub_is_on FROM users WHERE username=?',
+      [req.params.username]
+    );
+    if (!creator) return res.status(404).send('User not found');
+    if (Number(creator.sub_is_on) !== 1) return res.status(400).send('Creator not accepting subs');
+
+    const subscriberId =
+      req.user?.id ?? req.session?.user?.id ?? req.session?.userId ?? null;
+    if (!subscriberId) return res.status(401).send('Login required');
+
+    await db.query(`
+      INSERT INTO subscriptions (subscriber_id, creator_id, status, started_at)
+      VALUES (?, ?, 'active', NOW())
+      ON DUPLICATE KEY UPDATE status='active', started_at=NOW(), canceled_at=NULL
+    `, [subscriberId, creator.id]);
+
+    return res.redirect(`/posts/by/${encodeURIComponent(req.params.username)}`);
+  } catch (e) {
+    console.error('subscribe error:', e);
+    return res.status(500).send('Subscribe failed');
+  }
+});
+
+
+
+// Cancel subscription
+app.post('/subscriptions/:username/cancel', isLoggedIn, async (req, res) => {
+  try {
+    console.log('HIT POST /subscriptions/%s/cancel', req.params.username);
+
+    // find creator
+    const [[creator]] = await db.query(
+      'SELECT id FROM users WHERE username=?',
+      [req.params.username]
+    );
+    if (!creator) return res.status(404).send('User not found');
+
+    // subscriber (viewer)
+    const subscriberId =
+      req.user?.id ?? req.session?.user?.id ?? req.session?.userId ?? null;
+    if (!subscriberId) return res.status(401).send('Login required');
+
+    // update row
+    await db.query(
+      `UPDATE subscriptions
+         SET status='canceled', canceled_at=NOW()
+       WHERE subscriber_id=? AND creator_id=? AND status='active'`,
+      [subscriberId, creator.id]
+    );
+
+    // back to the wall
+    return res.redirect(`/posts/by/${encodeURIComponent(req.params.username)}`);
+  } catch (e) {
+    console.error('cancel error:', e);
+    return res.status(500).send('Cancel failed');
+  }
+});
+
 
 
 const PORT = process.env.PORT || 3000;

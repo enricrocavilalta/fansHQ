@@ -34,10 +34,6 @@ async function isSubscribed(subscriberId, creatorId) {
 
 
 
-
-router.use((req,res,next)=>{ console.log('[posts]', req.method, req.originalUrl); next(); });
-
-
 router.use((req, res, next) => {
   console.log('[posts]', req.method, req.originalUrl);
   next();
@@ -114,68 +110,68 @@ const RESERVED = new Set([
 ]);
 
 
-/// ---------- Posts by user (hard paywall, by username) ----------
+
+
+// ---------- Posts by user (hard paywall, by username) ----------
 router.get('/by/:username', async (req, res) => {
-  const username = req.params.username;
+  try {
+    const username = req.params.username;
 
-  // 1) Creator (by username)
-  const [userRows] = await db.query(
-    'SELECT id, username FROM users WHERE username = ?',
-    [username]
-  );
-  if (!userRows.length) return res.status(404).send('User not found');
-  const creator = userRows[0];
-  const creatorId = Number(creator.id);
-
-  // 2) Viewer id from session (normalize to number)
-  const viewerId = Number(
-    (req.user && req.user.id) ||
-    (req.session && req.session.userId) || 0
-  );
-
-  // 3) Subscription settings
-  const creatorSettings = await getCreatorSettings(creatorId);
-
-  // 4) Are we viewing our own profile?
-  const viewingOwnProfile = viewerId === creatorId;
-
-  // 5) Check subscription only if not owner & logged in
-  let viewerIsSubscribed = false;
-  if (!viewingOwnProfile && viewerId) {
-    const [rows] = await db.query(
-      `SELECT 1 FROM subscriptions
-       WHERE subscriber_id=? AND creator_id=? AND LOWER(status)='active'
-       LIMIT 1`,
-      [viewerId, creatorId]
+    // 1) Creator (include sub fields)
+    const [userRows] = await db.query(
+      'SELECT id, username, sub_is_on, sub_price_cents FROM users WHERE username = ?',
+      [username]
     );
-    viewerIsSubscribed = rows.length > 0;
+    if (!userRows.length) return res.status(404).send('User not found');
+
+    const creator   = userRows[0];
+    const creatorId = Number(creator.id);
+
+    // 2) Viewer
+    const viewerId = Number((req.user?.id) || (req.session?.userId) || 0);
+    const viewingOwnProfile = viewerId === creatorId;
+
+    // 3) Subscription status
+    let viewerIsSubscribed = false;
+    if (!viewingOwnProfile && viewerId) {
+      const [rows] = await db.query(
+        `SELECT 1 FROM subscriptions
+         WHERE subscriber_id=? AND creator_id=? AND LOWER(status)='active' LIMIT 1`,
+        [viewerId, creatorId]
+      );
+      viewerIsSubscribed = rows.length > 0;
+    }
+
+    // 4) Posts (only if allowed)
+    let posts = [];
+    if (viewingOwnProfile || viewerIsSubscribed) {
+      [posts] = await db.query(`
+        SELECT p.*, u.username, u.email
+        FROM posts p
+        JOIN users u ON u.id = p.user_id
+        WHERE p.user_id=?
+        ORDER BY p.created_at DESC
+      `, [creatorId]);
+    }
+
+    // Debug
+    console.log('creator passed to view:', creator);
+    console.log({ viewerId, viewingOwnProfile, viewerIsSubscribed, sub_is_on: creator.sub_is_on });
+
+    // 5) Render
+    res.render('posts/by_user', {
+      creator,
+      posts,
+      viewerIsSubscribed: viewingOwnProfile || viewerIsSubscribed,
+      viewingOwnProfile
+    });
+  } catch (err) {
+    console.error('by/:username error:', err);
+    res.status(500).send('Server error');
   }
-
-// 6) Load posts only if allowed (owner OR subscribed)
-let posts = [];
-if (viewingOwnProfile || viewerIsSubscribed) {
-  [posts] = await db.query(`
-    SELECT p.*, u.username, u.email
-    FROM posts p
-    JOIN users u ON u.id = p.user_id
-    WHERE u.username = ?
-    ORDER BY p.created_at DESC
-  `, [username]);
-}
+}); // <— exactly one close
 
 
-
-  // debug
-  console.log('[subs check]', { viewer: viewerId || null, creator: creatorId });
-
-  res.render('posts/by_user', {
-    creator,
-    posts,
-    creatorSettings,
-    viewerIsSubscribed: viewingOwnProfile || viewerIsSubscribed,
-    viewingOwnProfile
-  });
-});
 
 
 
@@ -394,6 +390,10 @@ router.post('/:postId/tip', async (req, res) => {
     return res.status(500).send('Tip failed');
   }
 });
+
+
+
+
 
 
 
