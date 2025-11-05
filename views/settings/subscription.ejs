@@ -1,0 +1,33 @@
+<%- include('../partials/header') %>
+
+<section style="max-width:640px;margin:2rem auto;padding:1rem;background:#101010;border-radius:12px;color:#f0f0f0">
+  <h2>Subscription settings</h2>
+  <% if (typeof ok !== 'undefined' && ok) { %>
+    <div style="margin:.75rem 0;padding:.5rem .75rem;border-radius:8px;background:#133; color:#9ff">
+      Saved ✓
+    </div>
+  <% } %>
+
+  <form method="POST" action="/settings/subscription" style="display:grid;gap:1rem">
+    <label style="display:flex;align-items:center;gap:.5rem">
+      <input type="checkbox" name="sub_is_on" value="1" <%= Number(me.sub_is_on) ? 'checked' : '' %> />
+      Accept subscriptions
+    </label>
+
+    <label>
+      Monthly price (EUR)
+      <input type="number"
+             name="sub_price_eur"
+             step="0.01"
+             min="0.50"
+             max="9999"
+             value="<%= (Number(me.sub_price_cents || 0) / 100).toFixed(2) %>"
+             style="width:100%;background:#303030;color:#f0f0f0;border:none;border-radius:8px;padding:.6rem;margin-top:.35rem">
+    </label>
+
+    <button type="submit"
+            style="background:hsl(30,90%,50%);color:#f0f0f0;border:none;border-radius:8px;padding:.7rem 1rem">
+      Save
+    </button>
+  </form>
+</section>

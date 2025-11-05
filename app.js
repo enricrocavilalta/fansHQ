@@ -17,6 +17,9 @@ app.use(express.static('public'));
 
 app.use(methodOverride('_method'));
 
+
+
+
 app.use(session({
   secret: process.env.SESSION_SECRET || 'dev',
   resave: false,
@@ -298,6 +301,131 @@ app.post('/subscriptions/:username/cancel', isLoggedIn, async (req, res) => {
     console.error('cancel error:', e);
     return res.status(500).send('Cancel failed');
   }
+});
+
+
+// GET settings
+app.get('/settings/subscription', isLoggedIn, async (req, res) => {
+  const userId = req.user?.id ?? req.session?.userId;
+  const [[me]] = await db.query(
+    'SELECT username, sub_is_on, sub_price_cents FROM users WHERE id=?',
+    [userId]
+  );
+  res.render('settings/subscription', { me });
+});
+
+// Show subscription settings form (creator only)
+app.get('/settings/subscription', isLoggedIn, async (req, res) => {
+  const userId = req.user?.id ?? req.session?.userId;
+  const [[me]] = await db.query(
+    'SELECT username, sub_is_on, sub_price_cents FROM users WHERE id=?',
+    [userId]
+  );
+  if (!me) return res.status(404).send('User not found');
+  
+  // 👇 this line renders your EJS template
+  res.render('settings/subscription', { me });
+});
+
+
+
+app.post('/settings/subscription', isLoggedIn, async (req, res) => {
+  const userId = req.user?.id ?? req.session?.userId;
+  if (!userId) return res.redirect('/login');
+
+  const sub_is_on = req.body.sub_is_on ? 1 : 0;
+
+  // Convert EUR (string) -> cents (int)
+  const eur = parseFloat(String(req.body.sub_price_eur || '0').replace(',', '.'));
+  const sub_price_cents = Math.max(0, Math.round((isFinite(eur) ? eur : 0) * 100));
+
+  try {
+    await db.query(
+      'UPDATE users SET sub_is_on=?, sub_price_cents=? WHERE id=?',
+      [sub_is_on, sub_price_cents, userId]
+    );
+    return res.redirect('/settings/subscription?ok=1');
+  } catch (e) {
+    console.error('save subscription settings error:', e);
+    return res.status(500).send('Could not save settings');
+  }
+});
+
+
+
+
+
+// POST /subscriptions/:username/subscribe
+app.post('/subscriptions/:username/subscribe', isLoggedIn, async (req, res) => {
+  console.log('HIT POST /subscriptions/:username/subscribe');
+
+  try {
+    // 1️⃣ Find creator
+    const [[creator]] = await db.query(
+      'SELECT id, sub_is_on, sub_price_cents FROM users WHERE username=?',
+      [req.params.username]
+    );
+
+    if (!creator) return res.status(404).send('User not found');
+    if (Number(creator.sub_is_on) !== 1)
+      return res.status(400).send('Creator not accepting subscriptions');
+
+    // 2️⃣ Identify subscriber
+    const subscriberId =
+      req.user?.id ?? req.session?.user?.id ?? req.session?.userId;
+    if (!subscriberId) return res.status(401).send('Login required');
+
+    // 3️⃣ Determine billing info
+    const priceCents = Number(creator.sub_price_cents ?? 100) || 100;
+
+    // optional: read custom billing_days if you have that table, else just use 30
+    const [[settings]] = await db.query(
+      'SELECT billing_days FROM creator_subscription_settings WHERE user_id=?',
+      [creator.id]
+    );
+    const days =
+      Number(settings?.billing_days) > 0 ? Number(settings.billing_days) : 30;
+
+    // 4️⃣ Create or renew subscription
+    await db.query(
+      `
+      INSERT INTO subscriptions (subscriber_id, creator_id, status, started_at, end_at, price_cents)
+      VALUES (?, ?, 'active', NOW(), DATE_ADD(NOW(), INTERVAL ? DAY), ?)
+      ON DUPLICATE KEY UPDATE
+        status='active',
+        started_at=NOW(),
+        end_at=DATE_ADD(NOW(), INTERVAL ? DAY),
+        price_cents=VALUES(price_cents),
+        canceled_at=NULL
+      `,
+      [subscriberId, creator.id, days, priceCents, days]
+    );
+
+    // 5️⃣ Redirect back to the creator page
+    return res.redirect(`/posts/by/${encodeURIComponent(req.params.username)}`);
+  } catch (err) {
+    console.error('subscribe error:', err);
+    return res.status(500).send('Subscribe failed.');
+  }
+});
+
+
+
+
+// --- Creator subscription settings page ---
+app.get('/settings/subscription', isLoggedIn, async (req, res) => {
+  console.log('HIT GET /settings/subscription', { q_ok: req.query.ok });
+
+  const userId = req.user?.id ?? req.session?.userId;
+  const [[me]] = await db.query(
+    'SELECT username, sub_is_on, sub_price_cents FROM users WHERE id=?',
+    [userId]
+  );
+
+  return res.render('settings/subscription', {
+    me,
+    ok: req.query.ok === '1',   // <= pass right here
+  });
 });
 
 
