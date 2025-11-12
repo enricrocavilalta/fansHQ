@@ -214,6 +214,54 @@
 <% } %>
 
 
+<% if (viewingOwnProfile) { %>
+  <!-- Inline subscription settings (creator-only) -->
+  <form method="POST" action="/settings/subscription" style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;margin:.5rem 0">
+    <input type="hidden" name="redirect_to" value="/posts/by/<%= creator.username %>?ok=1" />
+    
+    <label style="display:flex;align-items:center;gap:.4rem">
+      <input type="checkbox" name="sub_is_on" value="1" <%= Number(creator.sub_is_on) ? 'checked' : '' %> />
+      Accept subscriptions
+    </label>
+
+    <label style="display:flex;align-items:center;gap:.4rem">
+      Price €
+      <input type="number"
+             name="sub_price_eur"
+             step="0.01" min="0.50" max="9999"
+             value="<%= (Number(creator.sub_price_cents || 0) / 100).toFixed(2) %>"
+             style="width:6.5rem;background:#303030;color:#f0f0f0;border:none;border-radius:6px;padding:.35rem .5rem">
+    </label>
+
+    <button type="submit"
+            style="background:#202020;color:#f0f0f0;border:none;border-radius:6px;padding:.45rem .8rem">
+      Save
+    </button>
+
+    <% if (typeof ok !== 'undefined' && ok) { %>
+      <span style="opacity:.8;margin-left:.5rem">Saved ✓</span>
+    <% } %>
+  </form>
+<% } else { %>
+  <!-- Fan view: subscribe/cancel -->
+  <% if (viewerIsSubscribed) { %>
+    <form method="POST" action="/subscriptions/<%= creator.username %>/cancel">
+      <button style="background:#444;color:#f0f0f0;border:none;border-radius:6px;padding:.45rem .8rem">
+        Cancel subscription
+      </button>
+    </form>
+  <% } else if (Number(creator.sub_is_on)) { %>
+    <form method="POST" action="/subscriptions/<%= creator.username %>/subscribe">
+      <button style="background:hsl(30,90%,50%);color:#f0f0f0;border:none;border-radius:6px;padding:.45rem .8rem">
+        Subscribe · €<%= (creator.sub_price_cents/100).toFixed(2) %>/mo
+      </button>
+    </form>
+  <% } else { %>
+    <div style="opacity:.7">This creator isn’t accepting subscriptions.</div>
+  <% } %>
+<% } %>
+
+
 
 
 <!-- Posts Grid -->

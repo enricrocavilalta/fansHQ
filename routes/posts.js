@@ -117,7 +117,7 @@ router.get('/by/:username', async (req, res) => {
   try {
     const username = req.params.username;
 
-    // 1) Creator (include sub fields)
+    // 1) Creator
     const [userRows] = await db.query(
       'SELECT id, username, sub_is_on, sub_price_cents FROM users WHERE username = ?',
       [username]
@@ -146,7 +146,7 @@ router.get('/by/:username', async (req, res) => {
     let posts = [];
     if (viewingOwnProfile || viewerIsSubscribed) {
       [posts] = await db.query(`
-        SELECT p.*, u.username, u.email
+        SELECT p.*, u.username
         FROM posts p
         JOIN users u ON u.id = p.user_id
         WHERE p.user_id=?
@@ -154,22 +154,27 @@ router.get('/by/:username', async (req, res) => {
       `, [creatorId]);
     }
 
-    // Debug
-    console.log('creator passed to view:', creator);
-    console.log({ viewerId, viewingOwnProfile, viewerIsSubscribed, sub_is_on: creator.sub_is_on });
+    // 5) define ok BEFORE using or logging it
+    const ok = req.query.ok === '1';
 
-    // 5) Render
-    res.render('posts/by_user', {
+    // (optional) debug
+    console.log('creator passed to view:', creator);
+    console.log({ viewerId, viewingOwnProfile, viewerIsSubscribed, sub_is_on: creator.sub_is_on, ok });
+
+    // 6) Render
+    return res.render('posts/by_user', {
       creator,
       posts,
       viewerIsSubscribed: viewingOwnProfile || viewerIsSubscribed,
-      viewingOwnProfile
+      viewingOwnProfile,
+      ok, // pass to EJS
     });
   } catch (err) {
     console.error('by/:username error:', err);
-    res.status(500).send('Server error');
+    return res.status(500).send('Server error');
   }
-}); // <— exactly one close
+});
+
 
 
 

@@ -217,15 +217,9 @@ app.get('/:handle', async (req, res, next) => {
 
   const [posts] = await db.query(`
     SELECT * FROM posts
-    WHERE LOWER(
-      CASE
-        WHEN LOWER(SUBSTRING_INDEX(email,'@',-1))='gmail.com'
-          THEN REPLACE(SUBSTRING_INDEX(SUBSTRING_INDEX(email,'@',1), '+', 1), '.', '')
-        ELSE SUBSTRING_INDEX(SUBSTRING_INDEX(email,'@',1), '+', 1)
-      END
-    ) = ?
+    WHERE user_id = (SELECT id FROM users WHERE username = ?)
     ORDER BY created_at DESC
-    LIMIT 200
+    LIMIT 200;
   `, [handle]);
 
   const userHandle = emailToHandle(req.user?.email);
