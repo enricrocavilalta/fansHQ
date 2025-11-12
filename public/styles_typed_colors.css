@@ -92,34 +92,34 @@ a:hover{
 }
 
 a[data-media="text"]{
-  color:hsl(240, var(--saturation), var(--lightness));
+  color: #f0f0f0;
 }
 a[data-media="image"]{
-  color:hsl(60, var(--saturation), var(--lightness));
+  color:#f0f0f0;
 }
 a[data-media="video"]{
-  color:hsl(0, var(--saturation), var(--lightness));
+  color:#f0f0f0;
 }
 a[data-media="audio"]{
-  color:hsl(120, var(--saturation), var(--lightness));
+  color:#f0f0f0;
 }
 a[data-media="link"]{
-  color:hsl(180, var(--saturation), var(--lightness));
+  color:#f0f0f0;
 }
 a[data-media="file"]{
-  color:hsl(300, var(--saturation), var(--lightness));
+  color:#f0f0f0;
 }
 a[data-media="poll"]{
-  color:hsl(270, var(--saturation), var(--lightness));
+  color:#f0f0f0;
 }
 a[data-media="product"]{
-  color:hsl(30, var(--saturation), var(--lightness));
+  color:#f0f0f0;
 }
 a[data-media="ama"]{
-  color:hsl(0, 0%, 90%);
+  color:#f0f0f0;
 }
 a[data-media="tipjar"]{
-  color:hsl(0, 0%, 50%);
+  color:#f0f0f0;
 }
 
 body {
