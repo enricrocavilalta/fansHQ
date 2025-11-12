@@ -199,7 +199,7 @@
 
 </style>
 
-<!-- Posts Grid -->
+<div class="feed-panel">
 <section class="post-grid-container">
 
   <div class="latest-posts-header">
@@ -213,7 +213,8 @@
       </select>
     </h2>
   </div>
-  
+
+<!-- Posts Grid -->  
 <div class="post-grid">
 
   
@@ -799,6 +800,8 @@
 <% }) %>     <!-- end posts.forEach -->
 </div>
 </section>
+</div>
+</div>
 
 <script>
   const selector = document.getElementById('columnSelector');
@@ -809,3 +812,14 @@
   });
 </script>
 
+<style>
+
+  /* Outer panel (1st doll) */
+  .feed-panel {
+    background:#111;
+    border-radius:16px;
+    padding:20px 24px;
+    box-shadow:0 2px 8px rgba(0,0,0,.35);
+    overflow:hidden; /* clips inner rounding/shadows */
+  }
+</style>
