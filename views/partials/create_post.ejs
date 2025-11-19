@@ -2,13 +2,29 @@
 <link rel="stylesheet" href="/styles_typed_colors.css">
 
 <style>
+  /* base: flex row with wrap */
   .create-a-post {
     display: flex;
-    justify-content: space-evenly; /* even spacing */
+    flex-wrap: wrap;      /* allow multiple lines */
     gap: 0.5rem;
-    min-width: 5%; /* optional: prevents cramming */
-    overflow-x: auto;
     padding: 1rem;
+    justify-content: center;
+  }
+
+  /* mobile: 2 per row */
+  @media (max-width: 400px) {
+    .create-a-post a {
+      flex: 1 1 calc(50% - 0.5rem); /* 2 buttons per row */
+      min-width: 120px;             /* keep them tappable */
+    }
+  }
+
+  /* bigger screens: up to 10 across like before */
+  @media (min-width: 401px) {
+    .create-a-post a {
+      flex: 1 1 calc(10% - 0.5rem); /* roughly a tenth each, with gaps */
+      min-width: 90px;
+    }
   }
 
   .create-a-post a {

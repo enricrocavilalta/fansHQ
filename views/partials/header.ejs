@@ -17,8 +17,10 @@
       <a href="/signup" class="btn-link">Sign up</a>
     <% } %>
   </nav>
-  <img src="/fansHQgoldpic.png" alt="" style="margin: 0 auto; display:block;">
-  <script src="/ama.js" defer></script>
+  <div class="logo-wrapper">
+    <img src="/fansHQgoldpic.png" class="logo" alt="" style="margin: 0 auto; display:block;">
+  </div>
+    <script src="/ama.js" defer></script>
 </header>
 
 <style>
@@ -50,5 +52,17 @@
     letter-spacing: 0.5px;
     transition: all 0.25s ease;
   }
+
+.logo-wrapper {
+  text-align: center;
+}
+
+/* responsive title image */
+.logo {
+  display: inline-block;
+  width: clamp(100px, 30vw, 500px); /* min, fluid, max */
+  height: auto;                     /* keep aspect ratio */
+  margin-bottom: 1rem;
+}
 
 </style>
