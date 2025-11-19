@@ -3,6 +3,12 @@ html{
   color:#f0f0f0;
 }
 
+::selection {
+  background: hsl(48, 90%, 50%);
+  color: #000;
+}
+
+
 :root {
   --saturation: 100%;
   --lightness: 55%;
@@ -383,3 +389,10 @@ select {
   
 }
 
+.btn-link{
+  background: #101010;
+}
+
+.btn-link:hover{
+  background: #202020;
+}
