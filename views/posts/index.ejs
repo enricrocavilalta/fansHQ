@@ -240,7 +240,7 @@
         <% if (post.title) { %><h3><%= post.title %></h3><% } %>
         <% if (post.content) { %><p><%= post.content %></p><% } %>
         
-        <div>
+        <div class="author-line">
           By
           <% if (post.email) { %>
           <a href="/posts/by/<%= post.email.split('@')[0] %>"><%= post.email.split('@')[0] %></a>
@@ -270,7 +270,7 @@
         <% if (post.title) { %><h3><%= post.title %></h3><% } %>
         <% if (post.content) { %><p><%= post.content %></p><% } %>
 
-        <div>
+        <div class="author-line">
           By
           <% if (post.email) { %>
           <a href="/posts/by/<%= post.email.split('@')[0] %>"><%= post.email.split('@')[0] %></a>
@@ -303,7 +303,7 @@
         <% if (post.title) { %><h3><%= post.title %></h3><% } %>
         <% if (post.content) { %><p><%= post.content %></p><% } %>
 
-        <div>
+        <div class="author-line">
           By
           <% if (post.email) { %>
           <a href="/posts/by/<%= post.email.split('@')[0] %>"><%= post.email.split('@')[0] %></a>
@@ -335,7 +335,7 @@
         <% if (post.title) { %><h3><%= post.title %></h3><% } %>
         <% if (post.content) { %><p><%= post.content %></p><% } %>
 
-        <div>
+        <div class="author-line">
           By
           <% if (post.email) { %>
           <a href="/posts/by/<%= post.email.split('@')[0] %>"><%= post.email.split('@')[0] %></a>
@@ -372,7 +372,7 @@
             </a>
           <% } %>
 
-        <div>
+        <div class="author-line">
           By
           <% if (post.email) { %>
           <a href="/posts/by/<%= post.email.split('@')[0] %>"><%= post.email.split('@')[0] %></a>
@@ -404,7 +404,7 @@
 
           <a href="<%= post.media_url %>" target="_blank" rel="noopener" class="file-link underline mt-2 inline-block">Open link</a>
       
-          <div>
+          <div class="author-line">
             By
             <% if (post.email) { %>
             <a href="/posts/by/<%= post.email.split('@')[0] %>"><%= post.email.split('@')[0] %></a>
@@ -424,7 +424,7 @@
         <% if (post.title) { %><h3><%= post.title %></h3><% } %>
         <% if (post.content) { %><p><%= post.content %></p><% } %>
 
-        <div>
+        <div class="author-line">
           By
           <% if (post.email) { %>
           <a href="/posts/by/<%= post.email.split('@')[0] %>"><%= post.email.split('@')[0] %></a>
@@ -450,7 +450,7 @@
           <span class="msg" style="margin-left:.5rem;opacity:.8"></span>
         </form>
 
-        <div>
+        <div class="author-line">
           By
           <% if (post.email) { %>
           <a href="/posts/by/<%= post.email.split('@')[0] %>"><%= post.email.split('@')[0] %></a>
@@ -603,7 +603,7 @@
           <button type="submit"style="background-color:hsl(30, 90%, 50%);color:#f0f0f0; border: none; border-radius: 6px;">Buy</button>
         </form>
           
-        <div>
+        <div class="author-line">
           By
           <% if (post.username) { %>
           <a href="/posts/by/<%= post.email.split('@')[0] %>"><%= post.username %></a>
@@ -671,7 +671,7 @@
           >$
         </form>
         
-        <div>
+        <div class="author-line">
           By
           <% if (post.email) { %>
           <a href="/posts/by/<%= post.email.split('@')[0] %>"><%= post.email.split('@')[0] %></a>
@@ -709,7 +709,7 @@
         <ul id="list-<%= post.id %>"></ul>
         </div>
 
-        <div>
+        <div class="author-line">
           By
           <% if (post.email) { %>
           <a href="/posts/by/<%= post.email.split('@')[0] %>"><%= post.email.split('@')[0] %></a>
