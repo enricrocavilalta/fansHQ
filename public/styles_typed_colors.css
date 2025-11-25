@@ -1,3 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap');
+
+html {
+  font-family: 'Ubuntu', sans-serif !important;
+}
+
+select {
+  font-family: inherit !important;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+h1, h2, h3, h4, h5, h6, p, label, a, span, div {
+  font-family: inherit !important;
+}
+
+
 html{
   background-color:black;
   color:#f0f0f0;
