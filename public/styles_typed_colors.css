@@ -26,12 +26,14 @@ html{
 }
 
 body {
+  margin:0;
+  height: 100vh;
   cursor: url('C:\Users\enric\fanshq\public\color-inverted_triangle.cur'), auto;
 }
 
 :root {
   --saturation: 100%;
-  --lightness: 55%;
+  --lightness: 52%;
 
 }
 

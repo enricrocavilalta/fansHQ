@@ -9,6 +9,12 @@
   font-family: sans-serif;
 }
 
+body {
+  margin:0;
+  height: 100vh;
+  cursor: crosshair, auto;
+}
+
 .post-grid-container {
   margin: 0 auto;
   width: 100%;
@@ -37,9 +43,7 @@
   overflow-wrap: break-word;
 }
 
-.post-card:hover {
- /* background-color: #2a2a2a;*/
-}
+
 
 .post-card h3 {
   margin: 0 0 0.5rem;
@@ -327,6 +331,12 @@
           </form>
         </div>
 
+        <% if (post.thumbnail_url) { %>
+          <img src="<%= post.thumbnail_url %>" 
+          alt="Audio thumbnail" 
+          class="w-full rounded mb-2">
+        <% } %>
+
         <% if (post.media_url) { %>
           <audio controls class="w-full mt-2">
             <source src="<%= post.media_url %>">
@@ -367,9 +377,26 @@
               <p><%= post.content %></p>
             <% } %>
 
-            <a href="<%= post.media_url %>" download>
+            <a href="<%= post.media_url %>" download class="download-btn">
               Download
             </a>
+
+            <style>
+              .download-btn {
+                display: inline-block;
+                padding: 0.4rem 0.8rem;
+                background-color: hsl(300, 100%, 52%);
+                color: #f0f0f0 !important;
+                border-radius: 6px;
+                text-decoration: none;
+                font-weight: 600;
+                transition: filter 0.2s ease;
+              }
+
+              .download-btn:hover {
+                filter: brightness(1.2);
+              }
+            </style>
           <% } %>
 
         <div class="author-line">
@@ -434,6 +461,21 @@
       </div>
     <% } else if (post.media_type === 'poll') { %>
       <div class="post-card" data-media="poll">
+
+          <div class="edit-delete">
+          
+            <!-- Edit button -->
+            <form class="edit-form" action="/posts/<%= post.id %>/edit" method="GET">
+              <button class="edit-btn">✎</button>
+            </form>
+
+            <!-- Delete button -->
+            <form action="/posts/<%= post.id %>?_method=DELETE" method="POST">
+              <button type="submit" class="delete-btn">&times;</button>
+            </form>
+
+          </div>
+
         <% if (post.title) { %><h3><%= post.title %></h3><% } %>
         <% if (post.content) { %><p><%= post.content %></p><% } %>
 
