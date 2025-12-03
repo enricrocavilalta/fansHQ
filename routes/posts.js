@@ -251,20 +251,7 @@ router.post(
 );
 
 // ---------- FEED (REAL QUERY; remove the stub) ----------
-router.get('/', async (req, res) => {
-  try {
-    const [rows] = await db.query(`
-      SELECT p.*, u.email, p.id AS post_id
-      FROM posts p
-      LEFT JOIN users u ON u.id = p.user_id
-      ORDER BY p.created_at DESC
-    `);
-    res.render('posts/index', { posts: rows });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('DB error');
-  }
-});
+
 
 // ---------- UPDATE (accept files on edit) ----------
 router.put(

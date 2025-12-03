@@ -822,6 +822,29 @@ body {
         <ul id="list-<%= post.id %>"></ul>
         </div>
 
+
+        <!-- AMA questions list -->
+     <section class="questions">
+      <% if (post.questions && post.questions.length > 0) { %>
+        <h3>Questions</h3>
+        <ul>
+          <% post.questions.forEach(q => { %>
+            <li>
+              <strong><%= q.username || 'Anonymous' %>:</strong>
+              <%= q.question %>
+              <% if (q.tip) { %>
+                <span>(Tip: <%= q.tip %>)</span>
+              <% } %>
+            </li>
+          <% }) %>
+        </ul>
+      <% } else { %>
+        <p>No questions yet.</p>
+      <% } %>
+    </section>
+
+
+
         <div class="author-line">
           By
           <% if (post.email) { %>
@@ -851,25 +874,46 @@ body {
 
   let busy = false;
 
+
+
+
   function addRow(row) {
-    const li = document.createElement("li");
-    const meta = document.createElement("div");
-    meta.style.opacity = ".7";
-    meta.style.fontSize = ".8rem";
-    meta.textContent = (row.username ||row.email || "Anonymous") + " • " + new Date(row.created_at || Date.now()).toLocaleString();
-    li.appendChild(meta);
-    if (row.question) {
-      const p = document.createElement("p");
-      p.textContent = row.question;
-      li.appendChild(p);
-    }
-    if (Number(row.tip) > 0) {
-      const s = document.createElement("small");
-      s.textContent = "Tip: €" + Number(row.tip).toFixed(2);
-      li.appendChild(s);
-    }
-    list?.insertBefore(li, list.firstChild || null);
+  const li = document.createElement("div");
+  li.className = "ama-list";
+  li.className = "ama-entry";
+
+  const line = document.createElement("div");
+  line.style.whiteSpace = "nowrap";
+  line.style.overflow = "hidden";
+  line.style.textOverflow = "ellipsis";
+
+  let text = "";
+
+  // 1) TIP
+  if (Number(row.tip) > 0) {
+    text += "[Tip €" + Number(row.tip).toFixed(2) + "] ";
   }
+
+  // 2) USERNAME
+  text += (row.username || row.email || "Anonymous") + ": ";
+
+  // 3) QUESTION (main content)
+  if (row.question) {
+    text += row.question;
+  }
+
+  line.textContent = text;
+  li.appendChild(line);
+
+  list?.appendChild(li);
+
+}
+
+
+
+
+
+  
 
   async function submit() {
     if (busy) return;
@@ -907,6 +951,28 @@ body {
   send?.addEventListener("click", submit);
 })();
       </script>
+
+      <style>
+
+        .ama-list {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;               /* small spacing between dolls */
+        }
+
+        .ama-entry {
+          background: #202020;
+          padding: 0px 12px;
+          border-radius: 20px;
+          color: #f0f0f0;
+          font-size: 1rem;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+
+      </style>
     <% } %>
 <% }) %>     <!-- end posts.forEach -->
 </div>

@@ -81,8 +81,9 @@ app.post('/api/posts/:id/ask', ensureAuthPage, async (req, res) => {
   try {
     const postId = req.params.id;
 
-    const user = req.session.user || null;
-    const username = user ? user.email : null; // o user.username si tienes
+    const user = req.session.user;
+
+    const username = user.email.split("@")[0];
 
     const { question, tip } = req.body;
 
@@ -95,7 +96,7 @@ app.post('/api/posts/:id/ask', ensureAuthPage, async (req, res) => {
     const [result] = await db.query(
       `INSERT INTO questions (post_id, username, question, tip)
        VALUES (?, ?, ?, ?)`,
-      [postId, username, question, safeTip]   //  este orden SÍ cuadra
+      [postId, username, question, safeTip]
     );
 
     const row = {
@@ -120,7 +121,7 @@ app.post('/api/posts/:id/ask', ensureAuthPage, async (req, res) => {
 
 
 
-// home -> feed
+// home -> /posts
 app.get('/', ensureAuthPage, (req, res) => res.redirect('/posts'));
 
 app.get('/login', (req, res) => res.render('login'));
@@ -225,12 +226,66 @@ function emailToHandle(email) {
 const RESERVED = new Set(['feed', 'api', 'posts', 'static', 'assets']);
 
 // --- FEED (no create form) ---
-app.get('/feed', async (req, res) => {
-  const [posts] = await db.query(`
-    SELECT * FROM posts ORDER BY created_at DESC LIMIT 200
-  `);
-  res.render('posts/index', { posts, pageHeading: 'Feed', canPost: false });
+app.get('/posts', ensureAuthPage, async (req, res) => {
+  try {
+    console.log('HIT /posts route');
+
+    // 1) Posts + author email
+    const [posts] = await db.query(`
+      SELECT p.*, u.email
+      FROM posts p
+      JOIN users u ON p.user_id = u.id
+      ORDER BY p.created_at DESC
+    `);
+
+    console.log('[posts] found', posts.length, 'posts');
+
+    if (posts.length === 0) {
+      return res.render('posts', { posts: [] });
+    }
+
+    // 2) Derive display author from email (before the @)
+    for (const post of posts) {
+      if (post.email) {
+        post.author = post.email.split('@')[0];
+      } else {
+        post.author = null;
+      }
+    }
+
+    // 3) Load all questions for these posts
+    const ids = posts.map(p => p.id);
+    const [questions] = await db.query(
+      'SELECT id, post_id, username, question, tip, created_at FROM questions WHERE post_id IN (?) ORDER BY id ASC',
+      [ids]
+    );
+
+    // 4) Group questions by post_id
+    const questionsByPost = questions.reduce((acc, row) => {
+      (acc[row.post_id] ||= []).push(row);
+      return acc;
+    }, {});
+
+    // 5) Attach questions to each post
+    for (const post of posts) {
+      post.questions = questionsByPost[post.id] || [];
+    }
+
+    // 6) Render
+    res.render('posts', { posts });
+
+  } catch (err) {
+    console.error('Error in GET /posts:', err);
+    res.status(500).send('Server error');
+  }
 });
+
+
+
+
+
+
+
 
 // --- USER PAGE (/username) ---
 app.get('/:handle', async (req, res, next) => {
@@ -443,6 +498,27 @@ app.get('/settings/subscription', isLoggedIn, async (req, res) => {
     ok: req.query.ok === '1',   // <= pass right here
   });
 });
+
+
+
+app.get('/debug/questions/:id', async (req, res) => {
+  const postId = req.params.id;
+
+  try {
+    const [rows] = await db.query(
+      'SELECT id, post_id, username, question, tip, created_at FROM questions WHERE post_id = ? ORDER BY id ASC',
+      [postId]
+    );
+
+    console.log('[debug/questions] rows for post', postId, rows);
+
+    res.json(rows);
+  } catch (err) {
+    console.error('Error in /debug/questions/:id', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 
 
 
