@@ -77,20 +77,42 @@ app.get('/logout', (req, res) => {
 
 
 // POST /api/posts/:postId/ask
-app.post('/api/posts/:postId/ask', ensureAuthPage, async (req, res) => {
-  const postId = Number.parseInt(req.params.postId, 10);
-  const questionText = (req.body?.question ?? '').trim();
-  if (!Number.isFinite(postId)) return res.status(400).json({ message: 'Invalid postId' });
-  if (!questionText) return res.status(400).json({ message: 'No question provided' });
+app.post('/api/posts/:id/ask', ensureAuthPage, async (req, res) => {
+  try {
+    const postId = req.params.id;
 
-  const userId = req.session?.user?.id ?? req.session?.userId; // <- unified
-  await db.execute(
-    'INSERT INTO questions (post_id, user_id, question) VALUES (?, ?, ?)',
-    [postId, userId, questionText]
-  );
-  res.status(201).json({ message: 'Question saved!' });
+    const user = req.session.user || null;
+    const username = user ? user.email : null; // o user.username si tienes
+
+    const { question, tip } = req.body;
+
+    // Aseguramos que tip es número
+    const tipNum = Number(tip);
+    const safeTip = Number.isFinite(tipNum) ? tipNum : 0;
+
+    console.log('AMA payload:', { postId, username, question, tip, safeTip });
+
+    const [result] = await db.query(
+      `INSERT INTO questions (post_id, username, question, tip)
+       VALUES (?, ?, ?, ?)`,
+      [postId, username, question, safeTip]   //  este orden SÍ cuadra
+    );
+
+    const row = {
+      id: result.insertId,
+      post_id: postId,
+      username,
+      question,
+      tip: safeTip,
+      created_at: new Date()
+    };
+
+    res.json(row);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  }
 });
-
 
 
 

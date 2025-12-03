@@ -378,7 +378,7 @@ body {
             <% } %>
 
             <a href="<%= post.media_url %>" download class="download-btn btn-3d">
-              Download
+              DOWNLOAD
             </a>
 
             <style>
@@ -391,10 +391,15 @@ body {
                 text-decoration: none;
                 font-weight: 600;
                 transition: filter 0.2s ease;
+                font-size: 1rem;
               }
 
               .download-btn:hover {
                 filter: brightness(1.2);
+              }
+
+              .download-btn:active {
+                transform: scale(0.95);
               }
             </style>
           <% } %>
@@ -441,10 +446,15 @@ body {
               text-decoration: none;
               font-weight: 600;
               transition: filter .2s ease;
+              font-size: 1rem;
             }
 
             .link-btn:hover {
               filter: brightness(1.2);
+            }
+
+            .link-btn:active {
+              transform: scale(0.95);
             }
           </style>
 
@@ -493,17 +503,17 @@ body {
 
           </div>
 
-        <% if (post.title) { %><h3><%= post.title %></h3><% } %>
-        <% if (post.content) { %><p><%= post.content %></p><% } %>
+        <% if (post.title) { %><h2><%= post.title %></h2><% } %>
+        <% if (post.content) { %><h3><%= post.content %></h3><% } %>
 
         <form id="poll-<%= post.id %>" data-poll-id="<%= post.id %>">
           <% for (let i = 1; i <= 10; i++) {
               const label = post['option_' + i];
               if (!label) continue; %>
             <label style="display:flex;align-items:center;gap:.5rem;margin:.25rem 0">
-              <span class="count" data-option="<%= i %>" style="min-width:1.5em;text-align:right;"></span>
+              <h4 class="count" data-option="<%= i %>" style="min-width:1.5em;text-align:right;"></h4>
               <input type="checkbox" name="choices" value="<%= i %>">
-              <span><%= label %></span>
+              <h4><span><%= label %></span></h4>
             </label>
           <% } %>
           <span class="msg" style="margin-left:.5rem;opacity:.8"></span>
@@ -672,17 +682,22 @@ body {
             text-decoration: none;
             font-weight: 600;
             transition: filter .2s ease;
+            font-size: 1rem;
           }
 
           .buy-btn:hover {
             filter: brightness(1.2);
           }
+
+          .buy-btn:active {
+            transform: scale(0.95);
+          }
         </style>
 
         <div class="author-line">
           By
-          <% if (post.username) { %>
-          <a href="/posts/by/<%= post.email.split('@')[0] %>"><%= post.username %></a>
+          <% if (post.email) { %>
+          <a href="/posts/by/<%= post.email.split('@')[0] %>"><%= post.email.split('@')[0] %></a>
           <% } else { %>unknown<% } %>
           · <%= new Date(post.created_at).toLocaleDateString() %>
         </div>
@@ -767,19 +782,41 @@ body {
           </form>
         </div>
 
-        <% if (post.title) { %><h3><%= post.title %></h3><% } %>
-        <% if (post.content) { %><p><%= post.content %></p><br><% } %>
+        <% if (post.title) { %><h2><%= post.title %></h2><% } %>
+        <% if (post.content) { %><h3><%= post.content %></h3><br><% } %>
 
         <div id="ama-<%= post.id %>" data-post-id="<%= post.id %>">
-          Question:<br>  
+          <h5>Question:</h5>
           <textarea id="q-<%= post.id %>" rows="3" placeholder="Ask anything…" style="background-color: #303030;color:#f0f0f0; border: none; border-radius: 6px;width:100%;"></textarea><br><br>
         <div>
-          Tip:<br>
+          <h5>Tip:</h5>
           <input type="number" name="tip" id="tip-<%= post.id %>" value="<%= post.price %>" step="1" min="1" size="3"
           style="text-align:right;background-color:#303030;color:#f0f0f0;border:none;border-radius:6px;">
-          $
-          <button id="send-<%= post.id %>" style="background-color: #303030;color:#f0f0f0; border: none; border-radius: 6px;">Send</button>
+          $<br><br>
+          <button id="send-<%= post.id %>" class="ask-btn">ASK</button>
         </div>
+
+            <style>
+            .ask-btn {
+              display: inline-block;
+              background-color: #f0f0f0;
+              color: #000 !important;
+              padding: 0.25rem 0.8rem;
+              border-radius: 50% / 100%;
+              text-decoration: none;
+              font-weight: 600;
+              transition: filter .2s ease;
+              font-size: 1rem;
+            }
+
+            .ask-btn:hover {
+              filter: brightness(1.2);
+            }
+
+            .ask-btn:active {
+              transform: scale(0.95);
+            }
+          </style>
 
         <p id="err-<%= post.id %>" style="color:#b91c1c;display:none"></p>
         <ul id="list-<%= post.id %>"></ul>
@@ -803,7 +840,6 @@ body {
 
   // Scope everything to this AMA card
   const qEl  = box.querySelector(`#q-${pid}`);
-  const email = box.querySelector(`#email-${pid}`); // may be null
   const tipEl = box.querySelector(`#tip-${pid}`);   // requires id="tip-<%= post.id %>"
   const send = box.querySelector(`#send-${pid}`);
   const err  = box.querySelector(`#err-${pid}`);
@@ -820,7 +856,7 @@ body {
     const meta = document.createElement("div");
     meta.style.opacity = ".7";
     meta.style.fontSize = ".8rem";
-    meta.textContent = (row.email || "Anonymous") + " • " + new Date(row.created_at || Date.now()).toLocaleString();
+    meta.textContent = (row.username ||row.email || "Anonymous") + " • " + new Date(row.created_at || Date.now()).toLocaleString();
     li.appendChild(meta);
     if (row.question) {
       const p = document.createElement("p");
@@ -842,8 +878,7 @@ body {
     send.disabled = true;
 
     const payload = {
-      question: (qEl?.value || '').trim() || null,
-      email: (email && email.value ? email.value.trim() : null),
+      question: (qEl?.value || '').trim(),
       tip: tipEl && tipEl.value ? Number(tipEl.value) : 0
     };
 
@@ -915,6 +950,5 @@ body {
   box-shadow:
     inset 0 1px 1px rgba(255,255,255,0.4),   /* top highlight */
     inset 0 -1px 2px rgba(0,0,0,0.25);       /* bottom shadow */
-  color: #000 !important;
 }
 </style>
