@@ -236,7 +236,13 @@ const RESERVED = new Set(['feed', 'api', 'posts', 'static', 'assets']);
 
 // --- FEED (no create form) ---
 app.get('/posts', ensureAuthPage, async (req, res) => {
-  const [posts] = await db.query('SELECT * FROM posts ORDER BY created_at DESC');
+
+  const [posts] = await db.query(`
+    SELECT p.*, u.email
+    FROM posts p
+    LEFT JOIN users u ON u.id = p.user_id
+    ORDER BY p.created_at DESC
+  `);
 
   const ids = posts.map(p => p.id);
   let questionsByPost = {};
@@ -244,9 +250,12 @@ app.get('/posts', ensureAuthPage, async (req, res) => {
 
   if (ids.length > 0) {
 
-    // --- AMA QUESTIONS ---
+    // QUESTIONS
     const [questions] = await db.query(
-      'SELECT id, post_id, username, question, tip, created_at FROM questions WHERE post_id IN (?) ORDER BY id ASC',
+      `SELECT id, post_id, username, question, tip, created_at
+       FROM questions
+       WHERE post_id IN (?)
+       ORDER BY id ASC`,
       [ids]
     );
 
@@ -255,7 +264,7 @@ app.get('/posts', ensureAuthPage, async (req, res) => {
       return a;
     }, {});
 
-    // --- TIP-JAR DONATIONS ---
+    // TIPS
     const [tips] = await db.query(
       `SELECT t.id, t.post_id, t.amount AS tip, u.email AS username
        FROM tips t
@@ -271,14 +280,15 @@ app.get('/posts', ensureAuthPage, async (req, res) => {
     }, {});
   }
 
-  // Attach data to each post
+  // ATTACH DATA
   for (const post of posts) {
     post.questions = questionsByPost[post.id] || [];
-    post.tips = tipsByPost[post.id] || [];   // <--- THIS LINE IS REQUIRED
+    post.tips      = tipsByPost[post.id] || [];
   }
 
   res.render('posts', { posts });
 });
+
 
 
 
