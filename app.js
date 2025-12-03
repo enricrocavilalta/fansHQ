@@ -18,6 +18,19 @@ app.use(express.static('public'));
 app.use(methodOverride('_method'));
 
 
+function ensureAuth(req, res, next) {
+  if (!req.session || !req.session.user) {
+    // If it's an AJAX/JSON request, send JSON error
+    if (req.headers.accept && req.headers.accept.includes('application/json')) {
+      return res.status(401).json({ error: 'Not authorized' });
+    }
+    // Otherwise redirect to login page
+    return res.redirect('/login');
+  }
+  next();
+}
+
+
 
 
 app.use(session({
@@ -77,40 +90,36 @@ app.get('/logout', (req, res) => {
 
 
 // POST /api/posts/:postId/ask
-app.post('/api/posts/:id/ask', ensureAuthPage, async (req, res) => {
+app.post('/api/posts/:id/ask', async (req, res) => {
   try {
     const postId = req.params.id;
+    const { question, safeTip } = req.body;  // safeTip, not tip
+    const tip = Number(safeTip) || 0;
 
-    const user = req.session.user;
+    const email = req.session.user.email;
+    const username = email.split('@')[0];
 
-    const username = user.email.split("@")[0];
-
-    const { question, tip } = req.body;
-
-    // Aseguramos que tip es número
-    const tipNum = Number(tip);
-    const safeTip = Number.isFinite(tipNum) ? tipNum : 0;
-
-    console.log('AMA payload:', { postId, username, question, tip, safeTip });
+    console.log('AMA payload:', {
+      postId,
+      username,
+      question,
+      tip
+    });
 
     const [result] = await db.query(
-      `INSERT INTO questions (post_id, username, question, tip)
-       VALUES (?, ?, ?, ?)`,
-      [postId, username, question, safeTip]
+      'INSERT INTO questions (post_id, username, question, tip) VALUES (?, ?, ?, ?)',
+      [postId, username, question, tip]
     );
 
-    const row = {
+    res.json({
       id: result.insertId,
       post_id: postId,
       username,
       question,
-      tip: safeTip,
-      created_at: new Date()
-    };
-
-    res.json(row);
+      tip
+    });
   } catch (err) {
-    console.error(err);
+    console.error('Error in AMA route:', err);
     res.status(500).json({ error: 'Server error' });
   }
 });

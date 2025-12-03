@@ -790,10 +790,50 @@ body {
           <h5>Question:</h5>
           <input type="text" name="question" placeholder="Ask something..." required>
           <h5>Tip:</h5>
-          <input type="number" name="tip" min="0" step="0.01" value="0">
+          <input type="number" name="tip" min="0" step="1" value="0"><br><br>
           <button type="submit" class="ask-btn">Send</button>
         </form>
-        
+
+        <style>
+
+          .ama-form input[type="text"],
+          .ama-form input[type="number"] {
+            background-color: #202020;
+            color: #f0f0f0;
+            border: none;
+            padding: 0.4rem 0.6rem;
+            border-radius: 6px;
+            width: 100%;
+            box-sizing: border-box;
+          }
+
+          .ama-form input[type="text"]::placeholder {
+            color: #888;
+          }
+
+          .ama-form input[name="tip"] {
+            width: 3%;               /* 3 characters wide */
+            min-width: 3rem;        /* tiny but usable */
+            background-color: #282828;
+            color: #f0f0f0;
+            border: none;
+            padding: 0.3rem;
+            border-radius: 6px;
+            text-align: right;
+          }
+
+          .questions-list {
+            list-style: none !important;
+            padding-left: 0 !important;
+            margin-left: 0 !important;
+          }
+
+          .tip-amount {
+            color: gold;
+            font-weight: 700;
+          }
+
+        </style>
         <% const ordered = [...post.questions].sort((a, b) => {
           const tipA = Number(a.tip || 0);
           const tipB = Number(b.tip || 0);
@@ -801,7 +841,7 @@ body {
           return a.id - b.id;                    // older first
         }); %>
 
-        <!-- ✅ questions INSIDE the post-card -->
+        <!--  questions INSIDE the post-card -->
         <ul class="questions-list" id="questions-<%= post.id %>">
           <% ordered.forEach(q => { %>
             <li
@@ -809,9 +849,9 @@ body {
               data-tip="<%= Number(q.tip || 0) %>"
             >
               <% if (q.tip && Number(q.tip) > 0) { %>
-                <b><%= Number(q.tip) %>€</b>
+                <b style="color: gold;"><%= Number(q.tip) %>€</b>
               <% } %>
-              <b><%= q.username %>:</b> <%= q.question %>
+              <b class="uppercase"><%= q.username %>:</b> <%= q.question %>
             </li>
           <% }) %>
         </ul>
@@ -851,6 +891,10 @@ body {
 
             .ask-btn:active {
               transform: scale(0.95);
+            }
+
+            .uppercase {
+              text-transform: uppercase;
             }
     </style>
   
@@ -892,7 +936,7 @@ body {
 
           // build inner content
           let html = '';
-          if (li.dataset.tip > 0) html += `<b>${li.dataset.tip}€</b> `;
+          if (li.dataset.tip > 0) html += `<b style="color:gold;">${li.dataset.tip}€</b> `;
           html += `<b>${newQ.username}:</b> ${newQ.question}`;
 
           li.innerHTML = html;
@@ -969,9 +1013,9 @@ body {
 
             let html = '';
             if (tipValue > 0) {
-              html += `<b>${tipValue}€</b> `;
+              html += `<b style="color:gold;">${tipValue}€</b> `;
             }
-            html += `<b>${newQ.username}:</b> ${newQ.question}`;
+            html += `<b>${newQ.username.username}:</b> ${newQ.question}`;
             li.innerHTML = html;
 
             insertQuestionInOrder(ul, li, tipValue, newQ.id);
