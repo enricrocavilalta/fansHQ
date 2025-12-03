@@ -236,58 +236,50 @@ const RESERVED = new Set(['feed', 'api', 'posts', 'static', 'assets']);
 
 // --- FEED (no create form) ---
 app.get('/posts', ensureAuthPage, async (req, res) => {
-  try {
-    console.log('HIT /posts route');
+  const [posts] = await db.query('SELECT * FROM posts ORDER BY created_at DESC');
 
-    // 1) Posts + author email
-    const [posts] = await db.query(`
-      SELECT p.*, u.email
-      FROM posts p
-      JOIN users u ON p.user_id = u.id
-      ORDER BY p.created_at DESC
-    `);
+  const ids = posts.map(p => p.id);
+  let questionsByPost = {};
+  let tipsByPost = {};
 
-    console.log('[posts] found', posts.length, 'posts');
+  if (ids.length > 0) {
 
-    if (posts.length === 0) {
-      return res.render('posts', { posts: [] });
-    }
-
-    // 2) Derive display author from email (before the @)
-    for (const post of posts) {
-      if (post.email) {
-        post.author = post.email.split('@')[0];
-      } else {
-        post.author = null;
-      }
-    }
-
-    // 3) Load all questions for these posts
-    const ids = posts.map(p => p.id);
+    // --- AMA QUESTIONS ---
     const [questions] = await db.query(
       'SELECT id, post_id, username, question, tip, created_at FROM questions WHERE post_id IN (?) ORDER BY id ASC',
       [ids]
     );
 
-    // 4) Group questions by post_id
-    const questionsByPost = questions.reduce((acc, row) => {
-      (acc[row.post_id] ||= []).push(row);
-      return acc;
+    questionsByPost = questions.reduce((a, q) => {
+      (a[q.post_id] ||= []).push(q);
+      return a;
     }, {});
 
-    // 5) Attach questions to each post
-    for (const post of posts) {
-      post.questions = questionsByPost[post.id] || [];
-    }
+    // --- TIP-JAR DONATIONS ---
+    const [tips] = await db.query(
+      `SELECT t.id, t.post_id, t.amount AS tip, u.email AS username
+       FROM tips t
+       LEFT JOIN users u ON u.id = t.user_id
+       WHERE t.post_id IN (?)
+       ORDER BY t.id ASC`,
+      [ids]
+    );
 
-    // 6) Render
-    res.render('posts', { posts });
-
-  } catch (err) {
-    console.error('Error in GET /posts:', err);
-    res.status(500).send('Server error');
+    tipsByPost = tips.reduce((a, t) => {
+      (a[t.post_id] ||= []).push(t);
+      return a;
+    }, {});
   }
+
+  // Attach data to each post
+  for (const post of posts) {
+    post.questions = questionsByPost[post.id] || [];
+    post.tips = tipsByPost[post.id] || [];   // <--- THIS LINE IS REQUIRED
+  }
+
+  res.render('posts', { posts });
 });
+
 
 
 

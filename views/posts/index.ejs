@@ -735,14 +735,7 @@ body {
      
         
         <form action="/posts/<%= post.id %>/tip" method="POST">
-          message: <br>
-          <textarea
-            name="note"
-            id="note-<%= post.id %>"
-            rows="3"
-            style="background-color:#303030;color:#f0f0f0;border:none;border-radius:6px;width:100%;"
-          ></textarea>
-          <br><br>
+       
 
           <button type="submit"
             style="background-color:hsl(0,0%,50%);color:#f0f0f0;border:none;border-radius:6px;">
@@ -762,6 +755,103 @@ body {
           >$
         </form>
         
+
+        <ul class="tipjar-list" id="tips-<%= post.id %>">
+          <% (post.tips || []).sort((a,b) => {
+            const tA = Number(a.tip||0);
+            const tB = Number(b.tip||0);
+            if (tA !== tB) return tB - tA;
+            return a.id - b.id;
+            }).forEach(t => { %>
+            <li 
+              data-id="<%= t.id %>"
+              data-tip="<%= Number(t.tip) %>"
+            >
+              <b class="tip-amount"><%= Number(t.tip) %>€</b>
+              <b class="donor"><%= ((t.username || 'Anonymous').split('@')[0]).toUpperCase() %></b>
+            </li>
+          <% }) %>
+        </ul>
+
+        <style>
+
+          .tipjar-list {
+            list-style: none;
+            padding-left: 0;
+            margin-top: .5rem;
+          }
+
+        </style>
+        
+        <script>
+          function insertTipInOrder(ul, li, tipValue, id) {
+            const children = Array.from(ul.children);
+
+            for (let child of children) {
+              const t = Number(child.dataset.tip);
+              const i = Number(child.dataset.id);
+
+              // Higher tip first
+              if (tipValue > t) {
+                ul.insertBefore(li, child);
+                return;
+              }
+
+              // Same tip → older (smaller id) first
+              if (tipValue === t && id < i) {
+                ul.insertBefore(li, child);
+                return;
+              }
+            }
+
+            insertTipInOrder(ul, li, newTip.tip, newTip.id);
+
+          }
+        </script>
+
+
+        <script>
+        document.querySelectorAll('.tipjar-form').forEach(form => {
+          form.addEventListener('submit', async e => {
+            e.preventDefault();
+
+            const postId = form.dataset.postId;
+            const tipInput = form.querySelector('input[name="tip"]');
+            const tip = Number(tipInput.value);
+
+            const res = await fetch(`/posts/${postId}/tip`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ tip })
+            });
+
+            if (!res.ok) return;
+
+            const newTip = await res.json(); 
+            // { id, tip, username }
+
+            const ul = document.getElementById(`tips-${postId}`);
+            const li = document.createElement('li');
+
+            const uname = ((newTip.username || 'Anonymous').split('@')[0]).toUpperCase();
+
+            li.dataset.tip = newTip.tip;
+            li.dataset.id  = newTip.id;
+            
+            li.innerHTML = `
+              <b class="tip-amount">${newTip.tip}€</b>
+              <b class="donor">${uname}</b>
+            `;
+
+            insertTipInOrder(ul, li, newTip.tip, newTip.id);
+
+            tipInput.value = 1;
+          });
+        });
+        </script>
+
+
+
         <div class="author-line">
           By
           <% if (post.email) { %>
