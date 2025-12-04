@@ -1,2 +1,56 @@
 <meta charset="UTF-8">
-<title><%= pageTitle || 'FansHQ' %></title>
+  <div class="logo-wrapper">
+    <img src="/fansHQgoldpic.png" class="logo" alt="" style="margin: 0 auto; display:block;">
+  </div>
+
+  <style>
+  /* ----- Login & link-style buttons ----- */
+  .btn-link {
+    display: inline-block;
+    padding: 0.7rem 1.8rem;
+    border-radius: 999px;
+    color: #f0f0f0;
+    background: #101010;
+    font-family: 'Ubuntu', sans-serif;
+    font-weight: 500;
+    text-decoration: none;
+    text-align: center;
+    letter-spacing: 0.5px;
+    transition: all 0.25s ease;
+  }
+
+    .btn-link:hover {
+    display: inline-block;
+    padding: 0.7rem 1.8rem;
+    border-radius: 999px;
+    color: #f0f0f0;
+    background: #202020;
+    font-family: 'Ubuntu', sans-serif;
+    font-weight: 500;
+    text-decoration: none;
+    text-align: center;
+    letter-spacing: 0.5px;
+    transition: all 0.25s ease;
+  }
+
+.logo-wrapper {
+  text-align: center;
+}
+
+/* responsive title image */
+.logo {
+  display: inline-block;
+  width: clamp(100px, 30vw, 500px); /* min, fluid, max */
+  height: auto;                     /* keep aspect ratio */
+  margin-bottom: 1rem;
+}
+
+.btn-link{
+  background: #101010;
+}
+
+.btn-link:hover{
+  background: #202020;
+}
+
+</style>
