@@ -988,135 +988,91 @@ body {
             }
     </style>
   
-    <script>
 
-          function insertQuestionInOrder(ul, li, tip, id) {
-            const children = Array.from(ul.children);
-
-            for (let child of children) {
-              const t = Number(child.dataset.tip);
-              const i = Number(child.dataset.id);
-
-              // Higher tip first
-              if (tip > t) {
-                ul.insertBefore(li, child);
-                return;
-              }
-
-              // Same tip → older (smaller id) first
-              if (tip === t && id < i) {
-                ul.insertBefore(li, child);
-                return;
-              }
-            }
-
-            // If nothing was greater → append at bottom
-            ul.appendChild(li);
-          }
-
-
-
-
-          const ul = document.getElementById(`questions-${postId}`);
-          const li = document.createElement('li');
-
-          // attributes for sorting
-          li.dataset.tip = Number(newQ.tip || 0);
-          li.dataset.id = Number(newQ.id);
-
-          // build inner content
-          let html = '';
-          if (li.dataset.tip > 0) html += `<b style="color:gold;">${li.dataset.tip}€</b> `;
-          html += `<b>${newQ.username}:</b> ${newQ.question}`;
-
-          li.innerHTML = html;
-
-          // insert in correct sorted place
-          insertQuestionInOrder(ul, li, li.dataset.tip, li.dataset.id);
-
-
-    </script>
   
-    <script>
-                
-        function insertQuestionInOrder(ul, li, tip, id) {
-          const children = Array.from(ul.children);
+   <script>
+  function insertQuestionInOrder(ul, li, tip, id) {
+    const children = Array.from(ul.children);
 
-          for (const child of children) {
-            const t = Number(child.dataset.tip);
-            const i = Number(child.dataset.id);
+    for (const child of children) {
+      const t = Number(child.dataset.tip);
+      const i = Number(child.dataset.id);
 
-            // Higher tip first
-            if (tip > t) {
-              ul.insertBefore(li, child);
-              return;
-            }
+      // Higher tip first
+      if (tip > t) {
+        ul.insertBefore(li, child);
+        return;
+      }
 
-            // Same tip → older (smaller id) first
-            if (tip === t && id < i) {
-              ul.insertBefore(li, child);
-              return;
-            }
-          }
+      // Same tip → older (smaller id) first
+      if (tip === t && id < i) {
+        ul.insertBefore(li, child);
+        return;
+      }
+    }
 
-          // If we didn't return, it belongs at the end
-          ul.appendChild(li);
-        }
+    // If we didn't return, it belongs at the end
+    ul.appendChild(li);
+  }
 
-        document.querySelectorAll('.ama-form').forEach(form => {
-          form.addEventListener('submit', async (e) => {
-            e.preventDefault();
+  document.querySelectorAll('.ama-form').forEach(form => {
+    // 👇 EVITA MÚLTIPLES LISTENERS
+    if (form.dataset.bound === "1") return;
+    form.dataset.bound = "1";
 
-            const postId = form.dataset.postId;
-            const questionInput = form.querySelector('input[name="question"]');
-            const tipInput = form.querySelector('input[name="tip"]');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
 
-            const question = questionInput.value.trim();
-            const tip = parseFloat(tipInput.value || '0');
+      const postId = form.dataset.postId;
+      const questionInput = form.querySelector('input[name="question"]');
+      const tipInput = form.querySelector('input[name="tip"]');
 
-            if (!question) return;
+      const question = questionInput.value.trim();
+      const tip = parseFloat(tipInput.value || '0');
 
-            const res = await fetch(`/api/posts/${postId}/ask`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                question,
-                safeTip: tip
-              })
-            });
+      if (!question) return;
 
-            if (!res.ok) {
-              console.error('Error sending AMA question');
-              return;
-            }
+      const res = await fetch(`/api/posts/${postId}/ask`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          question,
+          tip        // 👈 el backend espera "tip"
+        })
+      });
 
-            const newQ = await res.json();
-            // newQ should be: { id, post_id, username, question, tip }
+      if (!res.ok) {
+        console.error('Error sending AMA question');
+        return;
+      }
 
-            const ul = document.getElementById(`questions-${postId}`);
-            if (!ul) return;
+      const newQ = await res.json();
+      // newQ: { id, post_id, username, question, tip }
 
-            const li = document.createElement('li');
-            const tipValue = Number(newQ.tip || 0);
-            li.dataset.tip = tipValue;
-            li.dataset.id = newQ.id;
+      const ul = document.getElementById(`questions-${postId}`);
+      if (!ul) return;
 
-            let html = '';
-            if (tipValue > 0) {
-              html += `<b style="color:gold;">${tipValue}€</b> `;
-            }
-            html += `<b>${newQ.username.username}:</b> ${newQ.question}`;
-            li.innerHTML = html;
+      const li = document.createElement('li');
+      const tipValue = Number(newQ.tip || 0);
+      li.dataset.tip = tipValue;
+      li.dataset.id = newQ.id;
 
-            insertQuestionInOrder(ul, li, tipValue, newQ.id);
+      let html = '';
+      if (tipValue > 0) {
+        html += `<b style="color:gold;">${tipValue}€</b> `;
+      }
+      html += `<b>${newQ.username.toUpperCase()}:</b> ${newQ.question}`;
+      li.innerHTML = html;
 
-            // Clear form
-            questionInput.value = '';
-            tipInput.value = '0';
-          });
-        });
+      insertQuestionInOrder(ul, li, tipValue, newQ.id);
 
-    </script>
+      // Clear form
+      questionInput.value = '';
+      tipInput.value = '0';
+    });
+  });
+</script>
+
 
     <style>
 
