@@ -11,10 +11,10 @@
     <!-- Optional UI control -->
 
     <% if (session && session.userId) { %>
-      <a href="/logout" class="btn-link">Logout</a>
+      <a href="/logout" class="btn-link" style="color:#000;">Logout</a>
     <% } else { %>
-      <a href="/login" class="btn-link">Login</a> |
-      <a href="/signup" class="btn-link">Sign up</a>
+      <a href="/login" class="btn-link" style="color:#000;">Login</a> |
+      <a href="/signup" class="btn-link" style="color:#000;">Sign up</a>
     <% } %>
   </nav>
 
@@ -27,8 +27,8 @@
     display: inline-block;
     padding: 0.7rem 1.8rem;
     border-radius: 999px;
-    color: #f0f0f0;
-    background: #101010;
+    color: #000 !important;
+    background: #f0f0f0 !important;
     font-family: 'Ubuntu', sans-serif;
     font-weight: 500;
     text-decoration: none;
@@ -41,8 +41,7 @@
     display: inline-block;
     padding: 0.7rem 1.8rem;
     border-radius: 999px;
-    color: #f0f0f0;
-    background: #202020;
+    filter: brightness(1.2);
     font-family: 'Ubuntu', sans-serif;
     font-weight: 500;
     text-decoration: none;
@@ -61,14 +60,6 @@
   width: clamp(100px, 30vw, 500px); /* min, fluid, max */
   height: auto;                     /* keep aspect ratio */
   margin-bottom: 1rem;
-}
-
-.btn-link{
-  background: #101010;
-}
-
-.btn-link:hover{
-  background: #202020;
 }
 
 </style>

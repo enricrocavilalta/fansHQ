@@ -271,7 +271,7 @@ html, body {
 h1, h2, h3, h4 {
   font-family: var(--font-main);
   margin: 0.5em 0;
-  color: #fff;
+  color: #f0f0f0;
 }
 
 h1 {
@@ -378,7 +378,7 @@ p {
 a[href="/logout"],
 a[href="/logout"]:visited,
 a[href="/logout"]:hover {
-  color: #fff !important;
+  color: #fff;
   text-shadow: none;
 }
 
