@@ -119,11 +119,14 @@
     transition: background-color 0.2s ease;
   }
 
-  .content-form[data-media="text"] button:hover,a.btn:hover {
-    background-color: hsl(120, 90%, 35%);
+  .content-form[data-media="audio"] button:hover,a.btn:hover {
+    background-color: hsl(120, 100%, 70%);
     text-decoration: none;
   }
 
+  button:active {
+    transform: scale(0.95);
+  }
   form {
     width: 50%;
     margin: 1rem auto;

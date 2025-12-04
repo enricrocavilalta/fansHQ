@@ -14,7 +14,7 @@
 
   <h1 style="color:#f0f0f0;"><%= isEdit ? 'Edit video post' : 'Video upload' %></h1>
 
-
+  Choose how to add video*:
   <div class="mode-box-container">
     <label class="mode-box active">
       <input type="radio" name="display_mode" value="upload" checked onchange="toggleSections()">
@@ -143,18 +143,21 @@
 }
 
 .content-form[data-media="video"] button:hover, a.btn:hover {
-  background-color: hsl(0, 100%, 70%);
+  background-color: hsl(0, 100%, 65%);
   text-decoration: none;
 }
 
-  form {
-    width: 50%;
-    margin: 1rem auto;
-    margin: 1rem auto;  
-    padding: 1rem;
-    border-radius: 12px;
-    }
+button:active {
+  transform: scale(0.95);
+}
 
+form {
+  width: 50%;
+  margin: 1rem auto;
+  margin: 1rem auto;  
+  padding: 1rem;
+  border-radius: 12px;
+}
 
 </style>
 
