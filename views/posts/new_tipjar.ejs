@@ -23,7 +23,7 @@
     <input type="file" name="media_file" accept="image/*"><br>
     
     <button type="submit">Create Tip Jar</button>
-    <a id="cancelLink" href="/posts" class="btn btn-ghost">Cancel</a>
+    <button type="button" class="btn" onclick="window.history.back()">CANCEL</button>
   </form>
 </div>
 
@@ -81,7 +81,7 @@
   }
 
   .content-form[data-media="tipjar"] h1 {
-    color: hsl(0, 0%, 70%);
+    color: #f0f0f0;
   }
 
   .content-form[data-media="tipjar"] button {

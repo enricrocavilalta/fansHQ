@@ -11,7 +11,7 @@
     
     <input type="hidden" name="media_type" value="file"><br>
     
-    File:<br>
+    File*:<br>
     <input type="file" name="media_file" required><br>
     
     Title:<br>
@@ -23,7 +23,7 @@
     price:<br>
     <input type="number" name="price" step="0.01" value="0"><br><br>
     <button type="submit">Post Download</button>
-    <a id="cancelLink" href="/posts" class="btn btn-ghost">Cancel</a>
+    <button type="button" class="btn" onclick="window.history.back()">CANCEL</button>
   </form>
 </div>
 
@@ -38,7 +38,7 @@
 
   .content-form[data-media="file"] {
     background-color: hsl(300, 50%, 10%);
-    border-top: 4px solid hsl(300, 90%, 50%);
+    border-top: 4px solid hsl(300, 100%, 52%);
     padding: 1rem;
     border-radius: 12px;
     box-shadow: 0 0 8px hsl(300, 50%, 10%);
@@ -46,7 +46,7 @@
   }
 
   .content-form[data-media="file"] h1 {
-    color: hsl(300, 90%, 50%);
+    color: #f0f0f0;
   }
 
   .content-form[data-media="file"] label {
@@ -68,7 +68,7 @@
   }
 
   .content-form[data-media="file"] button, a.btn {
-    background-color: hsl(300, 90%, 25%);
+    background-color: hsl(300, 100%, 52%);
     color: #f0f0f0;
     font-weight: bold;
     padding: 0.5rem 1rem;
@@ -80,7 +80,7 @@
   }
 
   .content-form[data-media="file"] button:hover, a.btn:hover {
-    background-color: hsl(300, 90%, 50%);
+    background-color: hsl(300, 100%, 70%);
     text-decoration: none;
   }
 
@@ -103,7 +103,7 @@
   }
 
   .content-form[data-media="file"] button {
-    background-color: hsl(300, 90%, 25%);
+    background-color: hsl(300, 100%, 52%);
     color: #f0f0f0;
     font-weight: bold;
     padding: 0.5rem 1rem;

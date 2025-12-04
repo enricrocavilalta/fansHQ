@@ -13,16 +13,17 @@
 
     <h1><%= isEdit ? 'Edit text' : 'Text upload' %></h1>
 
-    <label>Title
+    <label>Title:
       <input type="text" name="title" value="<%= P.title ? P.title : '' %>">
     </label>
 
-    <label>Content
+    <label>Content*:
       <textarea name="content" rows="6" required><%= P.content ? P.content : '' %></textarea>
     </label>
 
     <button type="submit"><%= submitLabel %></button>
-    <a id="cancelLink" href="/posts" class="btn">Cancel</a>
+  
+    <button type="button" class="btn" onclick="window.history.back()">CANCEL</button>
   </form>
 </div>
 
@@ -44,7 +45,7 @@
   }
 
   .content-form[data-media="text"] h1 {
-    color: hsl(240, 90%, 50%);
+    color: #f0f0f0;
   }
 
   .content-form[data-media="text"] label {
@@ -66,7 +67,7 @@
   }
 
   .content-form[data-media="text"] button,a.btn {
-    background-color: hsl(240, 90%, 25%);
+    background-color: hsl(240, 100%, 52%);
     color: #f0f0f0;
     font-weight: bold;
     padding: 0.5rem 1rem;
@@ -78,8 +79,7 @@
   }
 
   .content-form[data-media="text"] button:hover,a.btn:hover {
-    background-color: hsl(240, 90%, 35%);
-    text-decoration: none;
+    filter:brigthness(1.2);
   }
 
   form {

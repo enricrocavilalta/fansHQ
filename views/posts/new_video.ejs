@@ -12,7 +12,7 @@
   <input type="hidden" name="display_mode" value="video">
   <input type="hidden" name="media_type"   value="video">
 
-  <h1><%= isEdit ? 'Edit video post' : 'Video upload' %></h1>
+  <h1 style="color:#f0f0f0;"><%= isEdit ? 'Edit video post' : 'Video upload' %></h1>
 
 
   <div class="mode-box-container">
@@ -49,7 +49,7 @@
 
   
   <button type="submit" class="btn btn-primary"><%= submitLabel %></button>
-  <a href="<%= cancelHref || '/posts' %>" class="btn">Cancel</a>
+  <button type="button" class="btn" onclick="window.history.back()">CANCEL</button>
 </form>
 </div>
 <style>
@@ -103,7 +103,7 @@
 
    .content-form[data-media="video"] {
   background-color: hsl(0, 50%, 10%);
-  border-top: 4px solid hsl(0, 90%, 50%);
+  border-top: 4px solid hsl(0, 100%, 52%);
   padding: 1rem;
   border-radius: 12px;
   box-shadow: 0 0 8px hsl(0, 90%, 20%);
@@ -131,7 +131,7 @@
 }
 
 .content-form[data-media="video"] button, a.btn {
-  background-color: hsl(0, 90%, 25%);
+  background-color: hsl(0, 100%, 52%);
   color: #f0f0f0;
   font-weight: bold;
   padding: 0.5rem 1rem;
@@ -143,7 +143,7 @@
 }
 
 .content-form[data-media="video"] button:hover, a.btn:hover {
-  background-color: hsl(0, 90%, 35%);
+  background-color: hsl(0, 100%, 70%);
   text-decoration: none;
 }
 

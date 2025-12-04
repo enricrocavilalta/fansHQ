@@ -12,7 +12,7 @@
     <h1><%= isEdit ? 'Edit audio post' : 'Audio upload' %></h1>
 
 
-    <label>Choose how to add audio:</label>
+    <label>Choose how to add audio*:</label>
     <div class="mode-selector">
       <div class="mode-box selected" data-mode="upload">
         <strong>Upload📤</strong><br>
@@ -33,9 +33,9 @@
     <label>Description:</label><br>
     <textarea name="content"></textarea><br><br>
 
-    <button type="submit">Create</button>
+    <button type="submit">CREATE</button>
 
-    <a id="cancelLink" href="/posts" class="btn">Cancel</a>
+    <button type="button" class="btn" onclick="window.history.back()">CANCEL</button>
   </form> 
 </div>
 <style>
@@ -66,7 +66,7 @@
   }
 
   .mode-box.selected {
-    border-color:hsl(120, 90%, 50%);
+    border-color:hsl(120, 100%, 52%);
     opacity: 1;
     background-color: hsl(120, 50%, 10%);;
   }
@@ -87,7 +87,7 @@
   }
 
   .content-form[data-media="audio"] h1 {
-    color: hsl(120, 90%, 50%);
+    color:#f0f0f0;
   }
 
   .content-form[data-media] input,
@@ -109,7 +109,7 @@
   }
 
   .content-form[data-media] button, a.btn {
-    background-color: hsl(120, 90%, 25%);
+    background-color: hsl(120, 100%, 52%);
     color:#f0f0f0;
     font-weight: bold;
     padding: 0.5rem 1rem;

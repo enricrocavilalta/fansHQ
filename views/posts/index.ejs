@@ -1,5 +1,7 @@
 <!--<link rel="stylesheet" href="/styles.css">-->
 <link rel="stylesheet" href="/styles_typed_colors.css">
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
+
 <%- include('../partials/header') %>
 <%- include('../partials/create_post') %>
 <style>
@@ -209,7 +211,7 @@ body {
   <div class="latest-posts-header">
     <h2 class="latest-posts-title">
       Latest Posts
-      <select id="columnSelector">
+      <select id="columnSelector" style="color:#000;background-color:#f0f0f0;font-family: 'Ubuntu', sans-serif !important;">
         <option value="1">1 Column</option>
         <option value="2">2 Columns</option>
         <option value="3">3 Columns</option>
@@ -728,33 +730,37 @@ body {
           />
         <% } %>
 
-        <% if (post.title) { %><h3><%= post.title %></h3><% } %>
-        
+        <% if (post.title) { %><h3><%= post.title %></h3><% } %>      
         <% if (post.content) { %><p><%= post.content %></p><% } %>
 
-     
-        
+  
         <form action="/posts/<%= post.id %>/tip" method="POST">
-       
-
-          <button type="submit"
-            style="background-color:hsl(0,0%,50%);color:#f0f0f0;border:none;border-radius:6px;">
-            DONATE
-          </button>
-
-          <input
-            type="number"
-            name="tip"
-            id="tip-<%= post.id %>"
-            value="<%= post.price %>"
-            step="1"
-            min="1"
-            size="3"
-            required
-            style="text-align:right;background-color:#303030;color:#f0f0f0;border:none;border-radius:6px;"
-          >$
+          <button type="submit" class="donate-btn">DONATE</button>
+          <input type="number" name="tip" id="tip-<%= post.id %>" value="<%= post.price %>" step="1" min="1" size="3" required style="text-align:right;background-color:#303030;color:#f0f0f0;border:none;border-radius:6px;">$
         </form>
         
+        <style>
+          .donate-btn {
+            display: inline-block;
+            background-color: #808080;
+            color: #f0f0f0;
+            padding: 0.25rem 0.8rem;
+            border-radius: 50% / 100%;
+            text-decoration: none;
+            font-weight: 600;
+            transition: filter .2s ease;
+            font-size: 1rem;
+          }
+
+          .donate-btn:hover {
+            filter: brightness(1.2);
+          }
+
+          .donate-btn:active {
+            transform: scale(0.95);
+          }
+
+        </style>
 
         <ul class="tipjar-list" id="tips-<%= post.id %>">
           <% (post.tips || []).sort((a,b) => {

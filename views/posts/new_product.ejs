@@ -16,10 +16,10 @@
     <textarea name="content"></textarea><br><br>
     Image: <br>
     <input type="file" name="media_file" accept="image/*"><br><br>
-    Price: <br>
+    Price*: <br>
     <input type="number" name="price" step="0.01" value="0" min="0.01" required><br><br>
     <button type="submit">Post</button>
-    <a id="cancelLink" href="/posts" class="btn btn-ghost">Cancel</a>
+    <button type="button" class="btn" onclick="window.history.back()">CANCEL</button>
   </form>
 </div>
 
@@ -42,7 +42,7 @@
   }
 
   .content-form[data-media="product"] h1 {
-    color: hsl(30, 90%, 50%);
+    color: #f0f0f0;
   }
 
   .content-form[data-media] input,
@@ -64,7 +64,7 @@
   }
 
   .content-form[data-media="product"] button,a.btn {
-    background-color: hsl(30, 90%, 25%);
+    background-color: hsl(30, 100%, 52%);
     color: #f0f0f0;
     font-weight: bold;
     padding: 0.5rem 1rem;

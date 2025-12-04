@@ -13,9 +13,9 @@
     <input type="hidden" name="display_mode" value="image">
     <input type="hidden" name="media_type"   value="image">
 
-    <h1><%= isEdit ? 'Edit image post' : 'Image upload' %></h1>
+    <h1 style="color:#f0f0f0;"><%= isEdit ? 'Edit image post' : 'Image upload' %></h1>
     
-    Image:
+    Image*:
     <input type="file" name="media_file" accept="image/*" value="<%= P.media_file ? P.media_file : '' %>"><br>
 
     <label for="title">Title:</label><input type="text" name="title" value="<%= P.title ? P.title : '' %>"><br>
@@ -26,7 +26,7 @@
 
     <button type="submit"><%= submitLabel %></button>
 
-    <a id="cancelLink" href="/posts" class="btn btn-ghost">Cancel</a>
+    <button type="button" class="btn" onclick="window.history.back()">CANCEL</button>
 
   </form>
 </div>
@@ -43,6 +43,10 @@
 body{
   background-color: #000;
   color: #f0f0f0;
+}
+
+h1{
+  color:#f0f0f0;
 }
 
 .content-form[data-media="image"] {
@@ -73,8 +77,8 @@ body{
 }
 
 .content-form[data-media="image"] button,a.btn {
-  background-color: hsl(60, 90%, 25%);
-  color: #f0f0f0;
+  background-color: hsl(60, 100%, 52%);
+  color: #000;
   font-weight: bold;
   padding: 0.5rem 1rem;
   border: none;
@@ -85,8 +89,11 @@ body{
 }
 
 .content-form[data-media="image"] button:hover,a.btn:hover {
-  background-color: hsl(60, 90%, 35%);
-  text-decoration: none;
+  background-color: hsl(60, 100%, 75%);
+}
+
+button:active {
+  transform: scale(0.95);
 }
 
 .content-form[data-media] input,
@@ -94,7 +101,7 @@ body{
   width: 100%;
   background-color: #222;
   border: 1px solid #555;
-  color: #fff;
+  color: #f0f0f0;
   padding: 0.5rem;
   border-radius: 8px;
   margin-bottom: 0.5rem;

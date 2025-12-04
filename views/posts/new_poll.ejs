@@ -14,12 +14,12 @@
     <label>Title:</label><br>
     <input type="text" name="title"><br><br>
 
-    <label>Question:</label><br>
+    <label>Question*:</label><br>
     <textarea name="content" required></textarea><br><br>
     
     
   <% for (let i = 1; i <= 10; i++) { %>
-    Option <%= i %>: <br>
+    Option <%= i %><%= i <= 2 ? '*' : '' %>: <br>
     <input 
       type="text" 
       name="option_<%= i %>" 
@@ -29,7 +29,7 @@
 
     <br>
     <button type="submit">Create Poll</button>
-    <a id="cancelLink" href="/posts" class="btn btn-ghost">Cancel</a>
+    <button type="button" class="btn" onclick="window.history.back()">CANCEL</button>
   </form>
 </div>
 <style>
@@ -43,7 +43,7 @@
 
 .content-form[data-media="poll"] {
   background-color: hsl(270, 50%, 10%);
-  border-top: 4px solid hsl(270, 90%, 50%);
+  border-top: 4px solid hsl(270, 100%, 52%);
   padding: 1rem;
   border-radius: 12px;
   box-shadow: 0 0 8px hsl(270, 50%, 10%);
@@ -51,7 +51,7 @@
 }
 
 .content-form[data-media="poll"] h1 {
-  color: hsl(270, 90%, 50%);
+  color: #f0f0f0;
 }
 
 .content-form[data-media] input,
@@ -73,7 +73,7 @@
 }
 
 .content-form[data-media="poll"] button, a.btn {
-  background-color: hsl(270, 90%, 25%);
+  background-color: hsl(270, 100%, 52%);
   color: #f0f0f0;
   font-weight: bold;
   padding: 0.5rem 1rem;
