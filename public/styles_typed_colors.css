@@ -50,43 +50,43 @@ a:hover{
 }
 
 [data-media="text"] {
-  border-top: 4px solid hsl(240, var(--saturation), var(--lightness));
+  border: 2px solid hsl(240, var(--saturation), var(--lightness));
   background-color: hsl(240, 50%, 10%);
 }
 [data-media="image"] {
-  border-top: 4px solid hsl(60, var(--saturation), var(--lightness));
+  border: 2px solid hsl(60, var(--saturation), var(--lightness));
   background-color: hsl(60, 50%, 10%);
 }
 [data-media="video"] {
-  border-top: 4px solid hsl(0, var(--saturation), var(--lightness));
+  border: 2px solid hsl(0, var(--saturation), var(--lightness));
   background-color: hsl(0, 50%, 10%);
 }
 [data-media="audio"] {
-  border-top: 4px solid hsl(120, var(--saturation), var(--lightness));
+  border: 2px solid hsl(120, var(--saturation), var(--lightness));
   background-color: hsl(120, 50%, 10%);
 }
 [data-media="link"] {
-  border-top: 4px solid hsl(180, var(--saturation), var(--lightness));
+  border: 2px solid hsl(180, var(--saturation), var(--lightness));
   background-color: hsl(180, 50%, 10%);
 }
 [data-media="file"] {
-  border-top: 4px solid hsl(300, var(--saturation), var(--lightness));
+  border: 2px solid hsl(300, var(--saturation), var(--lightness));
   background-color: hsl(300, 50%, 10%);
 }
 [data-media="poll"] {
-  border-top: 4px solid hsl(270, var(--saturation), var(--lightness));
+  border: 2px solid hsl(270, var(--saturation), var(--lightness));
   background-color: hsl(270, 50%, 10%);
 }
 [data-media="product"] {
-  border-top: 4px solid hsl(30, var(--saturation), var(--lightness));
+  border: 2px solid hsl(30, var(--saturation), var(--lightness));
   background-color: hsl(30, 50%, 10%);
 }
 [data-media="ama"] {
-  border-top: 4px solid hsl(0, 0%, 90%);
+  border: 2px solid #fff;
   background-color: hsl(0, 0%, 10%);
 }
 [data-media="tipjar"] {
-  border-top: 4px solid hsl(0, 0%, 50%);
+  border: 2px solid #808080;
   background-color: hsl(0, 0%, 10%);
 }
 

@@ -179,30 +179,6 @@ body {
 
 .link-card { position: relative; }
 
-/* clickable overlay that makes the whole card a link */
-.link-card .cover-link {
-  position: absolute;
-  inset: 0;                 /* top:0 right:0 bottom:0 left:0 */
-  z-index: 2;               /* above content... */
-  border-radius: inherit;   /* match the card rounding */
-}
-
-/* ...but keep actions above the overlay so they are clickable */
-.link-card .edit-delete,
-.link-card .actions,
-.link-card .edit-btn,
-.link-card .delete-btn {
-  position: relative;
-  z-index: 3;
-}
-
-/* normal content can sit below the overlay (it’ll still “click-through”) */
-.link-card .post-title,
-.link-card .post-content,
-.link-card .url {
-  position: relative;
-  z-index: 1;
-}
 
 </style>
 
@@ -378,16 +354,17 @@ body {
               <p><%= post.content %></p>
             <% } %>
 
-            <a href="<%= post.media_url %>" download class="download-btn btn-3d">
+            <a href="<%= post.media_url %>" download class="download-btn">
               DOWNLOAD
             </a>
 
             <style>
               .download-btn {
                 display: inline-block;
-                background-color: hsl(300, 100%, 52%);
-                color: #000 !important;
+                background-color: hsl(300, 100%, 20%);
+                color: #f0f0f0 !important;
                 padding: 0.25rem 0.8rem;
+                border: 2px solid hsl(300,100%,52%);
                 border-radius: 50% / 100%;
                 text-decoration: none;
                 font-weight: 600;
@@ -440,9 +417,10 @@ body {
           <style>
             .link-btn {
               display: inline-block;
-              background-color: hsl(180, 100%, 52%);
-              color: #000 !important;
+              background-color: hsl(180, 100%, 20%);
+              color: #f0f0f0 !important;
               padding: 0.25rem 0.8rem;
+              border: 2px solid hsl(180,100%,52%);
               border-radius: 50% / 100%;
               text-decoration: none;
               font-weight: 600;
@@ -676,9 +654,10 @@ body {
         <style>
           .buy-btn {
             display: inline-block;
-            background-color: hsl(30, 100%, 52%);
-            color: #000 !important;
+            background-color: hsl(30, 100%, 20%);
+            color: #f0f0f0 !important;
             padding: 0.25rem 0.8rem;
+            border:2px solid hsl(30,100%,52%);
             border-radius: 50% / 100%;
             text-decoration: none;
             font-weight: 600;
@@ -741,8 +720,9 @@ body {
         <style>
           .donate-btn {
             display: inline-block;
-            background-color: #808080;
+            background-color: hsl(0,0%,20%);
             color: #f0f0f0;
+            border: 2px solid  #808080;
             padding: 0.25rem 0.8rem;
             border-radius: 50% / 100%;
             text-decoration: none;
@@ -886,7 +866,7 @@ body {
           <input type="text" name="question" placeholder="Ask something..." required>
           <h5>Tip:</h5>
           <input type="number" name="tip" min="0" step="1" value="0"><br><br>
-          <button type="submit" class="ask-btn">Send</button>
+          <button type="submit" class="ask-btn">Ask</button>
         </form>
 
         <style>
@@ -970,9 +950,10 @@ body {
     <style>
             .ask-btn {
               display: inline-block;
-              background-color: #f0f0f0;
-              color: #000 !important;
+              background-color: hsl(0,0%,20%);
+              color: #f0f0f0 !important;
               padding: 0.25rem 0.8rem;
+              border:2px solid #f0f0f0;
               border-radius: 50% / 100%;
               text-decoration: none;
               font-weight: 600;
@@ -1142,10 +1123,4 @@ body {
   border-radius: 0 !important;          /* no nested rounding */
 }
 
-.btn-3d {
-  border: 2px solid hsl(0, 0%, 75%); /* light grey border */
-  box-shadow:
-    inset 0 1px 1px rgba(255,255,255,0.4),   /* top highlight */
-    inset 0 -1px 2px rgba(0,0,0,0.25);       /* bottom shadow */
-}
 </style>
