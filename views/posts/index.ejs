@@ -132,7 +132,7 @@ body {
 }
 
 .post-grid {
-  background-color: #101010;  /* slightly lighter than background */
+  background-color: hsl(0,0%,10%) !important;  /* slightly lighter than background */
   padding: 16px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.3);
@@ -189,7 +189,7 @@ body {
 
 </style>
 
-<div class="feed-panel">
+<div class="feed-panel" style="background-color:hsl(0,0%,10%);">
 <section class="post-grid-container">
 
   <div class="latest-posts-header">
@@ -572,13 +572,13 @@ body {
 
         /* hover effect */
         .post-card[data-media="poll"] input[type="checkbox"]:hover {
-          border-color: hsl(270, 90%, 60%);
+          border-color: hsl(270, 100%, 30%);
         }
 
         /* checked (purple fill + white tick) */
         .post-card[data-media="poll"] input[type="checkbox"]:checked {
-          background-color: hsl(270, 90%, 50%);
-          border-color: hsl(270, 90%, 50%);
+          background-color: hsl(270, 100%, 30%);
+          border-color: hsl(270, 100%, 50%);
         }
 
         /* draw the ✓ */
@@ -769,7 +769,7 @@ body {
         <style>
           .donate-btn {
             display: inline-block;
-            background-color: hsl(0,0%,20%);
+            background-color: hsl(0,0%,30%);
             color: #f0f0f0;
             border: 1px solid  #808080;
             padding: 0.25rem 0.8rem;
@@ -912,10 +912,10 @@ body {
         <!-- AMA form -->
         <form class="ama-form" data-post-id="<%= post.id %>">
           <h5>Question:</h5>
-          <input type="text" name="question" placeholder="Ask something..." required>
+          <input type="text" name="question" placeholder="Ask something..." style="background-color:hsl(0,0%,30%);" required>
           <h5>Tip:</h5>
-          <input type="number" name="tip" min="0" step="1" value="0"><br><br>
-          <button type="submit" class="ask-btn">Ask</button>
+          <input type="number" name="tip" min="0" step="1" value="0" style="background-color:hsl(0,0%,30%);"><br><br>
+          <button type="submit" class="ask-btn"  style="background-color:hsl(0,0%,30%);">Ask</button>
         </form>
 
         <style>
