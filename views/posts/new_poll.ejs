@@ -3,31 +3,36 @@
 <link rel="stylesheet" href="/styles.css">
 <link rel="stylesheet" href="/styles_typed_colors.css">
 
-<% var isEdit = (mode === 'edit'); var P = post || {}; %>
+<%
+  const P = (typeof post !== 'undefined' && post) ? post : {};
+  const isEdit = !!P.id;
+%>
 
 <div class="center-form">
   <form action="<%= action %>" method="POST" enctype="multipart/form-data" class="content-form" data-media="poll">
     
     <input type="hidden" name="media_type" value="poll">
     
-    <% const isEdit = (mode === 'edit'); %>
     <h1><%= isEdit ? 'Edit poll post' : 'Poll upload' %></h1>
 
     <label>Title:</label><br>
-    <input type="text" name="title"><br><br>
+    <input type="text" name="title" value="<%= P.title ?? '' %>"><br><br>
 
     <label>Question*:</label><br>
-    <textarea name="content" required></textarea><br><br>
+    <textarea name="content" required><%= P.content ?? '' %></textarea><br><br>
     
     
-  <% for (let i = 1; i <= 10; i++) { %>
-    Option <%= i %><%= i <= 2 ? '*' : '' %>: <br>
-    <input 
-      type="text" 
-      name="option_<%= i %>" 
-      <%= i <= 2 ? 'required' : '' %>
-    ><br><br>
-  <% } %>
+    <% for (let i = 1; i <= 10; i++) { %>
+      Option <%= i %><%= i <= 2 ? '*' : '' %>: <br>
+
+      <input 
+        type="text" 
+        name="option_<%= i %>" 
+        <%= i <= 2 ? 'required' : '' %>
+        value="<%= P ? (P['option_' + i] || '') : '' %>"
+      ><br><br>
+
+    <% } %>
 
     <br>
 

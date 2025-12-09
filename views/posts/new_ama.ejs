@@ -3,15 +3,16 @@
 <link rel="stylesheet" href="/styles.css">
 <link rel="stylesheet" href="/styles_typed_colors.css">
 
-<% var isEdit = (mode === 'edit'); var P = post || {}; %>
+<%
+  const P = (typeof post !== 'undefined' && post) ? post : {};
+  const isEdit = !!P.id;
+%>
 
 <div class="center-form">
   <form action="<%= action %>" method="POST" enctype="multipart/form-data" class="content-form" data-media="ama">
     
     <input type="hidden" name="media_type" value="ama">
     
-    
-    <% const isEdit = (mode === 'edit'); %>
     <h1><%= isEdit ? 'Edit AMA post' : 'AMA upload' %></h1>
 
     <label>Title:</label><br>
