@@ -6,7 +6,8 @@
 <% var isEdit = (mode === 'edit'); var P = post || {}; %>
 
 <div class="center-form">
-<form action="<%= action %>" method="POST" enctype="multipart/form-data" class="content-form" data-media="video">
+
+  <form action="<%= action %>" method="POST" enctype="multipart/form-data" class="content-form" data-media="video">
 
   <!-- keep the type on submit -->
   <input type="hidden" name="display_mode" value="video">
@@ -51,6 +52,7 @@
   <button type="submit" class="btn btn-primary"><%= submitLabel %></button>
   <button type="button" class="btn" onclick="window.history.back()">CANCEL</button>
 </form>
+
 </div>
 <style>
 
@@ -174,7 +176,16 @@ form {
       const input = box.querySelector('input[type="radio"]');
       box.classList.toggle('active', input.checked);
     });
+
+    document.querySelector('input[name="media_type"]').value =
+    (selected === 'embed') ? 'embed' : 'video';
+
   }
+
+
+
+
+
 
   // Init on page load
   window.addEventListener('DOMContentLoaded', toggleSections);

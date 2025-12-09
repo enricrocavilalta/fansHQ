@@ -237,6 +237,10 @@ const RESERVED = new Set(['feed', 'api', 'posts', 'static', 'assets']);
 // --- FEED (no create form) ---
 app.get('/posts', ensureAuthPage, async (req, res) => {
 
+
+  
+
+
   const [posts] = await db.query(`
     SELECT p.*, u.email
     FROM posts p
@@ -273,6 +277,9 @@ app.get('/posts', ensureAuthPage, async (req, res) => {
        ORDER BY t.id ASC`,
       [ids]
     );
+
+  
+
 
     tipsByPost = tips.reduce((a, t) => {
       (a[t.post_id] ||= []).push(t);
@@ -529,6 +536,30 @@ app.get('/debug/questions/:id', async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
+
+
+
+app.locals.toEmbedUrl = function(url) {
+  try {
+    const parsed = new URL(url);
+
+    if (parsed.hostname.includes("youtube.com") && parsed.searchParams.get("v")) {
+      return `https://www.youtube.com/embed/${parsed.searchParams.get("v")}`;
+    }
+
+    if (parsed.hostname.includes("youtu.be")) {
+      return `https://www.youtube.com/embed/${parsed.pathname.slice(1)}`;
+    }
+
+    if (parsed.pathname.startsWith("/shorts/")) {
+      return `https://www.youtube.com/embed/${parsed.pathname.split("/")[2]}`;
+    }
+
+    return url;
+  } catch {
+    return url;
+  }
+}
 
 
 
