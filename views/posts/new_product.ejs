@@ -3,22 +3,38 @@
 <link rel="stylesheet" href="/styles.css">
 <link rel="stylesheet" href="/styles_typed_colors.css">
 
+<%
+  const P = (typeof post !== 'undefined' && post) ? post : {};
+  const isEdit = !!P.id;
+  const priceValue = (P.price != null) ? P.price : 0;
+%>
+
+
 <div class="center-form">
   <form action="<%= action %>" method="POST" enctype="multipart/form-data" class="content-form" data-media="product">
     
-    <% const isEdit = (mode === 'edit'); %>
     <h1><%= isEdit ? 'Edit product post' : 'Product upload' %></h1>
     
     <input type="hidden" name="media_type" value="product">
+
     Product: <br>
-    <input type="text" name="title"><br><br>
+    <input type="text" name="title" value="<%= P.title ?? '' %>"><br><br>
     Description: <br>
-    <textarea name="content"></textarea><br><br>
+    <textarea name="content"><%= P.content ?? '' %></textarea><br><br>
     Image: <br>
     <input type="file" name="media_file" accept="image/*"><br><br>
     Price*: <br>
-    <input type="number" name="price" step="1" value="0" min="0.01" required><br><br>
-    
+    <input
+      type="number"
+      name="price"
+      step="1"
+      value="<%= priceValue %>"
+      min="0"
+      style="width: 8ch;"
+      required
+    >
+    <br><br>
+
     <button type="submit">
       <%= isEdit ? 'UPDATE POST' : 'CREATE POST' %>
     </button>
