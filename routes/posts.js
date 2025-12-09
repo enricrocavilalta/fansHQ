@@ -141,7 +141,7 @@ router.get('/:id/edit', isLoggedIn, async (req, res) => {
     type,                                  // same as above
     mediaType: type,                       // optional
     action: `/posts/${id}?_method=PUT`,     // where the form will submit to update 
-    submitLabel: 'CREATE POST'
+    submitLabel: 'UPDATE POST'
   });
 });
 

@@ -4,16 +4,29 @@
 <link rel="stylesheet" href="/styles_typed_colors.css">
 
 <div class="center-form">
-  <form action="/posts" method="POST" enctype="multipart/form-data" class="content-form" data-media="file">
+  <form action="<%= action %>" method="POST" enctype="multipart/form-data" class="content-form" data-media="file">
     
-    <% const isEdit = (mode === 'edit'); %>
+    <%
+      const isEdit = (typeof mode !== 'undefined' && mode === 'edit');
+      const P = post || {};
+    %>
+
     <h1><%= isEdit ? 'Edit file post' : 'File upload' %></h1>
     
     <input type="hidden" name="media_type" value="file"><br>
     
-    File*:<br>
-    <input type="file" name="media_file" required><br>
-    
+    <label>File*:</label><br>
+    <input
+      type="file"
+      name="media_file"
+      accept="*/*"
+      <%= isEdit ? '' : 'required' %>
+    >
+    <% if (isEdit && P.media_url) { %>
+      <p>Current file: <a href="<%= P.media_url %>" class="file-link">Download</a></p>
+      <p><small>Leave empty to keep current file.</small></p>
+    <% } %>
+
     Title:<br>
     <input type="text" name="title"><br>
     
