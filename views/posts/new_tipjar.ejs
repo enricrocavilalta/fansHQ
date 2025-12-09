@@ -22,7 +22,10 @@
     <label>Image:</label>
     <input type="file" name="media_file" accept="image/*"><br>
     
-    <button type="submit">Create Tip Jar</button>
+    <button type="submit">
+      <%= isEdit ? 'UPDATE POST' : 'CREATE POST' %>
+    </button>
+    
     <button type="button" class="btn" onclick="window.history.back()">CANCEL</button>
   </form>
 </div>

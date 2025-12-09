@@ -48,8 +48,10 @@
   <label>Thumbnail:</label><br>
   <input type="file" name="thumbnail" accept="image/*"><br><br>
 
-  
-  <button type="submit" class="btn btn-primary"><%= submitLabel %></button>
+  <button type="submit">
+    <%= isEdit ? 'UPDATE POST' : 'CREATE POST' %>
+  </button>
+    
   <button type="button" class="btn" onclick="window.history.back()">CANCEL</button>
 </form>
 

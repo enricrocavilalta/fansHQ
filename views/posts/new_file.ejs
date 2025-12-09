@@ -21,8 +21,12 @@
     <textarea name="content"></textarea><br><br>
     
     price:<br>
-    <input type="number" name="price" step="0.01" value="0"><br><br>
-    <button type="submit">Post</button>
+    <input type="number" name="price" step="1" value="0"><br><br>
+    
+    <button type="submit">
+      <%= isEdit ? 'UPDATE POST' : 'CREATE POST' %>
+    </button>
+
     <button type="button" class="btn" onclick="window.history.back()">CANCEL</button>
   </form>
 </div>

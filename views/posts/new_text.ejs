@@ -21,8 +21,10 @@
       <textarea name="content" rows="6" required><%= P.content ? P.content : '' %></textarea>
     </label>
 
-    <button type="submit"><%= submitLabel %></button>
-  
+    <button type="submit">
+      <%= isEdit ? 'UPDATE POST' : 'CREATE POST' %>
+    </button>
+
     <button type="button" class="btn" onclick="window.history.back()">CANCEL</button>
   </form>
 </div>

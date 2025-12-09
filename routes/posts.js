@@ -29,6 +29,28 @@ async function isSubscribed(subscriberId, creatorId) {
   );
   return rows.length > 0;
 }
+
+
+
+function getFormView(mediaType) {
+  switch (mediaType) {
+    case 'text':    return 'posts/new_text';
+    case 'image':   return 'posts/new_image';
+    case 'video':   return 'posts/new_video';
+    case 'embed':   return 'posts/new_video';  // reuse the video form
+    case 'audio':   return 'posts/new_audio';
+    case 'file':    return 'posts/new_file';
+    case 'link':    return 'posts/new_link';
+    case 'poll':    return 'posts/new_poll';
+    case 'product': return 'posts/new_product';
+    case 'tipjar':  return 'posts/new_tipjar';
+    case 'ama':     return 'posts/new_ama';
+    default:        return 'posts/new_text';
+  }
+}
+
+
+
 // --- end inline helpers ---
 
 
@@ -63,7 +85,15 @@ const VALID_TYPES = ['text','image','video','audio','link','file','poll','produc
 router.get('/new/:type', isLoggedIn, (req,res)=>{
   const type = String(req.params.type||'').toLowerCase();
   if (!VALID_TYPES.includes(type)) return res.status(404).send('Invalid content type');
-  res.render(`posts/new_${type}`, { mode:'create', type, post:{}, action:'/posts', submitLabel:'Create', cancelHref:'/posts' });
+  const view = getFormView(type);
+  res.render(view, {
+    mode: 'create',                        // create mode
+    post: {},                              // empty object so EJS can safely use post.*
+    type,                                  // used by <%= type %>
+    mediaType: type,                       // if you use it anywhere else
+    action: '/posts',                      // form will POST here to create
+    submitLabel: 'CREATE POST'                      
+  });
 });
 
 
@@ -88,20 +118,30 @@ router.get('/:id/edit', isLoggedIn, async (req, res) => {
 
   //console.log(type);
 
-  const viewByType = {
-    text:'new_text', image:'new_image', video:'new_video', audio:'new_audio',
-    link:'new_link', file:'new_file', poll:'new_poll', product:'new_product',
-    tipjar:'new_tipjar', ama:'new_ama'
-  };
-  const view = viewByType[type];
+  //const viewByType = {
+  //  text:'new_text', image:'new_image', video:'new_video', audio:'new_audio',
+  //  link:'new_link', file:'new_file', poll:'new_poll', product:'new_product',
+  // tipjar:'new_tipjar', ama:'new_ama'
+  //};
+  //const view = viewByType[type];
 
-  res.render(`posts/${view}`, {
-    mode: 'edit',
-    type,
-    post,
-    action: `/posts/${id}?_method=PUT`,
-    submitLabel: 'Update',
-    cancelHref: '/posts'
+  //res.render(`posts/${view}`, {
+  // mode: 'edit',
+  //  type,
+  //  post,
+  //  action: `/posts/${id}?_method=PUT`,
+  //  submitLabel: 'Update',
+  //  cancelHref: '/posts'
+  //});
+
+  const view = getFormView(post.media_type);
+  res.render(view, { 
+    mode: 'edit',                          // edit mode
+    post,                                  // prefill fields
+    type,                                  // same as above
+    mediaType: type,                       // optional
+    action: `/posts/${id}?_method=PUT`,     // where the form will submit to update 
+    submitLabel: 'CREATE POST'
   });
 });
 
