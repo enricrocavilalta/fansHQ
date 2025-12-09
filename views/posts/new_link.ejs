@@ -51,6 +51,46 @@
     </div>
     <br><br>
     
+
+
+
+
+    <label>Thumbnail:</label><br>
+
+    <% if (P.thumbnail_url) { %>
+      <!-- Preview of current thumbnail (clickable) -->
+      <div class="link-preview" style="margin-bottom: 0.5rem;">
+        <a href="<%= P.media_url %>" target="_blank" rel="noopener" class="link-preview-link">
+          <img 
+            src="<%= P.thumbnail_url %>" 
+            alt="thumbnail"
+            class="link-preview-img"
+          >
+        </a>
+      </div>
+      <p class="small-hint">
+        If you upload a new thumbnail it will replace this one.
+      </p>
+    <% } %>
+
+    <!-- File input for new thumbnail (create or edit) -->
+    <input 
+      type="file" 
+      name="thumbnail" 
+      accept="image/*"
+    ><br><br>
+
+    <!-- Keep old thumbnail on edit if no new file is uploaded -->
+    <input 
+      type="hidden" 
+      name="existing_thumbnail_url" 
+      value="<%= P.thumbnail_url || '' %>"
+    >
+
+
+
+
+
     <button type="submit">
       <%= isEdit ? 'UPDATE POST' : 'CREATE POST' %>
     </button>

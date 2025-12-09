@@ -18,7 +18,7 @@
     </label>
 
     <label>Content*:
-      <textarea name="content" rows="6" required><%= P.content ? P.content : '' %></textarea>
+      <textarea name="content" rows="6" required><%= P.content ?? '' %></textarea>
     </label>
 
     <button type="submit">

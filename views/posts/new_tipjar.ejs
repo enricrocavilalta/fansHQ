@@ -16,10 +16,10 @@
     <h1><%= isEdit ? 'Edit TipJar post' : 'TipJar upload' %></h1>
     
     <label>Title:</label>
-    <input type="text" name="title"><br>
+    <input type="text" name="title" value="<%= P.title ?? '' %>"><br>
 
     <label>Description:</label>
-    <textarea name="content"></textarea><br>
+    <textarea name="content"><%= P.content ?? '' %></textarea><br>
 
     <label>Suggested Tip:</label>
     <input type="number" name="price" step="0.01" min="0" value="1"><br>

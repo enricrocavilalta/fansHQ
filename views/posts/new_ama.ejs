@@ -16,10 +16,10 @@
     <h1><%= isEdit ? 'Edit AMA post' : 'AMA upload' %></h1>
 
     <label>Title:</label><br>
-    <input type="text" name="title"><br><br>
+    <input type="text" name="title" value="<%= P.title ?? '' %>"><br><br>
 
     <label>Prompt*:</label><br>
-    <textarea name="content" required></textarea><br><br>
+    <textarea name="content" required><%= P.content ?? '' %></textarea><br><br>
 
     <button type="submit">
       <%= isEdit ? 'UPDATE POST' : 'CREATE POST' %>

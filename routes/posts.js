@@ -344,7 +344,7 @@ router.put(
     }
 
     // 🔥 2) Thumbnail (same idea, optional)
-    const oldThumbnailFromBody = req.body.thumbnail_url || null;
+    const oldThumbnailFromBody = req.body.existing_thumbnail_url || null;
     let thumbnail_url = oldThumbnailFromBody;
 
     if (thumbnailFile) {
