@@ -419,9 +419,33 @@ body {
           <h3><% if (post.title) { %><%= post.title %><% } %></h3>
           <% if (post.content) { %><p><%= post.content %></p><% } %>
 
-          <a href="<%= post.media_url %>" target="_blank" rel="noopener" class="link-btn btn-3d" style="margin-bottom: 1rem;">
-            <%= (post.display_text) ?? 'GO' %>
-          </a>
+
+          <% 
+            const hasThumb = !!post.thumbnail_url;
+          %>
+
+          <div class="link-preview">
+            <% if (hasThumb) { %>
+
+              <a href="<%= post.media_url %>" target="_blank">
+                <img 
+                  src="<%= post.thumbnail_url %>" 
+                  alt="thumbnail"
+                  class="link-preview-img"
+                >
+              </a>
+
+            <% } else { %>
+
+              <a href="<%= post.media_url %>" target="_blank" rel="noopener" class="link-btn btn-3d" style="margin-bottom: 1rem;">
+                <%= (post.display_text) ?? 'GO' %>
+              </a>
+
+            <% } %>
+          </div>
+
+
+         
       
           <style>
             .link-btn {
