@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="/styles_typed_colors.css">
 
 <div class="center-form">
-  <form action="/posts" method="POST" enctype="multipart/form-data" class="content-form" data-media="product">
+  <form action="<%= action %>" method="POST" enctype="multipart/form-data" class="content-form" data-media="product">
     
     <% const isEdit = (mode === 'edit'); %>
     <h1><%= isEdit ? 'Edit product post' : 'Product upload' %></h1>

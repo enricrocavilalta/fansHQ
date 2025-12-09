@@ -249,9 +249,20 @@ router.post(
     const mediaFile = req.files?.['media_file']?.[0];
     const thumbnailFile = req.files?.['thumbnail']?.[0];
 
+    
+    
     let media_url = null;
-    if (mediaUrlFromBody && mediaUrlFromBody.trim() !== '') media_url = mediaUrlFromBody.trim();
-    else if (mediaFile) media_url = `/uploads/${mediaFile.filename}`;
+
+    // 1st priority: NEW uploaded file
+    if (mediaFile) {
+      media_url = `/uploads/${mediaFile.filename}`;
+    }
+    // 2nd priority: URL / old file path from body
+    else if (mediaUrlFromBody && mediaUrlFromBody.trim() !== '') {
+      media_url = mediaUrlFromBody.trim();
+    }
+
+
 
     const final_thumbnail_url = thumbnailFile ? `/uploads/${thumbnailFile.filename}` : null;
     const final_display_text  = (!final_thumbnail_url && display_mode === 'text') ? (display_text || null) : null;
@@ -297,76 +308,91 @@ router.post(
 router.put(
   '/:id',
   isLoggedIn,
-  upload.fields([{ name: 'media_file', maxCount: 1 }, { name: 'thumbnail', maxCount: 1 }]),
+  upload.fields([
+    { name: 'media_file', maxCount: 1 },
+    { name: 'thumbnail', maxCount: 1 }
+  ]),
   async (req, res) => {
-    const id = Number(req.params.id);
-
-    // --- helpers to normalize body fields ---
-    const pickOne = v => Array.isArray(v) ? (v[0] ?? '') : (v ?? '');
-    const normLower = v => String(pickOne(v)).trim().toLowerCase();
-    const normStr   = v => String(pickOne(v)).trim();
+    const postId = req.params.id;
 
     const {
       title,
       content,
-      media_url: mediaUrlFromBodyRaw, // may be '', url, or undefined/array
-      display_mode,
       media_type,
+      media_url: mediaUrlFromBody,   // old file path OR link
+      display_text,
+      display_mode,
+      price,
+      option_1, option_2, option_3, option_4, option_5,
+      option_6, option_7, option_8, option_9, option_10
     } = req.body || {};
 
-    const mediaFile = req.files?.['media_file']?.[0];
-    const thumbFile = req.files?.['thumbnail']?.[0];
+    const mediaFile     = req.files?.['media_file']?.[0] || null;
+    const thumbnailFile = req.files?.['thumbnail']?.[0] || null;
 
-    const updates = [];
-    const params  = [];
+    // 🔥 1) Decide media_url (NEW FILE > BODY VALUE)
+    let media_url = null;
 
-    // text fields (keep exactly what user sent)
-    if (typeof title   !== 'undefined') { updates.push('title = ?');   params.push(pickOne(title)); }
-    if (typeof content !== 'undefined') { updates.push('content = ?'); params.push(pickOne(content)); }
-
-    // ---- media_url decision (URL or file or clear) ----
-    const bodyHadMediaUrl = Object.prototype.hasOwnProperty.call(req.body || {}, 'media_url');
-    const mediaUrlFromBody = bodyHadMediaUrl ? normStr(mediaUrlFromBodyRaw) : undefined;
-
-    let newMediaUrl; // undefined = don't touch; string = set; null = clear
-
-    if (mediaFile) newMediaUrl = `/uploads/${mediaFile.filename}`;   // file candidate
-
-    if (bodyHadMediaUrl) {                                           // form had media_url field → it wins
-      newMediaUrl = mediaUrlFromBody === '' ? null : mediaUrlFromBody;
+    if (mediaFile) {
+      // new uploaded file wins
+      media_url = `/uploads/${mediaFile.filename}`;
+    } else if (mediaUrlFromBody && mediaUrlFromBody.trim() !== '') {
+      // keep whatever was in the form (old file path or link)
+      media_url = mediaUrlFromBody.trim();
+    } else {
+      media_url = null;
     }
 
-    if (newMediaUrl !== undefined) {
-      updates.push('media_url = ?');
-      params.push(newMediaUrl);
+    // 🔥 2) Thumbnail (same idea, optional)
+    const oldThumbnailFromBody = req.body.thumbnail_url || null;
+    let thumbnail_url = oldThumbnailFromBody;
+
+    if (thumbnailFile) {
+      thumbnail_url = `/uploads/${thumbnailFile.filename}`;
     }
 
-    // thumbnail
-    if (thumbFile) {
-      updates.push('thumbnail_url = ?');
-      params.push(`/uploads/${thumbFile.filename}`);
+    // 🔥 3) Display text logic, same as in create
+    const final_display_text =
+      (!thumbnail_url && display_mode === 'text') ? (display_text || null) : null;
+
+    try {
+      await db.execute(
+        `UPDATE posts
+         SET
+           title = ?,
+           content = ?,
+           media_type = ?,
+           media_url = ?,
+           display_text = ?,
+           thumbnail_url = ?,
+           display_mode = ?,
+           price = ?,
+           option_1 = ?, option_2 = ?, option_3 = ?, option_4 = ?, option_5 = ?,
+           option_6 = ?, option_7 = ?, option_8 = ?, option_9 = ?, option_10 = ?
+         WHERE id = ?`,
+        [
+          title || null,
+          content || null,
+          media_type || display_mode || 'text',
+          media_url,
+          final_display_text,
+          thumbnail_url,
+          display_mode || media_type || 'text',
+          price || 0,
+          option_1 || null, option_2 || null, option_3 || null, option_4 || null, option_5 || null,
+          option_6 || null, option_7 || null, option_8 || null, option_9 || null, option_10 || null,
+          postId
+        ]
+      );
+
+      return res.redirect('/posts');
+    } catch (err) {
+      console.error('UPDATE ERROR:', err);
+      return res.status(500).send('Error updating post: ' + err.message);
     }
-
-    // normalize types safely (only if provided & non-empty)
-    const dm = normLower(display_mode);   // '' if missing
-    const mt = normLower(media_type);
-    if (dm) { updates.push('display_mode = ?'); params.push(dm); }
-    if (mt) { updates.push('media_type   = ?'); params.push(mt); }
-
-    // debug
-    console.log('PUT media debug:', {
-      bodyHadMediaUrl, mediaUrlFromBody, hasFile: !!mediaFile, decided: newMediaUrl, dm, mt
-    });
-
-    if (!updates.length) return res.redirect('/posts');
-
-    const sql = `UPDATE posts SET ${updates.join(', ')} WHERE id = ?`;
-    params.push(id);
-
-    await db.execute(sql, params);
-    res.redirect('/posts');
   }
 );
+
 
 
 

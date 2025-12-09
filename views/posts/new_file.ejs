@@ -3,45 +3,65 @@
 <link rel="stylesheet" href="/styles.css">
 <link rel="stylesheet" href="/styles_typed_colors.css">
 
-<div class="center-form">
-  <form action="<%= action %>" method="POST" enctype="multipart/form-data" class="content-form" data-media="file">
-    
-    <%
-      const isEdit = (typeof mode !== 'undefined' && mode === 'edit');
-      const P = post || {};
-    %>
+<% 
+  const P = (typeof post !== 'undefined' && post) ? post : {};
+  const isEdit = !!P.id; 
+%>
 
-    <h1><%= isEdit ? 'Edit file post' : 'File upload' %></h1>
+<div class="center-form">
+  <form action="<%= isEdit ? '/posts/' + P.id + '?_method=PUT' : '/posts' %>"
+      method="POST"
+      enctype="multipart/form-data" data-media="file">
+
+    <input type="hidden" name="media_type" value="file">
+
+
     
-    <input type="hidden" name="media_type" value="file"><br>
-    
+
     <label>File*:</label><br>
+
+    <% if (P.media_url) { %>
+      <p>Current file: <a href="<%= P.media_url %>" target="_blank"><%= P.media_url %></a></p>
+    <% } %>
+
+    <!-- keep the old file path in a hidden input -->
+    <input type="hidden" name="media_url" value="<%= P.media_url || '' %>">
+
+    <!-- this is the ONLY file input Multer cares about -->
     <input
       type="file"
       name="media_file"
-      accept="*/*"
       <%= isEdit ? '' : 'required' %>
-    >
-    <% if (isEdit && P.media_url) { %>
-      <p>Current file: <a href="<%= P.media_url %>" class="file-link">Download</a></p>
-      <p><small>Leave empty to keep current file.</small></p>
+      accept="*/*"
+    />
+    <br><br>
+
+
+    <!--
+    <label>Thumbnail:</label><br>
+
+    <% if (P.thumbnail_url) { %>
+      <p>Current thumbnail: <img src="<%= P.thumbnail_url %>" style="max-width:150px"></p>
     <% } %>
 
-    Title:<br>
-    <input type="text" name="title"><br>
-    
-    Description:<br>
-    <textarea name="content"></textarea><br><br>
-    
-    price:<br>
-    <input type="number" name="price" step="1" value="0"><br><br>
-    
-    <button type="submit">
-      <%= isEdit ? 'UPDATE POST' : 'CREATE POST' %>
-    </button>
+    <input
+      type="file"
+      name="thumbnail"
+      accept="image/*"
+    />
+    <br><br>
+    -->
 
-    <button type="button" class="btn" onclick="window.history.back()">CANCEL</button>
+    title:<br>
+    <input type="text" name="title" value="<%= P.title ? P.title : '' %>"><br><br>
+    
+    <label>Content:<br>
+      <textarea name="content" rows="6"><%= P.content ? P.content : '' %></textarea>
+    </label><br><br>
+
+    <button type="submit"><%= isEdit ? 'Update' : 'Create' %></button>
   </form>
+
 </div>
 
 <style>

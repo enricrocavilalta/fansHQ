@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="/styles_typed_colors.css">
 
 <div class="center-form">
-  <form action="/posts" method="POST" enctype="multipart/form-data" class="content-form" data-media="poll">
+  <form action="<%= action %>" method="POST" enctype="multipart/form-data" class="content-form" data-media="poll">
     
     <input type="hidden" name="media_type" value="poll">
     
@@ -28,7 +28,7 @@
   <% } %>
 
     <br>
-    
+
     <button type="submit">
       <%= isEdit ? 'UPDATE POST' : 'CREATE POST' %>
     </button>

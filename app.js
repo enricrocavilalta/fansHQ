@@ -17,6 +17,9 @@ app.use(express.static('public'));
 
 app.use(methodOverride('_method'));
 
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
+
 
 function ensureAuth(req, res, next) {
   if (!req.session || !req.session.user) {

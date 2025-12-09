@@ -4,7 +4,13 @@
 <link rel="stylesheet" href="/styles_typed_colors.css">
 
 <div class="center-form">
-  <form action="/posts" method="POST" enctype="multipart/form-data" class="content-form" data-media="link">
+
+  <%
+    // "post" will exist when editing, and be undefined when creating
+    const P = typeof post !== 'undefined' ? post : {};
+  %>
+
+  <form action="<%= action %>" method="POST" enctype="multipart/form-data" class="content-form" data-media="link">
     
     <% const isEdit = (mode === 'edit'); %>
     <h1><%= isEdit ? 'Edit link post' : 'Link upload' %></h1>
@@ -12,16 +18,16 @@
     <input type="hidden" name="media_type" value="link">
 
     <label>Title:</label><br>
-    <input type="text" name="title"><br><br>
+    <input type="text" name="title" value="<%= P.title ? P.title : '' %>"><br><br>
 
     <label>Description:</label><br>
-    <textarea name="content"></textarea><br><br>
+    <textarea name="content"><%= P.content ? P.content : '' %></textarea><br><br>
 
     <label>URL*:</label><br>
-    <input type="url" name="media_url" required><br><br>
+    <input type="url" name="media_url" value="<%= P.media_url ? P.media_url : '' %>" required><br><br>
 
     <label>Price:</label><br>
-    <input type="number" name="price" step="0.01" value="0"><br><br>
+    <input type="number" name="price" step="1" value="<%= (P.price !== undefined && P.price !== null) ? P.price : 0 %>"><br><br>
 
     <label>Choose link display mode:</label><br>
 
