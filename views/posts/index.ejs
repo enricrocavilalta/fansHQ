@@ -358,11 +358,11 @@ body {
             <h3><%= post.title %></h3>
     
             <% if (post.content) { %>
-              <p><%= post.content %></p>
+              <p><%= post.content %></p><br>
             <% } %>
 
-            <a href="<%= post.media_url %>" download class="download-btn">
-              DOWNLOAD
+            <a href="<%= post.media_url %>" download class="download-btn" style="margin-bottom: 1rem;">
+              DOWNLOAD<br>
             </a>
 
             <style>
@@ -419,7 +419,9 @@ body {
           <h3><% if (post.title) { %><%= post.title %><% } %></h3>
           <% if (post.content) { %><p><%= post.content %></p><% } %>
 
-          <a href="<%= post.media_url %>" target="_blank" rel="noopener" class="link-btn btn-3d">GO</a>
+          <a href="<%= post.media_url %>" target="_blank" rel="noopener" class="link-btn btn-3d" style="margin-bottom: 1rem;">
+            <%= (post.display_text) ?? 'GO' %>
+          </a>
       
           <style>
             .link-btn {
