@@ -953,17 +953,25 @@ body {
           }
 
           .tip-amount {
-            color: gold;
+            color: #CFAF00;/*color: #FFD200;color: #BFA000;*/
             font-weight: 700;
           }
 
         </style>
-        <% const ordered = [...post.questions].sort((a, b) => {
-          const tipA = Number(a.tip || 0);
-          const tipB = Number(b.tip || 0);
-          if (tipA !== tipB) return tipB - tipA; // higher tip first
-          return a.id - b.id;                    // older first
-        }); %>
+
+        <%
+          // Always work with an array for AMA questions
+          const qArr = Array.isArray(post.questions) ? post.questions : [];
+
+          // Sort by tip (desc), then by created_at (desc)
+          const ordered = qArr.slice().sort((a, b) => {
+            const tipA = Number(a.tip || 0);
+            const tipB = Number(b.tip || 0);
+            if (tipA !== tipB) return tipB - tipA; // higher tip first
+            return new Date(b.created_at || 0) - new Date(a.created_at || 0); // newer first
+          });
+        %>
+
 
         <!--  questions INSIDE the post-card -->
         <ul class="questions-list" id="questions-<%= post.id %>">

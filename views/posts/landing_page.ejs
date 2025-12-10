@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>FansHQ – Home</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/styles_typed_colors.css">
+  <style>
+    body {
+      background: radial-gradient(circle at top, #222 0, #000 55%);
+      color: #f0f0f0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .landing-wrapper {
+      flex: 1;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 4rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 2rem;
+    }
+
+    .brand {
+      font-size: 2.8rem;
+      font-weight: 800;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .brand span {
+      color: hsl(45, 90%, 55%); /* gold accent */
+    }
+
+    .landing-subtitle {
+      max-width: 560px;
+      font-size: 1.05rem;
+      opacity: .9;
+      line-height: 1.5;
+    }
+
+    .landing-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+      gap: 2.5rem;
+      align-items: center;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      padding: .25rem .75rem;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      font-size: .8rem;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      opacity: .9;
+    }
+
+    .landing-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .75rem;
+      margin-top: 1.5rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .4rem;
+      padding: .6rem 1.2rem;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-size: .95rem;
+      text-decoration: none;
+      transition: transform .08s ease, box-shadow .08s ease, background .12s ease, opacity .12s ease;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: hsl(45, 90%, 55%);
+      color: #111;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.55);
+      font-weight: 600;
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.7);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: #f0f0f0;
+      border: 1px solid rgba(255,255,255,0.14);
+    }
+    .btn-ghost:hover {
+      background: rgba(255,255,255,0.06);
+    }
+
+    .landing-badge {
+      font-size: .8rem;
+      opacity: .7;
+      margin-top: .5rem;
+    }
+
+    .feature-card {
+      border-radius: 16px;
+      background: rgba(16,16,16,0.9);
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 1.4rem 1.6rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      font-size: .9rem;
+    }
+
+    .feature-card h3 {
+      margin-top: 0;
+      margin-bottom: .4rem;
+      font-size: 1rem;
+    }
+
+    .feature-list {
+      margin: .6rem 0 0;
+      padding-left: 1.1rem;
+      opacity: .85;
+    }
+
+    .feature-list li {
+      margin-bottom: .2rem;
+    }
+
+    .footer {
+      text-align: center;
+      font-size: .8rem;
+      opacity: .5;
+      padding: 1rem 0 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .landing-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .landing-wrapper {
+        padding-top: 2.5rem;
+      }
+      .brand {
+        font-size: 2.1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <%- include('partials/header') %>
+
+  <main class="landing-wrapper">
+    <section class="landing-grid">
+      <div>
+        <div class="pill">
+          <span>Multipost creator platform</span>
+        </div>
+
+        <h1 class="brand">
+          Fans<span>HQ</span>
+        </h1>
+
+        <p class="landing-subtitle">
+          Post text, images, video, audio, files, products, polls, AMAs and more — all in one place.
+          Fans can unlock everything with a simple monthly subscription.
+        </p>
+
+        <div class="landing-actions">
+          <% if (userId) { %>
+            <!-- Logged in: go straight to feed -->
+            <a href="/posts" class="btn btn-primary">
+              Go to my feed
+            </a>
+          <% } else { %>
+            <!-- Not logged in: encourage signup / login -->
+            <a href="/signup" class="btn btn-primary">
+              Get started
+            </a>
+            <a href="/login" class="btn btn-ghost">
+              Log in
+            </a>
+          <% } %>
+        </div>
+
+        <div class="landing-badge">
+          No app store. Just the web. Built for creators who want control.
+        </div>
+      </div>
+
+      <aside>
+        <div class="feature-card">
+          <h3>What can you do?</h3>
+          <ul class="feature-list">
+            <li>Post 10+ content types (text, media, products, polls, AMAs…)</li>
+            <li>Set a monthly price and let fans unlock everything</li>
+            <li>Sell individual products and accept tips</li>
+            <li>Control who sees what with subscriptions</li>
+          </ul>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <footer class="footer">
+    FansHQ – demo project · Built with Node.js, Express and MySQL
+  </footer>
+
+</body>
+</html>

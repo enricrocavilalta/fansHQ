@@ -323,13 +323,6 @@ small, .meta {
   color: #888;
 }
 
-/* BUTTONS*/ 
-button, .btn-subscribe, .btn-unsubscribe {
-  font-family: var(--font-main);
-  font-weight: var(--fw-medium);
-  letter-spacing: 0.3px;
-  text-transform: uppercase;
-}
 
 :root {
   /* --- Fonts --- */

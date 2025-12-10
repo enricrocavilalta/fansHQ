@@ -8,6 +8,12 @@ const path = require('path');
 const db = require('../db');
 const isLoggedIn = require('../middleware/auth');
 
+
+
+
+
+
+
 //const { getCreatorSettings, isSubscribed } = require('../lib/subscriptions');
 // --- inline subscription helpers (no external require) ---
 async function getCreatorSettings(creatorId) {
@@ -116,23 +122,6 @@ router.get('/:id/edit', isLoggedIn, async (req, res) => {
   
   const type = (post.media_type).toLowerCase();
 
-  //console.log(type);
-
-  //const viewByType = {
-  //  text:'new_text', image:'new_image', video:'new_video', audio:'new_audio',
-  //  link:'new_link', file:'new_file', poll:'new_poll', product:'new_product',
-  // tipjar:'new_tipjar', ama:'new_ama'
-  //};
-  //const view = viewByType[type];
-
-  //res.render(`posts/${view}`, {
-  // mode: 'edit',
-  //  type,
-  //  post,
-  //  action: `/posts/${id}?_method=PUT`,
-  //  submitLabel: 'Update',
-  //  cancelHref: '/posts'
-  //});
 
   const view = getFormView(post.media_type);
   res.render(view, { 
@@ -186,7 +175,7 @@ router.get('/by/:username', async (req, res) => {
     let posts = [];
     if (viewingOwnProfile || viewerIsSubscribed) {
       [posts] = await db.query(`
-        SELECT p.*, u.username
+        SELECT p.*, u.username, u.email, u.username
         FROM posts p
         JOIN users u ON u.id = p.user_id
         WHERE p.user_id=?
@@ -221,10 +210,7 @@ router.get('/by/:username', async (req, res) => {
 
 
 // ---------- CREATE ----------
-router.post(
-  '/',
-  isLoggedIn,
-  upload.fields([{ name: 'media_file', maxCount: 1 }, { name: 'thumbnail', maxCount: 1 }]),
+router.post('/', isLoggedIn, upload.fields([{ name: 'media_file', maxCount: 1 }, { name: 'thumbnail', maxCount: 1 }]),
   async (req, res) => {
     // debug
     console.log('CREATE HIT:', {
