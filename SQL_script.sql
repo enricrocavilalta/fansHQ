@@ -211,22 +211,3 @@ CREATE TABLE IF NOT EXISTS subscriptions (
   INDEX idx_sub_state (subscriber_id, creator_id, end_at, status)
 ) ENGINE=InnoDB;
 
-select * from questions;
-select * from posts;
-select * from tips;
-
-ALTER TABLE posts 
-MODIFY media_type ENUM(
-  'text',
-  'image',
-  'video',
-  'audio',
-  'file',
-  'link',
-  'embed',
-  'poll',
-  'product',
-  'tipjar',
-  'ama'
-) NOT NULL;
-

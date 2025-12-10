@@ -180,11 +180,12 @@ app.get('/signup', (req, res) => res.render('signup'));
 
 app.post('/signup', async (req, res) => {
   const { email, password } = req.body;
+  const username = email.split('@')[0];
   try {
     const hashed = await bcrypt.hash(password, 10);
     const [result] = await db.execute(
-      'INSERT INTO users (email, password) VALUES (?, ?)',
-      [email, hashed]
+      'INSERT INTO users (email, password, username) VALUES (?, ?, ?)',
+      [email, hashed, username]
     );
     req.session.userId = result.insertId;
     res.redirect('/');
