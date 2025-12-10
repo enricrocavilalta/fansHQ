@@ -82,6 +82,15 @@ app.use((req, _res, next) => {
   next();
 });
 
+
+// No-store for dynamic pages (prevents back showing stale protected content)
+app.use((req, res, next) => {
+  res.set('Cache-Control', 'no-store');
+  next();
+});
+
+
+
 app.post('/logout', (req, res) => req.session.destroy(() => res.redirect('/login')));
 
 
@@ -236,58 +245,76 @@ const RESERVED = new Set(['feed', 'api', 'posts', 'static', 'assets']);
 
 // --- FEED (no create form) ---
 app.get('/posts', ensureAuthPage, async (req, res) => {
+  try {
+    // 1) Who is the viewer?
+    const viewerId = req.session.userId;
 
-  const [posts] = await db.query(`
-    SELECT p.*, u.email
-    FROM posts p
-    LEFT JOIN users u ON u.id = p.user_id
-    ORDER BY p.created_at DESC
-  `);
+    // 2) Get only posts the viewer is allowed to see
+    const [posts] = await db.query(`
+      SELECT 
+        p.*,
+        u.email
+      FROM posts p
+      JOIN users u 
+        ON u.id = p.user_id
+      LEFT JOIN subscriptions s
+        ON s.creator_id    = p.user_id
+       AND s.subscriber_id = ?
+       AND LOWER(s.status) = 'active'
+      WHERE 
+        p.user_id = ?              -- always see your own posts
+        OR s.creator_id IS NOT NULL -- see others only if subscribed
+      ORDER BY p.created_at DESC
+    `, [viewerId, viewerId]);
 
-  const ids = posts.map(p => p.id);
-  let questionsByPost = {};
-  let tipsByPost = {};
+    // 3) Your existing questions/tips logic (unchanged)
+    const ids = posts.map(p => p.id);
+    let questionsByPost = {};
+    let tipsByPost = {};
 
-  if (ids.length > 0) {
+    if (ids.length > 0) {
+      // QUESTIONS
+      const [questions] = await db.query(
+        `SELECT id, post_id, username, question, tip, created_at
+         FROM questions
+         WHERE post_id IN (?)
+         ORDER BY id ASC`,
+        [ids]
+      );
 
-    // QUESTIONS
-    const [questions] = await db.query(
-      `SELECT id, post_id, username, question, tip, created_at
-       FROM questions
-       WHERE post_id IN (?)
-       ORDER BY id ASC`,
-      [ids]
-    );
+      questionsByPost = questions.reduce((a, q) => {
+        (a[q.post_id] ||= []).push(q);
+        return a;
+      }, {});
 
-    questionsByPost = questions.reduce((a, q) => {
-      (a[q.post_id] ||= []).push(q);
-      return a;
-    }, {});
+      // TIPS
+      const [tips] = await db.query(
+        `SELECT t.id, t.post_id, t.amount AS tip, u.email AS username
+         FROM tips t
+         LEFT JOIN users u ON u.id = t.user_id
+         WHERE t.post_id IN (?)
+         ORDER BY t.id ASC`,
+        [ids]
+      );
 
-    // TIPS
-    const [tips] = await db.query(
-      `SELECT t.id, t.post_id, t.amount AS tip, u.email AS username
-       FROM tips t
-       LEFT JOIN users u ON u.id = t.user_id
-       WHERE t.post_id IN (?)
-       ORDER BY t.id ASC`,
-      [ids]
-    );
+      tipsByPost = tips.reduce((a, t) => {
+        (a[t.post_id] ||= []).push(t);
+        return a;
+      }, {});
+    }
 
-    tipsByPost = tips.reduce((a, t) => {
-      (a[t.post_id] ||= []).push(t);
-      return a;
-    }, {});
+    // 4) Render as before
+    res.render('posts/index', {
+      posts,
+      questionsByPost,
+      tipsByPost,
+    });
+  } catch (err) {
+    console.error('Error in GET /posts feed:', err);
+    res.status(500).send('Server error');
   }
-
-  // ATTACH DATA
-  for (const post of posts) {
-    post.questions = questionsByPost[post.id] || [];
-    post.tips      = tipsByPost[post.id] || [];
-  }
-
-  res.render('posts', { posts });
 });
+
 
 
 

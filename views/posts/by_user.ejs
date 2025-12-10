@@ -1218,7 +1218,7 @@ body {
           }
 
           .tip-amount {
-            color: gold;
+            color: #CFAF00;
             font-weight: 700;
           }
 
@@ -1242,7 +1242,7 @@ body {
               data-tip="<%= Number(q.tip || 0) %>"
             >
               <% if (q.tip && Number(q.tip) > 0) { %>
-                <b style="color: gold;"><%= Number(q.tip) %>€</b>
+                <b style="color: #CFAF00;"><%= Number(q.tip) %>€</b>
               <% } %>
               <b class="uppercase"><%= q.username %>:</b> <%= q.question %>
             </li>
@@ -1363,7 +1363,7 @@ body {
 
       let html = '';
       if (tipValue > 0) {
-        html += `<b style="color:gold;">${tipValue}€</b> `;
+        html += `<b style="color:#CFAF00;">${tipValue}€</b> `;
       }
       html += `<b>${newQ.username.toUpperCase()}:</b> ${newQ.question}`;
       li.innerHTML = html;
