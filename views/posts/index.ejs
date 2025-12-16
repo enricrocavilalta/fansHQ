@@ -1008,7 +1008,7 @@ body {
               data-tip="<%= Number(q.tip || 0) %>"
             >
               <% if (q.tip && Number(q.tip) > 0) { %>
-                <b style="color: gold;"><%= Number(q.tip) %>€</b>
+                <b style="color: #CFAF00;"><%= Number(q.tip) %>€</b>
               <% } %>
               <b class="uppercase"><%= q.username %>:</b> <%= q.question %>
             </li>
@@ -1086,7 +1086,7 @@ body {
   }
 
   document.querySelectorAll('.ama-form').forEach(form => {
-    // 👇 EVITA MÚLTIPLES LISTENERS
+    // AVOID MULTIPLES LISTENERS
     if (form.dataset.bound === "1") return;
     form.dataset.bound = "1";
 
@@ -1107,7 +1107,7 @@ body {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           question,
-          tip        // 👈 el backend espera "tip"
+          tip        //  el backend espera "tip"
         })
       });
 
