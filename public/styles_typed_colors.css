@@ -23,7 +23,7 @@ html{
 }
 
 ::selection {
-  background: hsl(48, 90%, 50%);
+  background: #CFAF00;
   color: #000;
 }
 

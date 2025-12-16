@@ -918,6 +918,7 @@ body {
           <button type="submit" class="ask-btn"  style="background-color:hsl(0,0%,30%);">Ask</button>
         </form>
 
+        
         <style>
 
           .ama-form input[type="text"],
@@ -960,17 +961,22 @@ body {
         </style>
 
         <%
-          // Always work with an array for AMA questions
-          const qArr = Array.isArray(post.questions) ? post.questions : [];
+          // Get questions from questionsByPost[post.id] if available
+          const qArr =
+            (typeof questionsByPost !== 'undefined' && questionsByPost[post.id])
+              ? questionsByPost[post.id]
+              : [];
 
-          // Sort by tip (desc), then by created_at (desc)
+          // Sort by tip descending, then creation time descending
           const ordered = qArr.slice().sort((a, b) => {
             const tipA = Number(a.tip || 0);
             const tipB = Number(b.tip || 0);
+
             if (tipA !== tipB) return tipB - tipA; // higher tip first
             return new Date(b.created_at || 0) - new Date(a.created_at || 0); // newer first
           });
         %>
+
 
 
         <!--  questions INSIDE the post-card -->

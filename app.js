@@ -105,8 +105,10 @@ app.get('/logout', (req, res) => {
 app.post('/api/posts/:id/ask', async (req, res) => {
   try {
     const postId = req.params.id;
-    const { question, safeTip } = req.body;  // safeTip, not tip
-    const tip = Number(safeTip) || 0;
+
+    // accept both "safeTip" and "tip" to be future-proof
+    const { question, safeTip, tip } = req.body;
+    const amount = Number(safeTip ?? tip ?? 0);
 
     const email = req.session.user.email;
     const username = email.split('@')[0];
@@ -115,12 +117,12 @@ app.post('/api/posts/:id/ask', async (req, res) => {
       postId,
       username,
       question,
-      tip
+      amount
     });
 
     const [result] = await db.query(
       'INSERT INTO questions (post_id, username, question, tip) VALUES (?, ?, ?, ?)',
-      [postId, username, question, tip]
+      [postId, username, question, amount]
     );
 
     res.json({
@@ -128,13 +130,14 @@ app.post('/api/posts/:id/ask', async (req, res) => {
       post_id: postId,
       username,
       question,
-      tip
+      tip: amount
     });
   } catch (err) {
     console.error('Error in AMA route:', err);
     res.status(500).json({ error: 'Server error' });
   }
 });
+
 
 
 
