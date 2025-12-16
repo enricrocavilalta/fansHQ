@@ -761,10 +761,24 @@ body {
         <% if (post.content) { %><p><%= post.content %></p><% } %>
 
   
-        <form action="/posts/<%= post.id %>/tip" method="POST">
+        <form 
+          class="tipjar-form"
+          data-post-id="<%= post.id %>"
+        >
           <button type="submit" class="donate-btn">DONATE</button>
-          <input type="number" name="tip" id="tip-<%= post.id %>" value="<%= post.price %>" step="1" min="1" size="3" required style="text-align:right;background-color:#303030;color:#f0f0f0;border:none;border-radius:6px;">$
+          <input
+            type="number"
+            name="tip"
+            id="tip-<%= post.id %>"
+            value="<%= post.price %>"
+            step="1"
+            min="1"
+            size="3"
+            required
+            style="text-align:right;background-color:#303030;color:#f0f0f0;border:none;border-radius:6px;"
+          >$
         </form>
+
         
         <style>
           .donate-btn {
@@ -838,51 +852,58 @@ body {
               }
             }
 
-            insertTipInOrder(ul, li, newTip.tip, newTip.id);
-
+            // If we didn't insert before any existing child, append at the end
+          ul.appendChild(li);
           }
+
         </script>
 
 
         <script>
-        document.querySelectorAll('.tipjar-form').forEach(form => {
-          form.addEventListener('submit', async e => {
-            e.preventDefault();
+          (() => {
+            const postId = "<%= post.id %>";
+            const form = document.querySelector(`.tipjar-form[data-post-id="${postId}"]`);
+            if (!form || form.dataset.bound === "1") return;
+            form.dataset.bound = "1";
 
-            const postId = form.dataset.postId;
-            const tipInput = form.querySelector('input[name="tip"]');
-            const tip = Number(tipInput.value);
+            form.addEventListener('submit', async (e) => {
+              e.preventDefault();
 
-            const res = await fetch(`/posts/${postId}/tip`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ tip })
+              const tipInput = form.querySelector('input[name="tip"]');
+              const tip = Number(tipInput?.value || 0);
+              if (!Number.isFinite(tip) || tip <= 0) return;
+
+              // ✅ Option A: send JSON (requires express.json() on server)
+              const res = await fetch(`/posts/${postId}/tip`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                credentials: 'same-origin',
+                body: JSON.stringify({ tip })
+              });
+
+              if (!res.ok) return;
+              const newTip = await res.json();
+
+              console.log('🔍 newTip desde servidor:', newTip);
+
+              const ul = document.getElementById(`tips-${postId}`);
+              const li = document.createElement('li');
+
+              const uname = ((newTip.username || 'Anonymous').split('@')[0]).toUpperCase();
+              li.dataset.tip = newTip.tip;
+              li.dataset.id  = newTip.id;
+
+              li.innerHTML = `
+                <b class="tip-amount">${newTip.tip}€</b>
+                <b class="donor">${uname}</b>
+              `;
+
+              insertTipInOrder(ul, li, Number(newTip.tip), Number(newTip.id));
+              tipInput.value = 1;
             });
-
-            if (!res.ok) return;
-
-            const newTip = await res.json(); 
-            // { id, tip, username }
-
-            const ul = document.getElementById(`tips-${postId}`);
-            const li = document.createElement('li');
-
-            const uname = ((newTip.username || 'Anonymous').split('@')[0]).toUpperCase();
-
-            li.dataset.tip = newTip.tip;
-            li.dataset.id  = newTip.id;
-            
-            li.innerHTML = `
-              <b class="tip-amount">${newTip.tip}€</b>
-              <b class="donor">${uname}</b>
-            `;
-
-            insertTipInOrder(ul, li, newTip.tip, newTip.id);
-
-            tipInput.value = 1;
-          });
-        });
+          })();
         </script>
+
 
 
 
@@ -1039,7 +1060,7 @@ body {
   
 
   
-   <script>
+    <script>
   function insertQuestionInOrder(ul, li, tip, id) {
     const children = Array.from(ul.children);
 
@@ -1120,7 +1141,7 @@ body {
       tipInput.value = '0';
     });
   });
-</script>
+    </script>
 
 
     <style>

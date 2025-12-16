@@ -410,7 +410,10 @@ router.post('/:postId/tip', async (req, res) => {
     const amount = Number(req.body?.amount ?? req.body?.tip);
     const note   = (req.body?.note ?? '').slice(0, 500).trim() || null;
 
-    if (!Number.isFinite(postId))      return res.status(400).send('Bad postId');
+    if (!Number.isFinite(postId)) {
+      return res.status(400).send('Bad postId');
+    }
+
     if (!Number.isFinite(amount) || amount <= 0 || amount > 100000) {
       return res.status(400).send('Bad amount');
     }
@@ -418,16 +421,50 @@ router.post('/:postId/tip', async (req, res) => {
     // who tipped: user id from the session (app-level guard can enforce login)
     const userId = req.session?.user?.id ?? req.session?.userId ?? null;
 
-    await db.execute(
+    // INSERT tip
+    const [result] = await db.execute(
       'INSERT INTO tips (post_id, user_id, amount, note) VALUES (?, ?, ?, ?)',
       [postId, userId, amount, note]
     );
 
-    // If it’s a form post, redirect back; if it’s XHR/fetch, send JSON.
-    const wantsJSON = req.headers['content-type']?.includes('application/json') ||
-                      req.headers['accept']?.includes('application/json');
+    // Decide response type
+    const wantsJSON =
+      req.headers['content-type']?.includes('application/json') ||
+      req.headers['accept']?.includes('application/json');
 
-    if (wantsJSON) return res.status(201).json({ ok: true, post_id: postId, amount, note });
+    if (wantsJSON) {
+      // Fetch the inserted row so the frontend has everything it needs
+      const [rows] = await db.execute(
+        `SELECT 
+           t.id,
+           t.post_id,
+           t.user_id,
+           t.amount AS tip,    
+           t.note,
+           t.created_at,
+           u.email,
+           u.username
+         FROM tips t
+         LEFT JOIN users u ON u.id = t.user_id
+         WHERE t.id = ?`,
+        [result.insertId]
+      );
+
+      const row = rows[0] || {
+        id: result.insertId,
+        post_id: postId,
+        user_id: userId,
+        tip: amount,
+        note,
+        created_at: new Date(),
+        email: null,
+        username: null
+      };
+
+      return res.status(201).json(row);
+    }
+
+    // HTML form submit → normal redirect
     return res.redirect(req.get('Referer') || '/posts');
   } catch (e) {
     console.error(e);
