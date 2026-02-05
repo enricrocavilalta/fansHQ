@@ -458,7 +458,6 @@ app.post('/settings/subscription', isLoggedIn, async (req, res) => {
       [sub_is_on, sub_price_cents, userId]
     );
 
-
     // Redirect back to the in-page settings if provided
     if (req.body.redirect_to) {
       return res.redirect(req.body.redirect_to);
@@ -466,8 +465,6 @@ app.post('/settings/subscription', isLoggedIn, async (req, res) => {
 
     // fallback redirect
     return res.redirect('/settings/subscription?ok=1');
-
-
 
   } catch (e) {
     console.error('save subscription settings error:', e);

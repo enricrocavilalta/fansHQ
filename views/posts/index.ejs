@@ -4,6 +4,9 @@
 
 <%- include('../partials/header') %>
 <%- include('../partials/create_post') %>
+
+<script src="/js/card-expand.js" defer></script>
+
 <style>
   body {
   background-color: #000;
@@ -35,15 +38,20 @@ body {
 }
 
 .post-card {
-  /*background-color: #1e1e1e;*/
   border-radius: 12px;
   padding: 1rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   transition: background-color 0.2s ease;
-  overflow: visible; /* or remove if not needed */
+ 
   min-width: 0;
   word-break: break-word;
   overflow-wrap: break-word;
+
+  width: auto;
+  height: auto;
+
+  max-width: 100%;
+  /*max-height: 400px;      /* ensures it cannot overflow card */
 }
 
 
@@ -225,9 +233,13 @@ body {
           </form>
         </div>
 
-        <% if (post.title) { %><h3><%= post.title %></h3><% } %>
-        <% if (post.content) { %><p><%= post.content %></p><% } %>
+        <div class="post-body">
+          <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+          <% if (post.content) { %><p><%= post.content %></p><% } %>
+        </div>
         
+        <button type="button" class="post-expand-btn" hidden>Show more</button>
+
         <div class="author-line">
           By
           <% if (post.email) { %>
@@ -252,11 +264,15 @@ body {
           </form>
         </div>
 
-        <% if (post.media_url) { %>
-          <img src="<%= post.media_url %>" alt="" class="w-full rounded mt-2" />
-        <% } %>
-        <% if (post.title) { %><h3><%= post.title %></h3><% } %>
-        <% if (post.content) { %><p><%= post.content %></p><% } %>
+        <div class="post-body">
+          <% if (post.media_url) { %>
+            <img src="<%= post.media_url %>" alt="" class="w-full rounded mt-2" />
+          <% } %>
+          <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+          <% if (post.content) { %><p><%= post.content %></p><% } %>
+        </div>
+
+        <button type="button" class="post-expand-btn" hidden>Show more</button>
 
         <div class="author-line">
           By
@@ -282,14 +298,17 @@ body {
           </form>
         </div>
 
+        <div class="post-body">
+          <% if (post.media_url) { %>
+            <video controls class="w-full rounded mt-2">
+              <source src="<%= post.media_url %>">
+            </video>
+          <% } %>
+          <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+          <% if (post.content) { %><p><%= post.content %></p><% } %>
+        </div>
 
-        <% if (post.media_url) { %>
-          <video controls class="w-full rounded mt-2">
-            <source src="<%= post.media_url %>">
-          </video>
-        <% } %>
-        <% if (post.title) { %><h3><%= post.title %></h3><% } %>
-        <% if (post.content) { %><p><%= post.content %></p><% } %>
+        <button type="button" class="post-expand-btn" hidden>Show more</button>
 
         <div class="author-line">
           By
@@ -315,19 +334,23 @@ body {
           </form>
         </div>
 
-        <% if (post.thumbnail_url) { %>
-          <img src="<%= post.thumbnail_url %>" 
-          alt="Audio thumbnail" 
-          class="w-full rounded mb-2">
-        <% } %>
+        <div class="post-body">
+          <% if (post.thumbnail_url) { %>
+            <img src="<%= post.thumbnail_url %>" 
+            alt="Audio thumbnail" 
+            class="w-full rounded mb-2">
+          <% } %>
 
-        <% if (post.media_url) { %>
-          <audio controls class="w-full mt-2">
-            <source src="<%= post.media_url %>">
-          </audio>
-        <% } %>
-        <% if (post.title) { %><h3><%= post.title %></h3><% } %>
-        <% if (post.content) { %><p><%= post.content %></p><% } %>
+          <% if (post.media_url) { %>
+            <audio controls class="w-full mt-2">
+              <source src="<%= post.media_url %>">
+            </audio>
+          <% } %>
+          <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+          <% if (post.content) { %><p><%= post.content %></p><% } %>
+        </div>
+
+        <button type="button" class="post-expand-btn" hidden>Show more</button>
 
         <div class="author-line">
           By
@@ -354,6 +377,7 @@ body {
           
         </div>
    
+        <div class="post-body">
           <% if (post.media_url) { %>
             <h3><%= post.title %></h3>
     
@@ -388,6 +412,9 @@ body {
               }
             </style>
           <% } %>
+        </div>
+        
+        <button type="button" class="post-expand-btn" hidden>Show more</button>
 
         <div class="author-line">
           By
@@ -416,59 +443,61 @@ body {
 
           </div>
 
-          <h3><% if (post.title) { %><%= post.title %><% } %></h3>
-          <% if (post.content) { %><p><%= post.content %></p><% } %>
 
+          <div class="post-body">
+            <h3><% if (post.title) { %><%= post.title %><% } %></h3>
+            <% if (post.content) { %><p><%= post.content %></p><% } %>
 
-          <% 
-            const hasThumb = !!post.thumbnail_url;
-          %>
+            <% 
+              const hasThumb = !!post.thumbnail_url;
+            %>
 
-          <div class="link-preview">
-            <% if (hasThumb) { %>
+            <div class="link-preview">
+              <% if (hasThumb) { %>
 
-              <a href="<%= post.media_url %>" target="_blank">
-                <img 
-                  src="<%= post.thumbnail_url %>" 
-                  alt="thumbnail"
-                  class="link-preview-img"
-                >
-              </a>
+                <a href="<%= post.media_url %>" target="_blank">
+                  <img 
+                    src="<%= post.thumbnail_url %>" 
+                    alt="thumbnail"
+                    class="link-preview-img"
+                  >
+                </a>
 
-            <% } else { %>
+              <% } else { %>
 
-              <a href="<%= post.media_url %>" target="_blank" rel="noopener" class="link-btn btn-3d" style="margin-bottom: 1rem;">
-                <%= (post.display_text) ?? 'GO' %>
-              </a>
+                <a href="<%= post.media_url %>" target="_blank" rel="noopener" class="link-btn btn-3d" style="margin-bottom: 1rem;">
+                  <%= (post.display_text) ?? 'GO' %>
+                </a>
 
-            <% } %>
+              <% } %>
+            </div>
+            
+            <style>
+              .link-btn {
+                display: inline-block;
+                background-color: hsl(180, 100%, 20%);
+                color: #f0f0f0 !important;
+                padding: 0.25rem 0.8rem;
+                border: 1px solid hsl(180,100%,52%);
+                border-radius: 50% / 100%;
+                text-decoration: none;
+                font-weight: 600;
+                transition: filter .2s ease;
+                font-size: 1rem;
+              }
+
+              .link-btn:hover {
+                filter: brightness(1.2);
+              }
+
+              .link-btn:active {
+                transform: scale(0.95);
+              }
+            </style>
+
           </div>
 
-
-         
-      
-          <style>
-            .link-btn {
-              display: inline-block;
-              background-color: hsl(180, 100%, 20%);
-              color: #f0f0f0 !important;
-              padding: 0.25rem 0.8rem;
-              border: 1px solid hsl(180,100%,52%);
-              border-radius: 50% / 100%;
-              text-decoration: none;
-              font-weight: 600;
-              transition: filter .2s ease;
-              font-size: 1rem;
-            }
-
-            .link-btn:hover {
-              filter: brightness(1.2);
-            }
-
-            .link-btn:active {
-              transform: scale(0.95);
-            }
-          </style>
+          <button type="button" class="post-expand-btn" hidden>Show more</button>
 
           <div class="author-line">
             By
@@ -497,13 +526,17 @@ body {
           
         </div>
 
-        <% if (post.media_url) { %>
-          <div class="video-wrapper mt-2">
-            <iframe src="<%= toEmbedUrl(post.media_url) %>" class="w-full rounded" frameborder="0" allowfullscreen></iframe>
-          </div>
-        <% } %>
-        <% if (post.title) { %><h3><%= post.title %></h3><% } %>
-        <% if (post.content) { %><p><%= post.content %></p><% } %>
+        <div class="post-body">
+          <% if (post.media_url) { %>
+            <div class="video-wrapper mt-2">
+              <iframe src="<%= toEmbedUrl(post.media_url) %>" class="w-full rounded" frameborder="0" allowfullscreen></iframe>
+            </div>
+          <% } %>
+          <% if (post.title) { %><h3><%= post.title %></h3><% } %>
+          <% if (post.content) { %><p><%= post.content %></p><% } %>
+        </div>
+
+        <button type="button" class="post-expand-btn" hidden>Show more</button>
 
         <div class="author-line">
           By
@@ -531,21 +564,25 @@ body {
 
           </div>
 
-        <% if (post.title) { %><h2><%= post.title %></h2><% } %>
-        <% if (post.content) { %><h3><%= post.content %></h3><% } %>
+        <div class="post-body">
+          <% if (post.title) { %><h2><%= post.title %></h2><% } %>
+          <% if (post.content) { %><h3><%= post.content %></h3><% } %>
 
-        <form id="poll-<%= post.id %>" data-poll-id="<%= post.id %>">
-          <% for (let i = 1; i <= 10; i++) {
-              const label = post['option_' + i];
-              if (!label) continue; %>
-            <label style="display:flex;align-items:center;gap:.5rem;margin:.25rem 0">
-              <h4 class="count" data-option="<%= i %>" style="min-width:1.5em;text-align:right;"></h4>
-              <input type="checkbox" name="choices" value="<%= i %>">
-              <h4><span><%= label %></span></h4>
-            </label>
-          <% } %>
-          <span class="msg" style="margin-left:.5rem;opacity:.8"></span>
-        </form>
+          <form id="poll-<%= post.id %>" data-poll-id="<%= post.id %>">
+            <% for (let i = 1; i <= 10; i++) {
+                const label = post['option_' + i];
+                if (!label) continue; %>
+              <label style="display:flex;align-items:center;gap:.5rem;margin:.25rem 0">
+                <h4 class="count" data-option="<%= i %>" style="min-width:1.5em;text-align:right;"></h4>
+                <input type="checkbox" name="choices" value="<%= i %>">
+                <h4><span><%= label %></span></h4>
+              </label>
+            <% } %>
+            <span class="msg" style="margin-left:.5rem;opacity:.8"></span>
+          </form>
+        </div>
+
+        <button type="button" class="post-expand-btn" hidden>Show more</button>
 
         <div class="author-line">
           By
@@ -677,51 +714,56 @@ body {
 
         </div>
 
-        <% const p = (post.price == null) ? null : Number(parseFloat(String(post.price))); %>
-        <% if (p !== null && Number.isFinite(p) && p != 0) { %>
-        <h2>€<%= p.toFixed(2) %></h2>
-        <% } %>
+        <div class="post-body">
+          <% const p = (post.price == null) ? null : Number(parseFloat(String(post.price))); %>
+          <% if (p !== null && Number.isFinite(p) && p != 0) { %>
+          <h2>€<%= p.toFixed(2) %></h2>
+          <% } %>
 
-        <% if (post.media_url) { %>
-          <img 
-            src="<%= post.media_url %>" 
-            alt="<%= post.title || 'Product image' %>" 
-            class="max-w-full h-auto rounded-lg"
-          />
-        <% } %>
+          <% if (post.media_url) { %>
+            <img 
+              src="<%= post.media_url %>" 
+              alt="<%= post.title || 'Product image' %>" 
+              class="max-w-full h-auto rounded-lg"
+            />
+          <% } %>
 
-        <% if (post.title) { %><h3><%= post.title %></h3><% } %>
-        
-        <% if (post.content) { %><p><%= post.content %></p><% } %>
-        
-        <br>
-        <form action="/orders" method="POST">
-          <input type="hidden" name="post_id" value="<%= post.id %>">
-          <button type="submit" class="buy-btn">Buy</button>
-        </form>
+          <% if (post.title) { %><h3><%= post.title %></h3><% } %>
           
-        <style>
-          .buy-btn {
-            display: inline-block;
-            background-color: hsl(30, 100%, 20%);
-            color: #f0f0f0 !important;
-            padding: 0.25rem 0.8rem;
-            border:1px solid hsl(30,100%,52%);
-            border-radius: 50% / 100%;
-            text-decoration: none;
-            font-weight: 600;
-            transition: filter .2s ease;
-            font-size: 1rem;
-          }
+          <% if (post.content) { %><p><%= post.content %></p><% } %>
+          
+          <br>
+          <form action="/orders" method="POST">
+            <input type="hidden" name="post_id" value="<%= post.id %>">
+            <button type="submit" class="buy-btn">Buy</button>
+          </form>
+            
+          <style>
+            .buy-btn {
+              display: inline-block;
+              background-color: hsl(30, 100%, 20%);
+              color: #f0f0f0 !important;
+              padding: 0.25rem 0.8rem;
+              border:1px solid hsl(30,100%,52%);
+              border-radius: 50% / 100%;
+              text-decoration: none;
+              font-weight: 600;
+              transition: filter .2s ease;
+              font-size: 1rem;
+            }
 
-          .buy-btn:hover {
-            filter: brightness(1.2);
-          }
+            .buy-btn:hover {
+              filter: brightness(1.2);
+            }
 
-          .buy-btn:active {
-            transform: scale(0.95);
-          }
-        </style>
+            .buy-btn:active {
+              transform: scale(0.95);
+            }
+          </style>
+        
+        </div>
+
+        <button type="button" class="post-expand-btn" hidden>Show more</button>
 
         <div class="author-line">
           By
@@ -749,163 +791,165 @@ body {
 
         </div>
 
-        <% if (post.media_url) { %>
-          <img 
-            src="<%= post.media_url %>" 
-            alt="<%= post.title || 'Product image' %>" 
-            class="max-w-full h-auto rounded-lg"
-          />
-        <% } %>
+        <div class="post-body">
+          <% if (post.media_url) { %>
+            <img 
+              src="<%= post.media_url %>" 
+              alt="<%= post.title || 'Product image' %>" 
+              class="max-w-full h-auto rounded-lg"
+            />
+          <% } %>
 
-        <% if (post.title) { %><h3><%= post.title %></h3><% } %>      
-        <% if (post.content) { %><p><%= post.content %></p><% } %>
+          <% if (post.title) { %><h3><%= post.title %></h3><% } %>      
+          <% if (post.content) { %><p><%= post.content %></p><% } %>
 
-  
-        <form 
-          class="tipjar-form"
-          data-post-id="<%= post.id %>"
-        >
-          <button type="submit" class="donate-btn">DONATE</button>
-          <input
-            type="number"
-            name="tip"
-            id="tip-<%= post.id %>"
-            value="<%= post.price %>"
-            step="1"
-            min="1"
-            size="3"
-            required
-            style="text-align:right;background-color:#303030;color:#f0f0f0;border:none;border-radius:6px;"
-          >$
-        </form>
+    
+          <form 
+            class="tipjar-form"
+            data-post-id="<%= post.id %>"
+          >
+            <button type="submit" class="donate-btn">DONATE</button>
+            <input
+              type="number"
+              name="tip"
+              id="tip-<%= post.id %>"
+              value="<%= post.price %>"
+              step="1"
+              min="1"
+              size="3"
+              required
+              style="text-align:right;background-color:#303030;color:#f0f0f0;border:none;border-radius:6px;"
+            >$
+          </form>
 
-        
-        <style>
-          .donate-btn {
-            display: inline-block;
-            background-color: hsl(0,0%,30%);
-            color: #f0f0f0;
-            border: 1px solid  #808080;
-            padding: 0.25rem 0.8rem;
-            border-radius: 50% / 100%;
-            text-decoration: none;
-            font-weight: 600;
-            transition: filter .2s ease;
-            font-size: 1rem;
-          }
-
-          .donate-btn:hover {
-            filter: brightness(1.2);
-          }
-
-          .donate-btn:active {
-            transform: scale(0.95);
-          }
-
-        </style>
-
-        <ul class="tipjar-list" id="tips-<%= post.id %>">
-          <% (post.tips || []).sort((a,b) => {
-            const tA = Number(a.tip||0);
-            const tB = Number(b.tip||0);
-            if (tA !== tB) return tB - tA;
-            return a.id - b.id;
-            }).forEach(t => { %>
-            <li 
-              data-id="<%= t.id %>"
-              data-tip="<%= Number(t.tip) %>"
-            >
-              <b class="tip-amount"><%= Number(t.tip) %>€</b>
-              <b class="donor"><%= ((t.username || 'Anonymous').split('@')[0]).toUpperCase() %></b>
-            </li>
-          <% }) %>
-        </ul>
-
-        <style>
-
-          .tipjar-list {
-            list-style: none;
-            padding-left: 0;
-            margin-top: .5rem;
-          }
-
-        </style>
-        
-        <script>
-          function insertTipInOrder(ul, li, tipValue, id) {
-            const children = Array.from(ul.children);
-
-            for (let child of children) {
-              const t = Number(child.dataset.tip);
-              const i = Number(child.dataset.id);
-
-              // Higher tip first
-              if (tipValue > t) {
-                ul.insertBefore(li, child);
-                return;
-              }
-
-              // Same tip → older (smaller id) first
-              if (tipValue === t && id < i) {
-                ul.insertBefore(li, child);
-                return;
-              }
+          
+          <style>
+            .donate-btn {
+              display: inline-block;
+              background-color: hsl(0,0%,30%);
+              color: #f0f0f0;
+              border: 1px solid  #808080;
+              padding: 0.25rem 0.8rem;
+              border-radius: 50% / 100%;
+              text-decoration: none;
+              font-weight: 600;
+              transition: filter .2s ease;
+              font-size: 1rem;
             }
 
-            // If we didn't insert before any existing child, append at the end
-          ul.appendChild(li);
-          }
+            .donate-btn:hover {
+              filter: brightness(1.2);
+            }
 
-        </script>
+            .donate-btn:active {
+              transform: scale(0.95);
+            }
+
+          </style>
+
+          <ul class="tipjar-list" id="tips-<%= post.id %>">
+            <% (post.tips || []).sort((a,b) => {
+              const tA = Number(a.tip||0);
+              const tB = Number(b.tip||0);
+              if (tA !== tB) return tB - tA;
+              return a.id - b.id;
+              }).forEach(t => { %>
+              <li 
+                data-id="<%= t.id %>"
+                data-tip="<%= Number(t.tip) %>"
+              >
+                <b class="tip-amount"><%= Number(t.tip) %>€</b>
+                <b class="donor"><%= ((t.username || 'Anonymous').split('@')[0]).toUpperCase() %></b>
+              </li>
+            <% }) %>
+          </ul>
+
+          <style>
+
+            .tipjar-list {
+              list-style: none;
+              padding-left: 0;
+              margin-top: .5rem;
+            }
+
+          </style>
+          
+          <script>
+            function insertTipInOrder(ul, li, tipValue, id) {
+              const children = Array.from(ul.children);
+
+              for (let child of children) {
+                const t = Number(child.dataset.tip);
+                const i = Number(child.dataset.id);
+
+                // Higher tip first
+                if (tipValue > t) {
+                  ul.insertBefore(li, child);
+                  return;
+                }
+
+                // Same tip → older (smaller id) first
+                if (tipValue === t && id < i) {
+                  ul.insertBefore(li, child);
+                  return;
+                }
+              }
+
+              // If we didn't insert before any existing child, append at the end
+            ul.appendChild(li);
+            }
+
+          </script>
 
 
-        <script>
-          (() => {
-            const postId = "<%= post.id %>";
-            const form = document.querySelector(`.tipjar-form[data-post-id="${postId}"]`);
-            if (!form || form.dataset.bound === "1") return;
-            form.dataset.bound = "1";
+          <script>
+            (() => {
+              const postId = "<%= post.id %>";
+              const form = document.querySelector(`.tipjar-form[data-post-id="${postId}"]`);
+              if (!form || form.dataset.bound === "1") return;
+              form.dataset.bound = "1";
 
-            form.addEventListener('submit', async (e) => {
-              e.preventDefault();
+              form.addEventListener('submit', async (e) => {
+                e.preventDefault();
 
-              const tipInput = form.querySelector('input[name="tip"]');
-              const tip = Number(tipInput?.value || 0);
-              if (!Number.isFinite(tip) || tip <= 0) return;
+                const tipInput = form.querySelector('input[name="tip"]');
+                const tip = Number(tipInput?.value || 0);
+                if (!Number.isFinite(tip) || tip <= 0) return;
 
-              // ✅ Option A: send JSON (requires express.json() on server)
-              const res = await fetch(`/posts/${postId}/tip`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                credentials: 'same-origin',
-                body: JSON.stringify({ tip })
+                // ✅ Option A: send JSON (requires express.json() on server)
+                const res = await fetch(`/posts/${postId}/tip`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                  credentials: 'same-origin',
+                  body: JSON.stringify({ tip })
+                });
+
+                if (!res.ok) return;
+                const newTip = await res.json();
+
+                console.log('🔍 newTip desde servidor:', newTip);
+
+                const ul = document.getElementById(`tips-${postId}`);
+                const li = document.createElement('li');
+
+                const uname = ((newTip.username || 'Anonymous').split('@')[0]).toUpperCase();
+                li.dataset.tip = newTip.tip;
+                li.dataset.id  = newTip.id;
+
+                li.innerHTML = `
+                  <b class="tip-amount">${newTip.tip}€</b>
+                  <b class="donor">${uname}</b>
+                `;
+
+                insertTipInOrder(ul, li, Number(newTip.tip), Number(newTip.id));
+                tipInput.value = 1;
               });
+            })();
+          </script>
 
-              if (!res.ok) return;
-              const newTip = await res.json();
+        </div>
 
-              console.log('🔍 newTip desde servidor:', newTip);
-
-              const ul = document.getElementById(`tips-${postId}`);
-              const li = document.createElement('li');
-
-              const uname = ((newTip.username || 'Anonymous').split('@')[0]).toUpperCase();
-              li.dataset.tip = newTip.tip;
-              li.dataset.id  = newTip.id;
-
-              li.innerHTML = `
-                <b class="tip-amount">${newTip.tip}€</b>
-                <b class="donor">${uname}</b>
-              `;
-
-              insertTipInOrder(ul, li, Number(newTip.tip), Number(newTip.id));
-              tipInput.value = 1;
-            });
-          })();
-        </script>
-
-
-
+        <button type="button" class="post-expand-btn" hidden>Show more</button>
 
         <div class="author-line">
           By
@@ -927,6 +971,7 @@ body {
           </form>
         </div>
 
+        <div class="post-body">
         <% if (post.title) { %><h2><%= post.title %></h2><% } %>
         <% if (post.content) { %><h3><%= post.content %></h3><br><% } %>
 
@@ -1018,6 +1063,10 @@ body {
         
 
         <p id="err-<%= post.id %>" style="color:#b91c1c;display:none"></p>
+
+        </div>
+
+        <button type="button" class="post-expand-btn" hidden>Show more</button>
 
         <div class="author-line">
           By
@@ -1206,5 +1255,59 @@ body {
   padding: 1rem;                        /* keep spacing if you want */
   border-radius: 0 !important;          /* no nested rounding */
 }
+
+
+
+
+
+
+
+.post-card { display: flex; flex-direction: column; }
+
+.post-card.is-collapsed .post-body {
+  max-height: 520px;
+  overflow: hidden;
+  position: relative;
+}
+
+.post-card.is-collapsed .post-body::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 64px;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(0,0,0,0), var(--card-bg, #111));
+}
+
+.post-card.is-expanded .post-body {
+  max-height: none;
+  overflow: visible;
+}
+
+
+
+
+
+.post-card{
+  border-radius:12px;
+  padding:1rem;
+  min-width:0;
+  max-width:100%;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden; /* IMPORTANT */
+}
+
+.post-expand-btn{
+  margin-top:.5rem;
+  align-self:flex-start;
+  background: rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.18);
+  color:#f0f0f0;
+  padding:.25rem .6rem;
+  border-radius:999px;
+}
+.post-expand-btn:hover{ filter: brightness(1.2); }
+
 
 </style>

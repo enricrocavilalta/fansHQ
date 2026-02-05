@@ -9,6 +9,8 @@ CREATE TABLE IF NOT EXISTS users (
   password      VARCHAR(255) NOT NULL,             -- bcrypt hash
   username      VARCHAR(100) UNIQUE,               -- display name
   created_at    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  sub_is_on tinyint(1) NOT NULL DEFAULT 1,
+  sub_price_cents INT NOT NULL DEFAULT 100,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
@@ -21,6 +23,7 @@ CREATE TABLE IF NOT EXISTS posts (
 
   -- Author
   user_id INT UNSIGNED NULL,
+  -- In case the author is deleted
 
   -- Basic information
   title        VARCHAR(255) NULL,
@@ -77,6 +80,36 @@ CREATE TABLE IF NOT EXISTS posts (
 ) ENGINE=InnoDB;
 
 -- =============================
+-- ORDERS (Product purchases)
+-- =============================
+CREATE TABLE IF NOT EXISTS orders (
+  id          INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  buyer_id    INT UNSIGNED NOT NULL,     -- the fan
+  creator_id  INT UNSIGNED NOT NULL,     -- post owner
+  post_id     INT UNSIGNED NOT NULL,     -- product post id
+  title       VARCHAR(255) NOT NULL,     -- snapshot of post.title
+  price_cents INT UNSIGNED NOT NULL,     -- snapshot of post.price * 100
+  currency    CHAR(3) NOT NULL DEFAULT 'EUR',
+  status      ENUM('pending','paid','canceled','refunded')
+                NOT NULL DEFAULT 'pending',
+  created_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  paid_at     DATETIME NULL,
+
+  INDEX idx_orders_buyer (buyer_id),
+  INDEX idx_orders_creator (creator_id),
+  INDEX idx_orders_post (post_id),
+
+  CONSTRAINT fk_orders_buyer FOREIGN KEY (buyer_id)
+    REFERENCES users(id) ON DELETE CASCADE,
+
+  CONSTRAINT fk_orders_creator FOREIGN KEY (creator_id)
+    REFERENCES users(id) ON DELETE CASCADE,
+
+  CONSTRAINT fk_orders_post FOREIGN KEY (post_id)
+    REFERENCES posts(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- =============================
 -- POLL VOTES (multi-choice)
 -- One row per user * option
 -- A user can vote multiple options, but not repeat the same one
@@ -105,7 +138,7 @@ CREATE TABLE IF NOT EXISTS votes (
 CREATE TABLE IF NOT EXISTS questions (
   id         INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   post_id    INT UNSIGNED NOT NULL,     -- posts.id of an AMA post
-  user_id    INT UNSIGNED NULL,         -- may be NULL if anonymous
+  username    INT UNSIGNED NULL,         -- may be NULL if anonymous
   question   TEXT NULL,
   tip        DECIMAL(10,2) DEFAULT 0.00,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -142,34 +175,30 @@ CREATE TABLE IF NOT EXISTS tips (
     REFERENCES users(id) ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
--- =============================
--- ORDERS (Product purchases)
--- =============================
-CREATE TABLE IF NOT EXISTS orders (
-  id          INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  buyer_id    INT UNSIGNED NOT NULL,     -- the fan
-  creator_id  INT UNSIGNED NOT NULL,     -- post owner
-  post_id     INT UNSIGNED NOT NULL,     -- product post id
-  title       VARCHAR(255) NOT NULL,     -- snapshot of post.title
-  price_cents INT UNSIGNED NOT NULL,     -- snapshot of post.price * 100
-  currency    CHAR(3) NOT NULL DEFAULT 'EUR',
-  status      ENUM('pending','paid','canceled','refunded')
-                NOT NULL DEFAULT 'pending',
-  created_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  paid_at     DATETIME NULL,
 
-  INDEX idx_orders_buyer (buyer_id),
-  INDEX idx_orders_creator (creator_id),
-  INDEX idx_orders_post (post_id),
 
-  CONSTRAINT fk_orders_buyer FOREIGN KEY (buyer_id)
+-- =============================
+-- SUBSCRIPTIONS (active users supporting a creator)
+-- =============================
+CREATE TABLE IF NOT EXISTS subscriptions (
+  id             INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  subscriber_id  INT UNSIGNED NOT NULL,   -- the paying user
+  creator_id     INT UNSIGNED NOT NULL,   -- the creator
+  start_at       DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  started_at       DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  end_at         DATETIME NOT NULL,
+  canceled_at       DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  status         ENUM('active','canceled','expired') NOT NULL DEFAULT 'active',
+  price_cents    INT UNSIGNED NOT NULL,
+  created_at     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+  FOREIGN KEY (subscriber_id)
     REFERENCES users(id) ON DELETE CASCADE,
 
-  CONSTRAINT fk_orders_creator FOREIGN KEY (creator_id)
+  FOREIGN KEY (creator_id)
     REFERENCES users(id) ON DELETE CASCADE,
 
-  CONSTRAINT fk_orders_post FOREIGN KEY (post_id)
-    REFERENCES posts(id) ON DELETE CASCADE
+  INDEX idx_sub_state (subscriber_id, creator_id, end_at, status)
 ) ENGINE=InnoDB;
 
 -- =============================
@@ -188,26 +217,5 @@ CREATE TABLE IF NOT EXISTS creator_subscription_settings (
     REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
--- =============================
--- SUBSCRIPTIONS (active users supporting a creator)
--- =============================
-CREATE TABLE IF NOT EXISTS subscriptions (
-  id             INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  subscriber_id  INT UNSIGNED NOT NULL,   -- the paying user
-  creator_id     INT UNSIGNED NOT NULL,   -- the creator
-  start_at       DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  end_at         DATETIME NOT NULL,
-  status         ENUM('active','canceled','expired')
-                    NOT NULL DEFAULT 'active',
-  price_cents    INT UNSIGNED NOT NULL,
-  created_at     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-  FOREIGN KEY (subscriber_id)
-    REFERENCES users(id) ON DELETE CASCADE,
-
-  FOREIGN KEY (creator_id)
-    REFERENCES users(id) ON DELETE CASCADE,
-
-  INDEX idx_sub_state (subscriber_id, creator_id, end_at, status)
-) ENGINE=InnoDB;
 
