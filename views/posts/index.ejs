@@ -1265,7 +1265,7 @@ body {
 .post-card { display: flex; flex-direction: column; }
 
 .post-card.is-collapsed .post-body {
-  max-height: 520px;
+  max-height: calc(100vh - 150px);
   overflow: hidden;
   position: relative;
 }
@@ -1299,7 +1299,8 @@ body {
 }
 
 .post-expand-btn{
-  margin-top:.5rem;
+  font-size: 1.5rem;          /* ← size of ▾ / ▴ */
+  margin: 0.75rem auto 0;   /* centers horizontally */
   align-self:flex-start;
   background: rgba(255,255,255,0.08);
   border:1px solid rgba(255,255,255,0.18);

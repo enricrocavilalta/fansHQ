@@ -1,7 +1,27 @@
-console.log("card-expand loaded");
-
 (() => {
-  const MAX_HEIGHT = 520;
+  function px(value) {
+    const n = Number.parseFloat(value);
+    return Number.isFinite(n) ? n : null;
+  }
+
+  // Reads the real max-height (in px) that CSS currently applies
+  function getLimitPx(card, body) {
+    const wasCollapsed = card.classList.contains("is-collapsed");
+    const wasExpanded = card.classList.contains("is-expanded");
+
+    // force collapsed to make CSS max-height apply, then read computed value
+    card.classList.remove("is-expanded");
+    card.classList.add("is-collapsed");
+
+    const mh = getComputedStyle(body).maxHeight; // resolves calc(...) to px
+    const limit = px(mh);
+
+    // restore previous state
+    card.classList.toggle("is-collapsed", wasCollapsed);
+    card.classList.toggle("is-expanded", wasExpanded);
+
+    return limit ?? 520; // fallback
+  }
 
   function setupCard(card) {
     const body = card.querySelector(".post-body");
@@ -12,29 +32,31 @@ console.log("card-expand loaded");
       // reset
       card.classList.remove("is-collapsed", "is-expanded");
       btn.hidden = true;
-      btn.textContent = "Show more";
+      btn.textContent = "▾";
 
-      // measure
+      const limitPx = getLimitPx(card, body);
       const fullHeight = body.scrollHeight;
 
-      if (fullHeight > MAX_HEIGHT) {
+      // +2 avoids “button shows on almost equal” due to rounding
+      if (fullHeight > limitPx + 2) {
         card.classList.add("is-collapsed");
         btn.hidden = false;
       }
     }
 
-    // Toggle
     btn.addEventListener("click", () => {
       const expanded = card.classList.contains("is-expanded");
       card.classList.toggle("is-expanded", !expanded);
       card.classList.toggle("is-collapsed", expanded);
-      btn.textContent = expanded ? "Show more" : "Show less";
+      btn.textContent = expanded ? "▾" : "▴";
     });
 
-    // Initial apply
+    // initial + late layout settles (fonts, etc.)
     apply();
+    setTimeout(apply, 0);
+    setTimeout(apply, 200);
 
-    // Re-apply after media loads (images/videos change height after render)
+    // media loads change height after initial render
     body.querySelectorAll("img").forEach(img => {
       if (!img.complete) img.addEventListener("load", apply, { once: true });
     });
@@ -42,7 +64,6 @@ console.log("card-expand loaded");
       v.addEventListener("loadedmetadata", apply, { once: true });
     });
 
-    // Re-apply on resize (but don't collapse if user manually expanded)
     window.addEventListener("resize", () => {
       if (!card.classList.contains("is-expanded")) apply();
     });
